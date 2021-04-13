@@ -3,9 +3,9 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { Location, ValueRule } from "src/rules/common";
-import { stringOffsetToPos, StringPos } from "src/rules/string/env";
-import { StringRuleFactory } from "src/rules/string/factory";
+import { Location, ValueRule } from "../rules/common";
+import { stringOffsetToPos, StringPos } from "../rules/string/env";
+import { StringRuleFactory } from "../rules/string/factory";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore

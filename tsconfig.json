@@ -14,7 +14,7 @@
 
       "baseUrl": "./",
       "outDir": "./lib",
-      "rootDirs": ["src"],
+      "rootDir": "./src",
 
       "skipLibCheck": true,
 
@@ -37,5 +37,4 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
   },
-  "include": ["./src"],
 }
