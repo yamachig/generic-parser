@@ -164,6 +164,8 @@ export type UnknownRule<TTarget extends UnknownTarget> = Rule<TTarget, unknown, 
 
 export type UnknownTarget = ArrayLike<unknown>;
 
+export type ValueRule<TTarget extends UnknownTarget, TValue> = Rule<TTarget, TValue, BaseEnv<TTarget, BasePos>, Empty>;
+
 export type ItemOfRule<TRule extends UnknownRule<UnknownTarget>> =
     TRule extends Rule<infer TTarget, unknown, BaseEnv<infer TTarget, BasePos>, Empty>
         ? ItemOf<TTarget>

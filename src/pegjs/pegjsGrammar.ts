@@ -3,7 +3,7 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { BaseEnv, BasePos, Empty, Location, Rule as AbstractRule } from "src/rules/common";
+import { Location, ValueRule } from "src/rules/common";
 import { stringOffsetToPos, StringPos } from "src/rules/string/env";
 import { StringRuleFactory } from "src/rules/string/factory";
 
@@ -27,8 +27,6 @@ export const parse = (text: string): ast.Grammar => {
     if (result.ok) return result.value;
     throw new Error(`Expected ${result.expected} ${JSON.stringify(result)}`);
 };
-
-type ValueRule<TValue> = AbstractRule<string, TValue, BaseEnv<string, BasePos>, Empty>;
 
 const rootEnv = {
     options: {
@@ -272,7 +270,7 @@ const Rule = factory
 // * |Expression
 // * |  = ChoiceExpression
 
-const Expression: ValueRule<ast.Expression> = factory
+const Expression: ValueRule<string, ast.Expression> = factory
     .ref(() => ChoiceExpression)
     .abstract();
 
@@ -1293,7 +1291,7 @@ const CodeBlock = factory
 // * |Code
 // * |  = $((![{}] SourceCharacter)+ / "{" Code "}")*
 
-const Code: ValueRule<string> = factory
+const Code: ValueRule<string, string> = factory
     .asSlice(r => r
         .zeroOrMore(r => r
             .choice(c => c

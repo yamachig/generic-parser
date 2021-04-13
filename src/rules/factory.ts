@@ -1,4 +1,3 @@
-import { AnyOneRule, AsSliceRule, ChoiceRule } from ".";
 import { AssertRule } from "./assert";
 import { AssertNotRule } from "./assertNot";
 import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf } from "./common";
@@ -14,6 +13,9 @@ import { ZeroOrOneRule } from "./zeroOrOne";
 import { RefRule } from "./ref";
 import { RuleOrFunc } from "./ruleFunc";
 import { convertRuleOrFunc } from "./lazyRule";
+import { AnyOneRule } from "./anyOne";
+import { AsSliceRule } from "./asSlice";
+import { ChoiceRule } from "./choice";
 export class RuleFactory<
     TTarget extends UnknownTarget,
     TPrevEnv extends BaseEnv<TTarget, BasePos>,
