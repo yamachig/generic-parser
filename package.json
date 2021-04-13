@@ -1,0 +1,34 @@
+{
+  "name": "generic-parser",
+  "version": "0.1.0",
+  "description": "Statically typed generic sequence parser",
+  "author": "yamachi",
+  "license": "MIT",
+  "homepage": "https://github.com/yamachig/generic-parser",
+
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "prepare": "npm run build",
+    "watch": "npx tsc --watch",
+    "test": "npx mocha"
+  },
+
+  "devDependencies": {
+    "@types/chai": "^4.2.16",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.23.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-tsdoc": "^0.2.11",
+    "mocha": "^8.3.2",
+    "pegjs-dev": "github:pegjs/pegjs#b7b87ea8",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.3"
+  }
+}
