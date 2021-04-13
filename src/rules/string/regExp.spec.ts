@@ -6,7 +6,6 @@ import { StringRuleFactory } from "./factory";
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
-    options: {},
     offsetToPos: stringOffsetToPos,
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;

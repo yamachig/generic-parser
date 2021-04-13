@@ -32,7 +32,6 @@ export interface BaseEnv<
     TTarget extends UnknownTarget,
     TPos extends BasePos,
 > {
-    options: Record<string | symbol | number, unknown>;
     offsetToPos(target: TTarget, offset: number): TPos;
 }
 

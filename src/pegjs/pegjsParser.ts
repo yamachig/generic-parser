@@ -3,88 +3,90 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { Location, ValueRule } from "../rules/common";
-import { stringOffsetToPos, StringPos } from "../rules/string/env";
-import { StringRuleFactory } from "../rules/string/factory";
+import { BaseEnv, Location, ValueRule } from "generic-parser/rules/common";
+import { stringOffsetToPos, StringPos } from "generic-parser/rules/string/env";
+import { StringRuleFactory } from "generic-parser/rules/string/factory";
 import peg from "./pegjsTypings/pegjs";
 import pegjs from "./optionalPegjs";
 
-export const parse = (text: string): peg.ast.Grammar => {
+export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Grammar => {
     const result = Grammar.match(
         0,
         text,
         {
             ...rootEnv,
-            ...initializer(rootEnv),
+            ...initializer(options ?? defaultOptions),
         },
     );
     if (result.ok) return result.value;
     throw new Error(`Expected ${result.expected} ${JSON.stringify(result)}`);
 };
 
-const rootEnv = {
-    options: {
-        reservedWords: [
-
-            // Keyword
-            "break",
-            "case",
-            "catch",
-            "continue",
-            "debugger",
-            "default",
-            "delete",
-            "do",
-            "else",
-            "finally",
-            "for",
-            "function",
-            "if",
-            "in",
-            "instanceof",
-            "new",
-            "return",
-            "switch",
-            "this",
-            "throw",
-            "try",
-            "typeof",
-            "var",
-            "void",
-            "while",
-            "with",
-
-            // FutureReservedWord
-            "class",
-            "const",
-            "enum",
-            "export",
-            "extends",
-            "implements",
-            "import",
-            "interface",
-            "let",
-            "package",
-            "private",
-            "protected",
-            "public",
-            "static",
-            "super",
-            "yield",
-
-            // Literal
-            "false",
-            "null",
-            "true",
-        ],
-        extractComments: true,
-    },
+const rootEnv: BaseEnv<string, StringPos> = {
     offsetToPos: stringOffsetToPos,
 };
 
-const initializer = (env: typeof rootEnv) => {
+type Env = typeof rootEnv & ReturnType<typeof initializer>;
+
+const defaultOptions: peg.parser.IOptions = {
+    reservedWords: [
+
+        // Keyword
+        "break",
+        "case",
+        "catch",
+        "continue",
+        "debugger",
+        "default",
+        "delete",
+        "do",
+        "else",
+        "finally",
+        "for",
+        "function",
+        "if",
+        "in",
+        "instanceof",
+        "new",
+        "return",
+        "switch",
+        "this",
+        "throw",
+        "try",
+        "typeof",
+        "var",
+        "void",
+        "while",
+        "with",
+
+        // FutureReservedWord
+        "class",
+        "const",
+        "enum",
+        "export",
+        "extends",
+        "implements",
+        "import",
+        "interface",
+        "let",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "static",
+        "super",
+        "yield",
+
+        // Literal
+        "false",
+        "null",
+        "true",
+    ],
+    extractComments: true,
+};
+
+const initializer = (options: peg.parser.IOptions) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
-    const { options } = env;
 
     // * |{
     // * |
@@ -167,6 +169,7 @@ const initializer = (env: typeof rootEnv) => {
     };
 
     return {
+        options,
         pick,
         RESERVED_WORDS,
         reservedWords,
@@ -176,7 +179,7 @@ const initializer = (env: typeof rootEnv) => {
     };
 };
 
-const factory = new StringRuleFactory<typeof rootEnv & ReturnType<typeof initializer>>();
+const factory = new StringRuleFactory<Env>();
 
 // * |// ---- Syntactic Grammar -----
 

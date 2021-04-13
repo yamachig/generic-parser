@@ -7,7 +7,6 @@ import { stringOffsetToPos, StringPos } from "./string/env";
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
-    options: {},
     offsetToPos: stringOffsetToPos,
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
@@ -15,7 +14,6 @@ type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
 const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
-    options: {},
     offsetToPos: arrayLikeOffsetToPos,
 });
 type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;

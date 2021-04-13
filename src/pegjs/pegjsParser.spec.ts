@@ -1,12 +1,12 @@
 import { assert } from "chai";
-import { parse } from "./pegjsGrammar";
+import { parse } from "./pegjsParser";
 import { inspect } from "util";
 import fs from "fs";
 import path from "path";
 import peg from "./pegjsTypings/pegjs";
 import pegjs from "./optionalPegjs";
 
-const parseGrammar = (source: string) => {
+const parsePegjs = (source: string) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
     const ast = parse(source);
     const passes = pegjs.util.convertPasses( pegjs.compiler.passes as unknown as peg.IStageMap );
@@ -16,9 +16,9 @@ const parseGrammar = (source: string) => {
     return { ast, parser };
 };
 
-describe("Test pegjsGrammar", () => {
+describe("Test pegjsParser", () => {
     if (pegjs === null) {
-        console.warn("PEG.js not installed. Skipping tests for pegjsGrammar.");
+        console.warn("PEG.js not installed. Skipping tests for pegjsParser.");
         return;
     }
 
@@ -26,7 +26,7 @@ describe("Test pegjsGrammar", () => {
         const source = `
 plus = "+"
 `;
-        const { parser } = parseGrammar(source);
+        const { parser } = parsePegjs(source);
         // const astStr = inspect(ast, undefined, null);
         const result = parser.parse("+", { startRule: "plus" });
         assert.strictEqual(result, "+");
@@ -36,7 +36,7 @@ plus = "+"
         const source = `
 sum = $([0-9]+ "+" [0-9]+)
 `;
-        const { parser } = parseGrammar(source);
+        const { parser } = parsePegjs(source);
         // const astStr = inspect(ast, undefined, null);
         const result = parser.parse("1+1", { startRule: "sum" });
         assert.strictEqual(result, "1+1");
@@ -47,7 +47,7 @@ sum = $([0-9]+ "+" [0-9]+)
 sum = left:$[0-9]+ "+" right:$[0-9]+
         { return Number(left) + Number(right) }
 `;
-        const { parser } = parseGrammar(source);
+        const { parser } = parsePegjs(source);
         // const astStr = inspect(ast, undefined, null);
         const result = parser.parse("1+1", { startRule: "sum" });
         assert.strictEqual(result, 2);
@@ -61,7 +61,7 @@ sum = left:num "+" right:num
 num = strNum:$([0-9]+)
         { return Number(strNum) }
 `;
-        const { parser } = parseGrammar(source);
+        const { parser } = parsePegjs(source);
         // const astStr = inspect(ast, undefined, null);
         const result = parser.parse("1+1", { startRule: "sum" });
         assert.strictEqual(result, 2);
