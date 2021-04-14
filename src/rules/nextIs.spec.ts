@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { SeqEqualRule } from "./seqEqual";
-import { BaseEnv, MatchResult } from "../core";
+import { BaseEnv } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -33,7 +33,7 @@ describe("Test NextIsRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .nextIs(r => r.seqEqual("abc"));
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -52,7 +52,7 @@ describe("Test NextIsRule", () => {
             env,
         } as const;
 
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -70,7 +70,7 @@ describe("Test NextIsRule", () => {
             env,
         } as const;
 
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -88,7 +88,7 @@ describe("Test NextIsRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .nextIs(r => r.seqEqual("abc"));
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -105,7 +105,7 @@ describe("Test NextIsRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .nextIs(r => r.seqEqual("abc"));
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -122,7 +122,7 @@ describe("Test NextIsRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc rule>").
             nextIs(r => r.seqEqual("abc"));
-        const result: MatchResult<undefined, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

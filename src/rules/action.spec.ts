@@ -28,10 +28,6 @@ describe("Test ActionRule", () => {
             nextPos: 9,
             value: 6,
         } as const;
-        const expectedEnv = {
-            a: "abc",
-            b: "abc",
-        };
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .action(r => {
@@ -48,16 +44,9 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            number,
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepInclude(result, expected);
-        if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
@@ -125,10 +114,6 @@ describe("Test ActionRule", () => {
             nextPos: 9,
             value: 6,
         } as const;
-        const expectedEnv = {
-            a: "abc",
-            b: "abc",
-        };
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .action(r => r
@@ -141,6 +126,35 @@ describe("Test ActionRule", () => {
                     return a.length + b.length;
                 }
             ));
+
+        const result = rule.match(pos, text, env);
+
+        assert.deepInclude(result, expected);
+    });
+
+    it("Success case", () => {
+        const pos = 0;
+        const text = "abcabcabc";
+        const env = getDummyStringEnv();
+        const expected = {
+            ok: true,
+            nextPos: 9,
+            value: 6,
+        } as const;
+        const expectedEnv = {
+            a: "abc",
+            b: "abc",
+        };
+
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .sequence(s => s
+                .and(s => s.seqEqual("abc"), "a")
+                .and(s => s.seqEqual("abc"))
+                .and(s => s.seqEqual("abc"), "b")
+                .action(({ a, b }) => {
+                    return a.length + b.length;
+                })
+            );
 
         const result: MatchResult<
             number,
@@ -199,45 +213,6 @@ describe("Test ActionRule", () => {
             nextPos: 9,
             value: 6,
         } as const;
-        const expectedEnv = {
-            a: "abc",
-            b: "abc",
-        };
-
-        const rule = new RuleFactory<string, DummyStringEnv>()
-            .sequence(s => s
-                .and(s => s.seqEqual("abc"), "a")
-                .and(s => s.seqEqual("abc"))
-                .and(s => s.seqEqual("abc"), "b")
-            ).action(({ a, b }) => {
-                return a.length + b.length;
-            });
-
-        const result: MatchResult<
-            number,
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
-
-        assert.deepInclude(result, expected);
-        if (result.ok) assert.deepInclude(result.env, expectedEnv);
-    });
-
-    it("Success case", () => {
-        const pos = 0;
-        const text = "abcabcabc";
-        const env = getDummyStringEnv();
-        const expected = {
-            ok: true,
-            nextPos: 9,
-            value: 6,
-        } as const;
-        const expectedEnv = {
-            a: "abc",
-            b: "abc",
-        };
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .action(r => r
@@ -251,16 +226,9 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            number,
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepInclude(result, expected);
-        if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
@@ -272,10 +240,6 @@ describe("Test ActionRule", () => {
             nextPos: 9,
             value: ["a,b,c", "a,b,c"],
         } as const;
-        const expectedEnv = {
-            a: ["a", "b", "c"],
-            b: ["a", "b", "c"],
-        };
 
         const rule = new RuleFactory<string[], DummyStringArrayEnv>()
             .action(r => r
@@ -289,16 +253,9 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            readonly [string, string],
-            DummyStringArrayEnv & {
-                a: string[];
-                b: string[];
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepInclude(result, expected);
-        if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
@@ -310,10 +267,6 @@ describe("Test ActionRule", () => {
             nextPos: 12,
             value: ["a", "b", "c", "a", "b", "c"],
         } as const;
-        const expectedEnv = {
-            a: "abc",
-            b: "abc",
-        };
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .action(r => r
@@ -327,16 +280,9 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            readonly string[],
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepInclude(result, expected);
-        if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Fail case", () => {
@@ -361,15 +307,9 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            readonly string[],
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepInclude(result, expected);
     });
 
     it("Fail case", () => {
@@ -395,13 +335,7 @@ describe("Test ActionRule", () => {
                 }
             ));
 
-        const result: MatchResult<
-            readonly string[],
-            DummyStringEnv & {
-                a: string;
-                b: string;
-            }
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

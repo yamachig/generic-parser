@@ -205,10 +205,11 @@ const Grammar = factory
                 .andOmit(() => __)
             )
         ), "rules")
-    ).action(({ initializer, rules, comments, location }) => {
-        if (pegjs === null) throw new Error("PEG.js not installed.");
-        return new pegjs.ast.Grammar( initializer as peg.ast.Initializer | void, rules, comments as peg.ast.CommentMap | void, location() );
-    })
+        .action(({ initializer, rules, comments, location }) => {
+            if (pegjs === null) throw new Error("PEG.js not installed.");
+            return new pegjs.ast.Grammar( initializer as peg.ast.Initializer | void, rules, comments as peg.ast.CommentMap | void, location() );
+        })
+    )
     .abstract();
 
 // * |Initializer
@@ -222,9 +223,10 @@ const Initializer = factory
     .sequence(s => s
         .and(() => CodeBlock, "code")
         .and(() => EOS)
-    ).action(({ code, createNode, location }) => {
-        return createNode( "initializer", { code }, location() ) as peg.ast.Initializer;
-    })
+        .action(({ code, createNode, location }) => {
+            return createNode( "initializer", { code }, location() ) as peg.ast.Initializer;
+        })
+    )
     .abstract();
 
 // * |Rule
@@ -257,14 +259,14 @@ const Rule = factory
         .and(() => __)
         .and(() => Expression, "expression")
         .and(() => EOS)
+        .action(({ name, displayName, createNode, expression, location }) => {
+            const newExpression = displayName ? createNode( "named", {
+                name: displayName,
+                expression: expression,
+            }, location() ) as peg.ast.Named : expression;
+            return createNode( "rule", { name, expression: newExpression }, location() ) as peg.ast.Rule;
+        })
     )
-    .action(({ name, displayName, createNode, expression, location }) => {
-        const newExpression = displayName ? createNode( "named", {
-            name: displayName,
-            expression: expression,
-        }, location() ) as peg.ast.Named : expression;
-        return createNode( "rule", { name, expression: newExpression }, location() ) as peg.ast.Rule;
-    })
     .abstract();
 
 // * |Expression
@@ -325,10 +327,11 @@ const ActionExpression = factory
                     .and(() => CodeBlock)
                 )
             ), "code")
-    ).action(({ expression, code, createNode, location }) => {
-        if ( code === null ) return expression;
-        return createNode( "action", { expression, code }, location() ) as peg.ast.ActionExpression;
-    })
+        .action(({ expression, code, createNode, location }) => {
+            if ( code === null ) return expression;
+            return createNode( "action", { expression, code }, location() ) as peg.ast.ActionExpression;
+        })
+    )
     .abstract();
 
 // * |SequenceExpression
@@ -361,15 +364,16 @@ const SequenceExpression = factory
                 )
             )
         , "tail")
-    ).action(({ head, tail, createNode, location }) => {
-        let elements = [ head ];
-        if ( tail.length === 0 ) {
-            if ( head.type !== "labeled" || !head.pick ) return head;
-        } else {
-            elements = elements.concat( tail );
-        }
-        return createNode( "sequence", { elements }, location() ) as peg.ast.SequenceExpression;
-    })
+        .action(({ head, tail, createNode, location }) => {
+            let elements = [ head ];
+            if ( tail.length === 0 ) {
+                if ( head.type !== "labeled" || !head.pick ) return head;
+            } else {
+                elements = elements.concat( tail );
+            }
+            return createNode( "sequence", { elements }, location() ) as peg.ast.SequenceExpression;
+        })
+    )
     .abstract();
 
 // * |LabeledExpression
@@ -716,9 +720,10 @@ const MultiLineComment = factory
                 )
             ), "comment")
         .and(r => r.seqEqual("*/"))
-    ).action(({ comment, addComment, location }) => {
-        addComment( comment, true, location() );
-    })
+        .action(({ comment, addComment, location }) => {
+            addComment( comment, true, location() );
+        })
+    )
     .abstract();
 
 // * |MultiLineCommentNoLineTerminator
@@ -747,9 +752,10 @@ const MultiLineCommentNoLineTerminator = factory
                 )
             ), "comment")
         .and(r => r.seqEqual("*/"))
-    ).action(({ comment, addComment, location }) => {
-        addComment( comment, true, location() );
-    })
+        .action(({ comment, addComment, location }) => {
+            addComment( comment, true, location() );
+        })
+    )
     .abstract();
 
 // * |SingleLineComment
@@ -770,9 +776,10 @@ const SingleLineComment = factory
                 )
             )
         ), "comment")
-    ).action(({ comment, addComment, location }) => {
-        addComment( comment, false, location() );
-    })
+        .action(({ comment, addComment, location }) => {
+            addComment( comment, false, location() );
+        })
+    )
     .abstract();
 
 // * |Identifier "identifier"
@@ -788,9 +795,10 @@ const Identifier = factory
         .and(r => r
             .zeroOrMore(() => IdentifierPart),
         "tail")
-    ).action(({ head, tail }) => {
-        return head + tail.join("");
-    })
+        .action(({ head, tail }) => {
+            return head + tail.join("");
+        })
+    )
     .abstract();
 
 // * |IdentifierStart
@@ -889,13 +897,13 @@ const LiteralMatcher = factory
     .sequence(s => s
         .and(() => StringLiteral, "value")
         .and(r => r.zeroOrOne(r => r.seqEqual("i")), "ignoreCase")
+        .action(({ value, ignoreCase, createNode, location }) => {
+            return createNode( "literal", {
+                value: value,
+                ignoreCase: ignoreCase !== null,
+            }, location() ) as peg.ast.LiteralMatcher;
+        })
     )
-    .action(({ value, ignoreCase, createNode, location }) => {
-        return createNode( "literal", {
-            value: value,
-            ignoreCase: ignoreCase !== null,
-        }, location() ) as peg.ast.LiteralMatcher;
-    })
     .abstract();
 
 // * |StringLiteral "string"
@@ -912,10 +920,11 @@ const StringLiteral = factory
                     .zeroOrMore(() => DoubleStringCharacter),
                 "chars")
                 .and(r => r.seqEqual("\""))
+                .action(({ chars }) => {
+                    return chars.join("");
+                })
 
-            ).action(({ chars }) => {
-                return chars.join("");
-            })
+            )
         )
         .or(r => r
             .sequence(s => s
@@ -924,10 +933,11 @@ const StringLiteral = factory
                     .zeroOrMore(() => SingleStringCharacter),
                 "chars")
                 .and(r => r.seqEqual("'"))
+                .action(({ chars }) => {
+                    return chars.join("");
+                })
 
-            ).action(({ chars }) => {
-                return chars.join("");
-            }))
+            ))
     )
     .abstract();
 
@@ -1004,13 +1014,14 @@ const CharacterClassMatcher = factory
         .and(r => r.zeroOrMore(() => CharacterPart), "parts")
         .and(r => r.seqEqual("]"))
         .and(r => r.zeroOrOne(r => r.seqEqual("i")), "ignoreCase")
-    ).action(({ inverted, parts, ignoreCase, createNode, location }) => {
-        return createNode( "class", {
-            parts: parts.filter( part => part !== "" ),
-            inverted: inverted !== null,
-            ignoreCase: ignoreCase !== null,
-        }, location() ) as peg.ast.CharacterClassMatcher;
-    })
+        .action(({ inverted, parts, ignoreCase, createNode, location }) => {
+            return createNode( "class", {
+                parts: parts.filter( part => part !== "" ),
+                inverted: inverted !== null,
+                ignoreCase: ignoreCase !== null,
+            }, location() ) as peg.ast.CharacterClassMatcher;
+        })
+    )
     .abstract();
 
 // * |CharacterPart
@@ -1040,10 +1051,11 @@ const ClassCharacterRange = factory
         .and(() => ClassCharacter, "begin")
         .and(r => r.seqEqual("-"))
         .and(() => ClassCharacter, "end")
-    ).action(({ begin, end, error, text }) => {
-        if ( begin.charCodeAt( 0 ) > end.charCodeAt( 0 ) ) error( "Invalid character range: " + text() + "." );
-        return [ begin, end ];
-    })
+        .action(({ begin, end, error, text }) => {
+            if ( begin.charCodeAt( 0 ) > end.charCodeAt( 0 ) ) error( "Invalid character range: " + text() + "." );
+            return [ begin, end ];
+        })
+    )
     .abstract();
 
 // * |ClassCharacter
@@ -1080,8 +1092,8 @@ const LineContinuation = factory
     .sequence(s => s
         .and(r => r.seqEqual("\\"))
         .and(() => LineTerminatorSequence)
+        .action(() => "")
     )
-    .action(() => "")
     .abstract();
 
 // * |EscapeSequence
@@ -1205,11 +1217,11 @@ const HexEscapeSequence = factory
                     .and(() => HexDigit)
                     .and(() => HexDigit))
             ),
-        "digits",
-        )
-    ).action(({ digits }) => {
-        return String.fromCharCode( parseInt( digits, 16 ) );
-    })
+        "digits")
+        .action(({ digits }) => {
+            return String.fromCharCode( parseInt( digits, 16 ) );
+        })
+    )
     .abstract();
 
 // * |UnicodeEscapeSequence
@@ -1231,11 +1243,11 @@ const UnicodeEscapeSequence = factory
                     .and(() => HexDigit)
                 )
             ),
-        "digits",
-        )
-    ).action(({ digits }) => {
-        return String.fromCharCode( parseInt( digits, 16 ) );
-    })
+        "digits")
+        .action(({ digits }) => {
+            return String.fromCharCode( parseInt( digits, 16 ) );
+        })
+    )
     .abstract();
 
 // * |DecimalDigit

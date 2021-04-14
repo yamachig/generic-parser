@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -35,7 +35,7 @@ describe("Test AsSliceRule", () => {
                 .seqEqual("abc")
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -54,7 +54,7 @@ describe("Test AsSliceRule", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .asSlice(r => r.seqEqual(["a", "b", "c"]));
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -92,7 +92,7 @@ describe("Test AsSliceRule", () => {
         const expected = {
             ok: true,
             nextPos: 9,
-            value: ["a", "b", "c", "a", "b", "c", "a", "b", "c"],
+            value: ["a", "b", "c", "a", "b", "c", "a", "b", "c"] as string[],
             env,
         } as const;
 
@@ -105,7 +105,7 @@ describe("Test AsSliceRule", () => {
                 )
             );
 
-        const result: MatchResult<readonly string[], DummyStringArrayEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -130,7 +130,7 @@ describe("Test AsSliceRule", () => {
                 )
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -155,7 +155,7 @@ describe("Test AsSliceRule", () => {
                 )
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -180,7 +180,7 @@ describe("Test AsSliceRule", () => {
                 )
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

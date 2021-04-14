@@ -1,5 +1,5 @@
 import { RuleFactory } from "./factory";
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, ConvertedRuleOf, convertRuleOrFunc } from "../core";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc } from "../core";
 import { ActionRule } from "./action";
 
 export interface RuleStruct<
@@ -37,7 +37,6 @@ type SequenceRuleValueStatus = "Empty" | "Single" | "Multiple";
 
 export class SequenceRule<
     TTarget extends UnknownTarget,
-    TRuleStructs extends UnknownRuleStruct<TTarget>[],
     TValues extends unknown,
     TOrigPrevEnv extends BaseEnv<TTarget, BasePos>,
     TCurrentAddEnv extends Empty,
@@ -52,7 +51,7 @@ export class SequenceRule<
     public readonly classSignature = "SequenceRule" as const;
 
     public constructor(
-        public rules: TRuleStructs,
+        public rules: UnknownRuleStruct<TTarget>[],
         public factory: TRuleFactory,
         name: string | null = null,
     ) {
@@ -104,28 +103,28 @@ export class SequenceRule<
         TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, TRuleFactory>,
         TLabel extends string | null = null,
         TOmit extends boolean = false,
+        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>,
     >(
         ruleOrFunc: TRuleOrFunc,
         label: TLabel = null as TLabel,
         omit: TOmit = false as TOmit,
     ): SequenceRule<
         TTarget,
-        [...TRuleStructs, RuleStruct<ConvertedRuleOf<TRuleOrFunc, TRuleFactory>, TLabel, TOmit>],
         TOmit extends true
             ? TValues
             : TStatus extends "Empty"
-                ? ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>
+                ? TValue
                 : TStatus extends "Single"
-                    ? [TValues, ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>]
+                    ? [TValues, TValue]
                     : TValues extends unknown[]
-                        ? [...TValues, ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>]
+                        ? [...TValues, TValue]
                         : never,
         TOrigPrevEnv,
-        TCurrentAddEnv & AddEnvOfName<ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>, TLabel>,
+        TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
         TOmit extends true
             ? TStatus
             : TStatus extends "Empty" ? "Single" : "Multiple",
-        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>, TLabel>>
+        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
     > {
         return new SequenceRule(
             [
@@ -139,7 +138,7 @@ export class SequenceRule<
                     omit,
                 }
             ],
-            this.factory as unknown as Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>, TLabel>>,
+            this.factory as unknown as Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>,
             this.name,
         );
     }
@@ -147,23 +146,30 @@ export class SequenceRule<
     public andOmit<
         TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, TRuleFactory>,
         TLabel extends string | null = null,
+        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>,
     >(
         ruleOrFunc: TRuleOrFunc,
         label: TLabel = null as TLabel,
     ): SequenceRule<
         TTarget,
-        [...TRuleStructs, RuleStruct<ConvertedRuleOf<TRuleOrFunc, TRuleFactory>, TLabel, true>],
         TValues,
         TOrigPrevEnv,
-        TCurrentAddEnv & AddEnvOfName<ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>, TLabel>,
+        TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
         TStatus,
-        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>, TLabel>>
+        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, BaseEnv<TTarget, BasePos> & TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
     > {
         return this.and(
             ruleOrFunc,
             label,
             true,
-        );
+        ) as SequenceRule<
+            TTarget,
+            TValues,
+            TOrigPrevEnv,
+            TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
+            TStatus,
+            Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, BaseEnv<TTarget, BasePos> & TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
+        >;
     }
 
     public action<

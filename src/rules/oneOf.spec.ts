@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -33,7 +33,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -52,7 +52,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -71,7 +71,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -90,7 +90,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string[], DummyStringArrayEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringArrayEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -109,7 +109,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -128,7 +128,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -146,7 +146,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -164,7 +164,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -182,7 +182,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -200,7 +200,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -218,7 +218,7 @@ describe("Test OneOfRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>("<one of abc rule>")
             .oneOf(items);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

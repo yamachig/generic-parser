@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult } from "../core";
+import { BaseEnv } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -26,31 +26,13 @@ describe("Test ZeroOrMoreRule", () => {
         const expected = {
             ok: true,
             nextPos: 6,
-            value: ["abc", "abc"],
+            value: ["abc", "abc"] as string[],
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrMore(r => r.seqEqual("abc"));
-        const result: MatchResult<readonly string[], DummyStringEnv> = rule.match(pos, text, env);
-
-        assert.deepStrictEqual(result, expected);
-    });
-
-    it("Success case", () => {
-        const rule = new RuleFactory<string, DummyStringEnv>()
-            .zeroOrMore(r => r.seqEqual("abc"));
-        const pos = 0;
-        const text = "abcabcg";
-        const env = getDummyStringEnv();
-        const expected = {
-            ok: true,
-            nextPos: 6,
-            value: ["abc", "abc"],
-            env,
-        } as const;
-
-        const result: MatchResult<readonly string[], DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -68,7 +50,25 @@ describe("Test ZeroOrMoreRule", () => {
             env,
         } as const;
 
-        const result: MatchResult<string[], DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
+
+        assert.deepStrictEqual(result, expected);
+    });
+
+    it("Success case", () => {
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .zeroOrMore(r => r.seqEqual("abc"));
+        const pos = 0;
+        const text = "abcabcg";
+        const env = getDummyStringEnv();
+        const expected = {
+            ok: true,
+            nextPos: 6,
+            value: ["abc", "abc"] as string[],
+            env,
+        } as const;
+
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -82,11 +82,11 @@ describe("Test ZeroOrMoreRule", () => {
         const expected = {
             ok: true,
             nextPos: 6,
-            value: ["abc"],
+            value: ["abc"] as string[],
             env,
         } as const;
 
-        const result: MatchResult<readonly string[], DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -98,13 +98,13 @@ describe("Test ZeroOrMoreRule", () => {
         const expected = {
             ok: true,
             nextPos: 0,
-            value: [],
+            value: [] as string[],
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrMore(r => r.seqEqual("abc"));
-        const result: MatchResult<readonly string[], DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

@@ -1,8 +1,9 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos } from "../core";
 import { SeqEqualRule } from "./seqEqual";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
+import { ChoiceRule } from "./choice";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
@@ -21,11 +22,13 @@ type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
 describe("Test ChoiceRule", () => {
 
     it("Success case", () => {
-        const rule0 = new RuleFactory<string, DummyStringEnv>()
-            .choice(c => c
-                .or(r => r.seqEqual("def"))
-            );
-        const res0: MatchResult<string, DummyStringEnv> = rule0.match(0, "abc", getDummyStringEnv());
+        const rule0 = new ChoiceRule(
+            [],
+            new RuleFactory<string, DummyStringEnv>(),
+            null
+        )
+            .or(r => r.seqEqual("def"));
+        const res0 = rule0.match(0, "abc", getDummyStringEnv());
         void res0;
 
         const rule1 = rule0
@@ -39,7 +42,7 @@ describe("Test ChoiceRule", () => {
                     }
                 ))
             );
-        const res1: MatchResult<string | number, DummyStringEnv> = rule1.match(0, "abc", getDummyStringEnv());
+        const res1 = rule1.match(0, "abc", getDummyStringEnv());
         void res1;
 
         const rule2 = rule1
@@ -53,7 +56,7 @@ describe("Test ChoiceRule", () => {
                     }
                 ))
             );
-        const res2: MatchResult<string | number | string[], DummyStringEnv> = rule2.match(0, "abc", getDummyStringEnv());
+        const res2 = rule2.match(0, "abc", getDummyStringEnv());
         void res2;
     });
 
@@ -75,7 +78,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -98,7 +101,7 @@ describe("Test ChoiceRule", () => {
                 .or(() => new SeqEqualRule("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -121,7 +124,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             ));
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -144,7 +147,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -167,7 +170,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual(["g", "h", "i"]))
             );
 
-        const result: MatchResult<string[], DummyStringArrayEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -189,7 +192,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -211,7 +214,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -233,7 +236,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });

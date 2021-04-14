@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult } from "../core";
+import { BaseEnv } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -32,7 +32,7 @@ describe("Test RefRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .ref(r => r.seqEqual("abc"));
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -50,7 +50,7 @@ describe("Test RefRule", () => {
             env,
         } as const;
 
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -68,7 +68,7 @@ describe("Test RefRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .ref(r => r.seqEqual("abc"));
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -86,7 +86,7 @@ describe("Test RefRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .ref(r => r.seqEqual("abc"));
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -103,7 +103,7 @@ describe("Test RefRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .ref(r => r.seqEqual("abc"));
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -120,7 +120,7 @@ describe("Test RefRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc rule>")
             .ref(r => r.seqEqual("abc"));
-        const result: MatchResult<string | null, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

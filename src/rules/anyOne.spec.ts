@@ -32,7 +32,7 @@ describe("Test AnyOneRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .anyOne();
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -70,7 +70,7 @@ describe("Test AnyOneRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .anyOne();
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

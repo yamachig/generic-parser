@@ -4,19 +4,19 @@ import { SequenceRule } from "./sequence";
 
 export class ChoiceRule<
     TTarget extends UnknownTarget,
-    TRules extends UnknownRule<TTarget>[],
+    TValue,
     TPrevEnv extends BaseEnv<TTarget, BasePos>,
     TRuleFactory extends RuleFactory<TTarget, TPrevEnv>,
 > extends Rule<
     TTarget,
-    ValueOfRule<TRules[(keyof TRules) & number]>,
+    TValue,
     TPrevEnv,
     Empty
 > {
     public readonly classSignature = "ChoiceRule" as const;
 
     public constructor(
-        public rules: TRules,
+        public rules: UnknownRule<TTarget>[],
         public factory: TRuleFactory,
         name: string | null = null,
     ) {
@@ -28,7 +28,7 @@ export class ChoiceRule<
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
-        ValueOfRule<TRules[(keyof TRules) & number]>,
+        TValue,
         TPrevEnv
     > {
         for (const rule of this.rules) {
@@ -36,7 +36,7 @@ export class ChoiceRule<
             if (result.ok) return {
                 ok: true,
                 nextPos: result.nextPos,
-                value: result.value as ValueOfRule<TRules[(keyof TRules) & number]>,
+                value: result.value as TValue,
                 env,
             };
         }
@@ -56,7 +56,7 @@ export class ChoiceRule<
         ruleOrFunc: TRuleOrFunc,
     ): ChoiceRule<
         TTarget,
-        [...TRules, ConvertedRuleOf<TRuleOrFunc, TRuleFactory>],
+        TValue | ValueOfRule<ConvertedRuleOf<TRuleOrFunc, TRuleFactory>>,
         TPrevEnv,
         TRuleFactory
     > {
@@ -76,10 +76,10 @@ export class ChoiceRule<
     public orSequence<
         TRule extends UnknownRule<TTarget>,
     >(
-        immediateFunc: (emptySequence: SequenceRule<TTarget, [], undefined, TPrevEnv, Empty, "Empty", TRuleFactory>) => TRule,
+        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty", TRuleFactory>) => TRule,
     ): ChoiceRule<
         TTarget,
-        [...TRules, TRule],
+        TValue | ValueOfRule<TRule>,
         TPrevEnv,
         TRuleFactory
     >
@@ -93,7 +93,7 @@ export class ChoiceRule<
         );
         return this.or(rule) as unknown as ChoiceRule<
             TTarget,
-            [...TRules, TRule],
+            TValue | ValueOfRule<TRule>,
             TPrevEnv,
             TRuleFactory
         >;

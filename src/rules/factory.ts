@@ -1,6 +1,6 @@
 import { AssertRule } from "./assert";
 import { AssertNotRule } from "./assertNot";
-import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc } from "../core";
+import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueRule, ValueOfRule, AddEnvOfRule, PrevEnvOfRule } from "../core";
 import { NextIsRule } from "./nextIs";
 import { NextIsNotRule } from "./nextIsNot";
 import { OneOfRule } from "./oneOf";
@@ -33,8 +33,8 @@ export class RuleFactory<
         ruleOrFunc: RuleOrFunc<TRule, this>,
         func: (env: AddActionForRule<TRule>) => TValue,
     ):
-        ActionRule<
-            TRule,
+        ValueRule<
+            TTarget,
             TValue
         >
     {
@@ -50,7 +50,10 @@ export class RuleFactory<
 
     public anyOne(
     ):
-        AnyOneRule<TTarget, TPrevEnv>
+        ValueRule<
+            TTarget,
+            ItemOf<TTarget>
+            >
     {
         return new AnyOneRule(
             this.name,
@@ -60,7 +63,10 @@ export class RuleFactory<
     public assert(
         func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
     ):
-        AssertRule<TTarget, TPrevEnv>
+        ValueRule<
+            TTarget,
+            undefined
+        >
     {
         return new AssertRule(
             func,
@@ -71,7 +77,10 @@ export class RuleFactory<
     public assertNot(
         func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
     ):
-        AssertNotRule<TTarget, TPrevEnv>
+        ValueRule<
+            TTarget,
+            undefined
+        >
     {
         return new AssertNotRule(
             func,
@@ -85,9 +94,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        AsSliceRule<
-            TSlice,
-            TRule
+        ValueRule<
+            TTarget,
+            TSlice
         >
     {
         return new AsSliceRule(
@@ -102,9 +111,12 @@ export class RuleFactory<
     public choice<
         TRule extends Rule<TTarget, unknown, TPrevEnv, Empty>,
     >(
-        immediateFunc: (emptySequence: ChoiceRule<TTarget, [], TPrevEnv, this>) => TRule,
+        immediateFunc: (emptySequence: ChoiceRule<TTarget, never, TPrevEnv, this>) => TRule,
     ):
-        TRule
+        ValueRule<
+            TTarget,
+            ValueOfRule<TRule>
+        >
     {
         return immediateFunc(
             new ChoiceRule(
@@ -112,7 +124,10 @@ export class RuleFactory<
                 this,
                 this.name
             ),
-        );
+        ) as ValueRule<
+            TTarget,
+            ValueOfRule<TRule>
+        >;
     }
 
     public nextIs<
@@ -120,8 +135,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        NextIsRule<
-            TRule
+        ValueRule<
+            TTarget,
+            undefined
         >
     {
         return new NextIsRule(
@@ -138,8 +154,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        NextIsNotRule<
-            TRule
+        ValueRule<
+            TTarget,
+            undefined
         >
     {
         return new NextIsNotRule(
@@ -156,16 +173,18 @@ export class RuleFactory<
     >(
         items: WithIncludes<TItem>,
     ):
-        OneOfRule<
-            TItem,
-            TTarget & ArrayLike<TItem>,
-            TPrevEnv
+        ValueRule<
+            TTarget,
+            TItem
         >
     {
         return new OneOfRule(
             items,
             this.name,
-        );
+        ) as ValueRule<
+            TTarget,
+            TItem
+        >;
     }
 
     public oneOrMore<
@@ -173,8 +192,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        OneOrMoreRule<
-            TRule
+        ValueRule<
+            TTarget,
+            ValueOfRule<TRule>[]
         >
     {
         return new OneOrMoreRule(
@@ -191,8 +211,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        RefRule<
-            TRule
+        ValueRule<
+            TTarget,
+            ValueOfRule<TRule>
         >
     {
         return new RefRule(
@@ -209,20 +230,31 @@ export class RuleFactory<
     >(
         sequence: TValue,
     ):
-        SeqEqualRule<TTarget & ArrayLike<ItemOf<TValue>>, TValue, TPrevEnv>
+        ValueRule<
+            TTarget,
+            TValue
+        >
     {
         return new SeqEqualRule(
             sequence,
             this.name,
-        );
+        ) as ValueRule<
+            TTarget,
+            TValue
+        >;
     }
 
     public sequence<
         TRule extends UnknownRule<TTarget>,
     >(
-        immediateFunc: (emptySequence: SequenceRule<TTarget, [], undefined, TPrevEnv, Empty, "Empty", this>) => TRule,
+        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty", this>) => TRule,
     ):
-        TRule
+        Rule<
+            TTarget,
+            ValueOfRule<TRule>,
+            PrevEnvOfRule<TRule>,
+            AddEnvOfRule<TRule>
+        >
     {
         return immediateFunc(
             new SequenceRule(
@@ -230,7 +262,12 @@ export class RuleFactory<
                 this,
                 this.name,
             ),
-        );
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule>,
+            PrevEnvOfRule<TRule>,
+            AddEnvOfRule<TRule>
+        >;
     }
 
     public zeroOrMore<
@@ -238,8 +275,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ZeroOrMoreRule<
-            TRule
+        ValueRule<
+            TTarget,
+            ValueOfRule<TRule>[]
         >
     {
         return new ZeroOrMoreRule(
@@ -256,8 +294,9 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ZeroOrOneRule<
-            TRule
+        ValueRule<
+            TTarget,
+            ValueOfRule<TRule> | null
         >
     {
         return new ZeroOrOneRule(

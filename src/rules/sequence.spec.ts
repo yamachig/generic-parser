@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, Empty, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
 import { RuleFactory } from "./factory";
 import { SeqEqualRule } from "./seqEqual";
 import { SequenceRule } from "./sequence";
@@ -34,72 +34,29 @@ describe("Test SequenceRule", () => {
             b: "abc",
         };
 
-        const rule0 = new RuleFactory<string, DummyStringEnv>()
-            .sequence(s => {
-                const _s: SequenceRule<
-                    string,
-                    [],
-                    undefined,
-                    DummyStringEnv,
-                    Empty,
-                    "Empty",
-                    RuleFactory<string, DummyStringEnv>
-                > = s;
-                void _s;
-                return s.and(r => {
-                    const _r: RuleFactory<
-                        string,
-                        DummyStringEnv
-                    > = r;
-                    void _r;
-                    return r.seqEqual("abc");
-                }, "a");
-            });
-        const res0: MatchResult<
-            string,
-            DummyStringEnv & {
-                a: string,
-            }
-        > = rule0.match(0, "abc", getDummyStringEnv());
+        const rule0 = new SequenceRule(
+            [],
+            new RuleFactory<string, DummyStringEnv>(),
+            null,
+        ).and(r => {
+            return r.seqEqual("abc");
+        }, "a");
+        const res0 = rule0.match(0, "abc", getDummyStringEnv());
         void res0;
 
         const rule1 = rule0
             .and(r => {
-                const _r: RuleFactory<
-                    string,
-                    DummyStringEnv & {
-                        a: string;
-                    }
-                > = r;
-                void _r;
                 return r.seqEqual("abc");
             });
-        const res1: MatchResult<
-            readonly [string, string],
-            DummyStringEnv & {
-                a: string,
-            }
-        > = rule1.match(0, "abc", getDummyStringEnv());
+        const res1 = rule1.match(0, "abc", getDummyStringEnv());
         void res1;
 
         const rule2 = rule1
             .and(r => {
-                const _r: RuleFactory<
-                    string,
-                    DummyStringEnv & {
-                        a: string;
-                    }
-                > = r;
-                void _r;
                 return r.seqEqual("abc");
             }, "b");
 
-        const res2: MatchResult<
-            readonly [string, string, string],
-            DummyStringEnv & {
-                a: string,
-                b: string,
-            }> = rule2.match(0, "abc", getDummyStringEnv());
+        const res2 = rule2.match(0, "abc", getDummyStringEnv());
         void res2;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -127,7 +84,7 @@ describe("Test SequenceRule", () => {
         const expected = {
             ok: true,
             nextPos: 12,
-            value: ["abc", "def", "ghi"],
+            value: ["abc", "def", "ghi"] as [string, string, string],
             env,
         } as const;
 
@@ -142,10 +99,7 @@ describe("Test SequenceRule", () => {
                 .or(r => r.seqEqual("def"))
             );
 
-        const result: MatchResult<
-            readonly [string, string, string] | string,
-            DummyStringEnv
-        > = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
     });

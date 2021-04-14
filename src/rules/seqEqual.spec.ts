@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 
@@ -33,7 +33,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -52,7 +52,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -71,7 +71,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string[], DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -90,7 +90,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string[], DummyStringArrayEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringArrayEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -110,7 +110,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -129,7 +129,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<ArrayLike<string>, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -148,7 +148,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string[], DummyStringArrayEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<ArrayLike<string>, DummyStringArrayEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -166,7 +166,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -184,7 +184,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -202,7 +202,7 @@ describe("Test SeqEqualRule", () => {
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc rule>")
             .seqEqual(sequence);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
