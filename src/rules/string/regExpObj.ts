@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, MatchResult, Rule } from "../common";
+import { BaseEnv, BasePos, Empty, MatchResult, Rule } from "../../core";
 
 export class RegExpObjRule<
     TPrevEnv extends BaseEnv<string, BasePos>

@@ -1,4 +1,4 @@
-import { BasePos } from "../common";
+import { BasePos } from "../../core";
 
 export interface StringPos extends BasePos {
     line: number; // 1-based

@@ -1,8 +1,6 @@
 import { RuleFactory } from "./factory";
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule } from "./common";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, ConvertedRuleOf, convertRuleOrFunc } from "../core";
 import { ActionRule } from "./action";
-import { OrigRuleOf, RuleOrFunc } from "./ruleFunc";
-import { ConvertedRuleOf, convertRuleOrFunc } from "./lazyRule";
 
 export interface RuleStruct<
     TRule extends UnknownRule<UnknownTarget>,

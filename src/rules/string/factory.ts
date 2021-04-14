@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos } from "../common";
+import { BaseEnv, BasePos } from "../../core";
 import { RuleFactory } from "../factory";
 import { RegExpRule } from "./regExp";
 import { RegExpObjRule } from "./regExpObj";

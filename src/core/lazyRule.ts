@@ -1,5 +1,7 @@
-import { AddEnvOfRule, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, ValueOfRule } from "./common";
+import { MatchResult } from "./result";
+import { AddEnvOfRule, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, ValueOfRule } from "./rule";
 import { RuleFunc, RuleOrFunc } from "./ruleFunc";
+import { UnknownTarget } from "./target";
 
 export type ConvertedRuleOf<
     TRuleOrFunc extends RuleOrFunc<UnknownRule<UnknownTarget>, TFactory>,

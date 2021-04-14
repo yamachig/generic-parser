@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { SeqEqualRule } from "./seqEqual";
-import { BaseEnv, MatchResult } from "./common";
+import { BaseEnv, MatchResult } from "../core";
 import { RuleFactory } from "./factory";
 import { stringOffsetToPos, StringPos } from "./string/env";
 

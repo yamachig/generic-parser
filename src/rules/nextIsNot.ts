@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget } from "./common";
+import { Empty, MatchResult, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget } from "../core";
 
 export class NextIsNotRule<
     TRule extends UnknownRule<UnknownTarget>,

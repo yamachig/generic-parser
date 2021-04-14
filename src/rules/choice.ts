@@ -1,7 +1,5 @@
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos } from "./common";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc } from "../core";
 import { RuleFactory } from "./factory";
-import { ConvertedRuleOf, convertRuleOrFunc } from "./lazyRule";
-import { RuleOrFunc } from "./ruleFunc";
 import { SequenceRule } from "./sequence";
 
 export class ChoiceRule<

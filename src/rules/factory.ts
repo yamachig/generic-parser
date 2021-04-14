@@ -1,6 +1,6 @@
 import { AssertRule } from "./assert";
 import { AssertNotRule } from "./assertNot";
-import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf } from "./common";
+import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc } from "../core";
 import { NextIsRule } from "./nextIs";
 import { NextIsNotRule } from "./nextIsNot";
 import { OneOfRule } from "./oneOf";
@@ -11,8 +11,6 @@ import { SequenceRule } from "./sequence";
 import { ZeroOrMoreRule } from "./zeroOrMore";
 import { ZeroOrOneRule } from "./zeroOrOne";
 import { RefRule } from "./ref";
-import { RuleOrFunc } from "./ruleFunc";
-import { convertRuleOrFunc } from "./lazyRule";
 import { AnyOneRule } from "./anyOne";
 import { AsSliceRule } from "./asSlice";
 import { ChoiceRule } from "./choice";

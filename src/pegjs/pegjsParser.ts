@@ -3,7 +3,7 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { BaseEnv, Location, ValueRule } from "../rules/common";
+import { BaseEnv, Location, ValueRule } from "../core";
 import { stringOffsetToPos, StringPos } from "../rules/string/env";
 import { StringRuleFactory } from "../rules/string/factory";
 import peg from "../pegjs/pegjsTypings/pegjs";

@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, MatchResult, Rule, WithIncludes } from "./common";
+import { BaseEnv, BasePos, Empty, MatchResult, Rule, WithIncludes } from "../core";
 
 export class OneOfRule<
     TItem,

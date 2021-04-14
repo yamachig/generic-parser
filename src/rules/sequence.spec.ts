@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, Empty, MatchResult } from "./common";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, Empty, MatchResult } from "../core";
 import { RuleFactory } from "./factory";
 import { SeqEqualRule } from "./seqEqual";
 import { SequenceRule } from "./sequence";

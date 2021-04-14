@@ -41,7 +41,7 @@ const util = peg!.util;
 const ast = peg!.ast;
 `.trimStart(),
         });
-        fs.writeFileSync(path.join(__dirname, "temp_grammar.ts"), code, { encoding: "utf-8" });
+        fs.writeFileSync(path.join(__dirname, "temp_grammar.ts.txt"), code, { encoding: "utf-8" });
     });
 
 });

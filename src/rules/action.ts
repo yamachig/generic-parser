@@ -1,4 +1,4 @@
-import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule } from "./common";
+import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule } from "../core";
 
 export class ActionRule<
     TRule extends UnknownRule<UnknownTarget>,

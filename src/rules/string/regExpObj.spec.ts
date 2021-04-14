@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult } from "../common";
+import { BaseEnv, MatchResult } from "../../core";
 import { stringOffsetToPos, StringPos } from "./env";
 import { StringRuleFactory } from "./factory";
 
