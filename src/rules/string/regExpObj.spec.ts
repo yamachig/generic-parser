@@ -1,7 +1,6 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult } from "../../core";
-import { stringOffsetToPos, StringPos } from "./env";
-import { StringRuleFactory } from "./factory";
+import { BaseEnv, MatchResult, stringOffsetToPos, StringPos } from "../../core";
+import { RuleFactory } from "../factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
@@ -24,7 +23,7 @@ describe("Test RegExpObjRule", () => {
         } as const;
         const expectedMatchedString = "abcde";
 
-        const rule = new StringRuleFactory<DummyStringEnv>()
+        const rule = new RuleFactory<string, DummyStringEnv>()
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(pos, text, env);
 
@@ -44,7 +43,7 @@ describe("Test RegExpObjRule", () => {
         } as const;
         const expectedMatchedString = "abcde";
 
-        const rule = new StringRuleFactory<DummyStringEnv>()
+        const rule = new RuleFactory<string, DummyStringEnv>()
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(pos, text, env);
 
@@ -63,7 +62,7 @@ describe("Test RegExpObjRule", () => {
             expected: "/^a.c.e/",
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>()
+        const rule = new RuleFactory<string, DummyStringEnv>()
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(pos, text, env);
 
@@ -81,7 +80,8 @@ describe("Test RegExpObjRule", () => {
             expected: "<a.c.e rule>",
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>("<a.c.e rule>")
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .withName("<a.c.e rule>")
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(pos, text, env);
 

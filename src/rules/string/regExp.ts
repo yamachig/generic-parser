@@ -1,7 +1,7 @@
-import { BaseEnv, BasePos, Empty, MatchResult, Rule } from "../../core";
+import { BaseEnv, BasePos, Empty, MatchResult, Rule, UnknownTarget } from "../../core";
 
 export class RegExpRule<
-    TPrevEnv extends BaseEnv<string, BasePos>
+    TPrevEnv extends BaseEnv<UnknownTarget, BasePos>
 > extends Rule<
     string,
     string,

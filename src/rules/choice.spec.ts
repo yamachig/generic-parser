@@ -1,8 +1,7 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, stringOffsetToPos, StringPos } from "../core";
 import { SeqEqualRule } from "./seqEqual";
 import { RuleFactory } from "./factory";
-import { stringOffsetToPos, StringPos } from "./string/env";
 import { ChoiceRule } from "./choice";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");

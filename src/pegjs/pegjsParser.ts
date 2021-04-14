@@ -3,11 +3,10 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { BaseEnv, Location, ValueRule } from "../core";
-import { stringOffsetToPos, StringPos } from "../rules/string/env";
-import { StringRuleFactory } from "../rules/string/factory";
+import { BaseEnv, Location, ValueRule, stringOffsetToPos, StringPos } from "../core";
 import peg from "../pegjs/pegjsTypings/pegjs";
 import pegjs from "../pegjs/optionalPegjs";
+import { RuleFactory } from "src/rules/factory";
 
 export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Grammar => {
     const result = Grammar.match(
@@ -179,7 +178,7 @@ const initializer = (options: peg.parser.IOptions) => {
     };
 };
 
-const factory = new StringRuleFactory<Env>();
+const factory = new RuleFactory<string, Env>();
 
 // * |// ---- Syntactic Grammar -----
 

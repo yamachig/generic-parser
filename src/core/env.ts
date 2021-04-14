@@ -7,6 +7,11 @@ export interface BasePos {
     offset: number; // 0-based
 }
 
+export interface StringPos extends BasePos {
+    line: number; // 1-based
+    column: number; // 1-based
+}
+
 export interface Location<TPos extends BasePos> {
     start: TPos,
     end: TPos, // open-ended
@@ -23,6 +28,17 @@ export const arrayLikeOffsetToPos =
     (_target: UnknownTarget, offset: number): BasePos => {
         return {
             offset,
+        };
+    };
+
+export const stringOffsetToPos =
+    (target: string, offset: number): StringPos => {
+        const beforeStr = target.slice(0, offset);
+        const lines = beforeStr.split(/\r?\n/g);
+        return {
+            offset,
+            line: lines.length,
+            column: lines[lines.length - 1].length + 1,
         };
     };
 

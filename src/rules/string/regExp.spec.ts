@@ -1,7 +1,6 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult } from "../../core";
-import { stringOffsetToPos, StringPos } from "./env";
-import { StringRuleFactory } from "./factory";
+import { BaseEnv, MatchResult, stringOffsetToPos, StringPos } from "../../core";
+import { RuleFactory } from "../factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
@@ -24,7 +23,7 @@ describe("Test RegExpRule", () => {
             env,
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>()
+        const rule = new RuleFactory<string, DummyStringEnv>()
             .regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
 
@@ -43,7 +42,7 @@ describe("Test RegExpRule", () => {
             env,
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>().regExp(regExp);
+        const rule = new RuleFactory<string, DummyStringEnv>().regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
 
         assert.deepStrictEqual(result, expected);
@@ -60,7 +59,7 @@ describe("Test RegExpRule", () => {
             expected: "/^a.c.e/",
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>().regExp(regExp);
+        const rule = new RuleFactory<string, DummyStringEnv>().regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
 
         assert.deepEqual(result, expected);
@@ -77,7 +76,8 @@ describe("Test RegExpRule", () => {
             expected: "<a.c.e rule>",
         } as const;
 
-        const rule = new StringRuleFactory<DummyStringEnv>("<a.c.e rule>")
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .withName("<a.c.e rule>")
             .regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
 

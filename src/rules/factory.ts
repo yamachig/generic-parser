@@ -14,6 +14,8 @@ import { RefRule } from "./ref";
 import { AnyOneRule } from "./anyOne";
 import { AsSliceRule } from "./asSlice";
 import { ChoiceRule } from "./choice";
+import { RegExpRule } from "./string/regExp";
+import { RegExpObjRule } from "./string/regExpObj";
 export class RuleFactory<
     TTarget extends UnknownTarget,
     TPrevEnv extends BaseEnv<TTarget, BasePos>,
@@ -304,6 +306,32 @@ export class RuleFactory<
                 ruleOrFunc,
                 this,
             ) as TRule,
+            this.name,
+        );
+    }
+
+    public regExp(
+        regExp: RegExp,
+    ):
+        RegExpRule<
+            TPrevEnv
+        >
+    {
+        return new RegExpRule(
+            regExp,
+            this.name,
+        );
+    }
+
+    public regExpObj(
+        regExp: RegExp,
+    ):
+        RegExpObjRule<
+            TPrevEnv
+        >
+    {
+        return new RegExpObjRule(
+            regExp,
             this.name,
         );
     }

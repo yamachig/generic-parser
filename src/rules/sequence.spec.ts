@@ -1,9 +1,8 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchResult, stringOffsetToPos, StringPos } from "../core";
 import { RuleFactory } from "./factory";
 import { SeqEqualRule } from "./seqEqual";
 import { SequenceRule } from "./sequence";
-import { stringOffsetToPos, StringPos } from "./string/env";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
