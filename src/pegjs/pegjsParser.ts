@@ -6,8 +6,8 @@ https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LIC
 import { BaseEnv, Location, ValueRule } from "generic-parser/rules/common";
 import { stringOffsetToPos, StringPos } from "generic-parser/rules/string/env";
 import { StringRuleFactory } from "generic-parser/rules/string/factory";
-import peg from "./pegjsTypings/pegjs";
-import pegjs from "./optionalPegjs";
+import peg from "generic-parser/pegjs/pegjsTypings/pegjs";
+import pegjs from "generic-parser/pegjs/optionalPegjs";
 
 export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Grammar => {
     const result = Grammar.match(
@@ -28,7 +28,7 @@ const rootEnv: BaseEnv<string, StringPos> = {
 
 type Env = typeof rootEnv & ReturnType<typeof initializer>;
 
-const defaultOptions: peg.parser.IOptions = {
+export const defaultOptions: peg.parser.IOptions = {
     reservedWords: [
 
         // Keyword

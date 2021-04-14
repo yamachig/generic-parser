@@ -3,6 +3,8 @@ Based on PEG.js released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
+/* eslint-disable @typescript-eslint/no-namespace */
+
 export = generatedparser;
 
 declare namespace generatedparser {
@@ -41,7 +43,7 @@ declare namespace generatedparser {
             result?: string;
             location: SourceLocation;
 
-        } );
+        } ): unknown;
 
     }
 

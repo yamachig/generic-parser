@@ -32,7 +32,15 @@ describe("Test astToCode", () => {
         // const origAstStr = inspect(origAst, undefined, null);
         // fs.writeFileSync(path.join(__dirname, "temp_orig_ast.txt"), origAstStr, { encoding: "utf-8" });
 
-        const code = grammarToCode(grammar);
+        const code = grammarToCode(grammar, {
+            header: `
+import peg from "generic-parser/pegjs/optionalPegjs";
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const util = peg!.util;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const ast = peg!.ast;
+`.trimStart(),
+        });
         fs.writeFileSync(path.join(__dirname, "temp_grammar.ts"), code, { encoding: "utf-8" });
     });
 

@@ -3,10 +3,12 @@ Based on PEG.js released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
+/* eslint-disable @typescript-eslint/no-namespace */
+
 import gp from "./generated-parser";
 
 export = peg;
-export as namespace peg;
+// export as namespace peg;
 
 declare namespace peg {
 
@@ -281,37 +283,38 @@ declare namespace peg {
             interface IVisitorMap<U = void> {
 
                 [ key: string ]: unknown;
-                grammar?<R = U>( node: Grammar, ...args ): R;
-                initializer?<R = U>( node: Initializer, ...args ): R;
-                rule?<R = U>( node: Rule, ...args ): R;
-                named?<R = U>( node: Named, ...args ): R;
-                choice?<R = U>( node: ChoiceExpression, ...args ): R;
-                action?<R = U>( node: ActionExpression, ...args ): R;
-                sequence?<R = U>( node: SequenceExpression, ...args ): R;
-                labeled?<R = U>( node: LabeledExpression, ...args ): R;
-                text?<R = U>( node: PrefixedExpression, ...args ): R;
-                simple_and?<R = U>( node: PrefixedExpression, ...args ): R;
-                simple_not?<R = U>( node: PrefixedExpression, ...args ): R;
-                optional?<R = U>( node: SuffixedExpression, ...args ): R;
-                zero_or_more?<R = U>( node: SuffixedExpression, ...args ): R;
-                one_or_more?<R = U>( node: SuffixedExpression, ...args ): R;
-                literal?<R = U>( node: LiteralMatcher, ...args ): R;
-                class?<R = U>( node: CharacterClassMatcher, ...args ): R;
-                any?<R = U>( node: AnyMatcher, ...args ): R;
-                rule_ref?<R = U>( node: RuleReferenceExpression, ...args ): R;
-                semantic_and?<R = U>( node: SemanticPredicateExpression, ...args ): R;
-                semantic_not?<R = U>( node: SemanticPredicateExpression, ...args ): R;
-                group?<R = U>( node: GroupExpression, ...args ): R;
+                grammar?<R = U>( node: Grammar, ...args: unknown[] ): R;
+                initializer?<R = U>( node: Initializer, ...args: unknown[] ): R;
+                rule?<R = U>( node: Rule, ...args: unknown[] ): R;
+                named?<R = U>( node: Named, ...args: unknown[] ): R;
+                choice?<R = U>( node: ChoiceExpression, ...args: unknown[] ): R;
+                action?<R = U>( node: ActionExpression, ...args: unknown[] ): R;
+                sequence?<R = U>( node: SequenceExpression, ...args: unknown[] ): R;
+                labeled?<R = U>( node: LabeledExpression, ...args: unknown[] ): R;
+                text?<R = U>( node: PrefixedExpression, ...args: unknown[] ): R;
+                simple_and?<R = U>( node: PrefixedExpression, ...args: unknown[] ): R;
+                simple_not?<R = U>( node: PrefixedExpression, ...args: unknown[] ): R;
+                optional?<R = U>( node: SuffixedExpression, ...args: unknown[] ): R;
+                zero_or_more?<R = U>( node: SuffixedExpression, ...args: unknown[] ): R;
+                one_or_more?<R = U>( node: SuffixedExpression, ...args: unknown[] ): R;
+                literal?<R = U>( node: LiteralMatcher, ...args: unknown[] ): R;
+                class?<R = U>( node: CharacterClassMatcher, ...args: unknown[] ): R;
+                any?<R = U>( node: AnyMatcher, ...args: unknown[] ): R;
+                rule_ref?<R = U>( node: RuleReferenceExpression, ...args: unknown[] ): R;
+                semantic_and?<R = U>( node: SemanticPredicateExpression, ...args: unknown[] ): R;
+                semantic_not?<R = U>( node: SemanticPredicateExpression, ...args: unknown[] ): R;
+                group?<R = U>( node: GroupExpression, ...args: unknown[] ): R;
 
             }
 
             interface IVisitor<R = unknown> {
 
-                ( node: ast.Object, ...args ): R;
+                ( node: ast.Object, ...args: unknown[] ): R;
 
             }
 
             class ASTVisitor implements IVisitorMap {
+                [key: string]: unknown;
 
                 visit: IVisitor;
 
@@ -466,6 +469,12 @@ declare namespace peg {
         class Session implements ISessionConfig {
 
             constructor( config?: ISessionConfig );
+            [key: string]: unknown;
+            opcodes?: IOpcodes | undefined;
+            parser?: GeneratedParser<ast.Grammar> | undefined;
+            passes?: IPassesMap | undefined;
+            visitor?: ast.visitor | undefined;
+            vm?: ISessionVM | undefined;
 
             parse( input: string, options?: parser.IOptions ): Grammar;
 
@@ -604,191 +613,5 @@ declare namespace peg {
      * Generate's a parser from the PEG.js grammar and returns the JavaScript based source.
      */
     function generate( grammar: string, options?: IBuildOptions<"source"> ): string;
-
-}
-/// <reference path="./api.d.ts" />
-
-declare module "pegjs" {
-
-    export default peg;
-
-}
-
-declare module "pegjs/lib/grammar-error" {
-
-    export default peg.GrammarError;
-
-}
-
-declare module "pegjs/lib/parser" {
-
-    export default peg.parser;
-
-}
-
-declare module "pegjs/lib/peg" {
-
-    export default peg;
-
-}
-
-declare module "pegjs/lib/ast" {
-
-    export default peg.ast;
-
-}
-
-declare module "pegjs/lib/ast/Grammar" {
-
-    export default peg.ast.Grammar;
-
-}
-
-declare module "pegjs/lib/ast/Node" {
-
-    export default peg.ast.Node;
-
-}
-
-declare module "pegjs/lib/ast/visitor" {
-
-    export default peg.ast.visitor;
-
-}
-
-declare module "pegjs/lib/compiler" {
-
-    export default peg.compiler;
-
-}
-
-declare module "pegjs/lib/compiler/index" {
-
-    export default peg.compiler;
-
-}
-
-declare module "pegjs/lib/compiler/opcodes" {
-
-    const opcodes: peg.compiler.IOpcodes;
-    export default opcodes;
-
-}
-
-declare module "pegjs/lib/compiler/session" {
-
-    export default peg.compiler.Session;
-
-}
-
-declare module "pegjs/lib/compiler/passes/calc-report-failures" {
-
-    export default peg.compiler.passes.generate.calcReportFailures;
-
-}
-
-declare module "pegjs/lib/compiler/passes/generate-bytecode" {
-
-    export default peg.compiler.passes.generate.generateBytecode;
-
-}
-
-declare module "pegjs/lib/compiler/passes/generate-js" {
-
-    export default peg.compiler.passes.generate.generateJS;
-
-}
-
-declare module "pegjs/lib/compiler/passes/inference-match-result" {
-
-    export default peg.compiler.passes.generate.inferenceMatchResult;
-
-}
-
-declare module "pegjs/lib/compiler/passes/remove-proxy-rules" {
-
-    export default peg.compiler.passes.transform.removeProxyRules;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-duplicate-labels" {
-
-    export default peg.compiler.passes.check.reportDuplicateLabels;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-duplicate-rules" {
-
-    export default peg.compiler.passes.check.reportDuplicateRules;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-incorrect-plucking" {
-
-    export default peg.compiler.passes.check.reportIncorrectPlucking;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-infinite-recursion" {
-
-    export default peg.compiler.passes.check.reportInfiniteRecursion;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-infinite-repetition" {
-
-    export default peg.compiler.passes.check.reportInfiniteRepetition;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-undefined-rules" {
-
-    export default peg.compiler.passes.check.reportUndefinedRules;
-
-}
-
-declare module "pegjs/lib/compiler/passes/report-unused-rules" {
-
-    export default peg.compiler.passes.check.reportUnusedRules;
-
-}
-
-declare module "pegjs/lib/util" {
-
-    export default peg.util;
-
-}
-
-declare module "pegjs/lib/util/arrays" {
-
-    const arrays: peg.IArrayUtils;
-    export default arrays;
-
-}
-
-declare module "pegjs/lib/util/index" {
-
-    export default peg.util;
-
-}
-
-declare module "pegjs/lib/util/js" {
-
-    const js: peg.IJavaScriptUtils;
-    export default js;
-
-}
-
-declare module "pegjs/lib/util/objects" {
-
-    const objects: peg.IObjectUtils;
-    export default objects;
-
-}
-
-declare module "pegjs/lib/util/vm" {
-
-    const vm: peg.compiler.ISessionVM;
-    export default vm;
 
 }
