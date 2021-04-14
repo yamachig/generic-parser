@@ -1,6 +1,6 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult, stringOffsetToPos, StringPos } from "../../core";
-import { RuleFactory } from "../factory";
+import { BaseEnv, MatchResult, stringOffsetToPos, StringPos } from "../core";
+import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
