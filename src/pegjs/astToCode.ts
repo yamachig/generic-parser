@@ -22,9 +22,9 @@ export const grammarToCode = (grammar: peg.Grammar, options: { header?: string }
 
 const getHeader = (): string => {
     return `
-import { BaseEnv, ValueRule } from "generic-parser/rules/common";
-import { stringOffsetToPos, StringPos } from "generic-parser/rules/string/env";
-import { StringRuleFactory } from "generic-parser/rules/string/factory";
+import { BaseEnv, ValueRule } from "generic-parser/src/rules/common";
+import { stringOffsetToPos, StringPos } from "generic-parser/src/rules/string/env";
+import { StringRuleFactory } from "generic-parser/src/rules/string/factory";
 
 const rootEnv: BaseEnv<string, StringPos> = {
     offsetToPos: stringOffsetToPos,

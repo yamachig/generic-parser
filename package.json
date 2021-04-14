@@ -27,8 +27,5 @@
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
-  },
-  "optionalDependencies": {
-    "pegjs-dev": "github:pegjs/pegjs#b7b87ea8"
   }
 }

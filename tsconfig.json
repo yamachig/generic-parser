@@ -16,7 +16,7 @@
       "outDir": "./lib",
       "rootDir": "./src",
       "paths": {
-        "generic-parser/*": ["./src/*"]
+        "generic-parser/*": ["./*"]
       },
 
       "skipLibCheck": true,

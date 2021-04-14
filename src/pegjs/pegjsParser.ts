@@ -3,11 +3,11 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { BaseEnv, Location, ValueRule } from "generic-parser/rules/common";
-import { stringOffsetToPos, StringPos } from "generic-parser/rules/string/env";
-import { StringRuleFactory } from "generic-parser/rules/string/factory";
-import peg from "generic-parser/pegjs/pegjsTypings/pegjs";
-import pegjs from "generic-parser/pegjs/optionalPegjs";
+import { BaseEnv, Location, ValueRule } from "generic-parser/src/rules/common";
+import { stringOffsetToPos, StringPos } from "generic-parser/src/rules/string/env";
+import { StringRuleFactory } from "generic-parser/src/rules/string/factory";
+import peg from "generic-parser/src/pegjs/pegjsTypings/pegjs";
+import pegjs from "generic-parser/src/pegjs/optionalPegjs";
 
 export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Grammar => {
     const result = Grammar.match(
