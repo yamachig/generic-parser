@@ -22,10 +22,10 @@ export class RuleFactory<
 > {
     public constructor(
         public name: string | null = null,
-    ) {}
+    ) { }
 
-    public withName(name: string): RuleFactory<TTarget, TPrevEnv> {
-        return new RuleFactory<TTarget, TPrevEnv>(name);
+    public withName(name: string): this {
+        return new RuleFactory<TTarget, TPrevEnv>(name) as this;
     }
 
     public action<

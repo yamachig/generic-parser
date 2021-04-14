@@ -7,6 +7,10 @@ export class StringRuleFactory<
     TPrevEnv extends BaseEnv<string, BasePos> = BaseEnv<string, BasePos>,
 > extends RuleFactory<string, TPrevEnv> {
 
+    public withName(name: string): this {
+        return new StringRuleFactory<TPrevEnv>(name) as this;
+    }
+
     public regExp(
         regExp: RegExp,
     ):
