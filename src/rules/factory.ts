@@ -73,7 +73,7 @@ export class RuleFactory<
     }
 
     public assert(
-        func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
+        func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => unknown,
     ):
         Rule<
             TTarget,
@@ -89,7 +89,7 @@ export class RuleFactory<
     }
 
     public assertNot(
-        func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
+        func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => unknown,
     ):
         Rule<
             TTarget,
