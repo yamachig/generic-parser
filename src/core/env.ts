@@ -22,6 +22,8 @@ export interface BaseEnv<
     TPos extends BasePos,
 > {
     offsetToPos(target: TTarget, offset: number): TPos;
+    registerCurrentLocation(location: Location<TPos>): void;
+    options: Record<string | number | symbol, unknown>;
 }
 
 export const arrayLikeOffsetToPos =
@@ -110,6 +112,8 @@ export const makeActionEnv = <
         return (target as unknown as Sliceable<unknown>)
             .slice(start, end) as SliceOf<TTarget>;
     };
+
+    env.registerCurrentLocation(location());
 
     return {
         ...env,

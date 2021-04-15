@@ -16,6 +16,7 @@ import { AsSliceRule } from "./asSlice";
 import { ChoiceRule } from "./choice";
 import { RegExpRule } from "./regExp";
 import { RegExpObjRule } from "./regExpObj";
+
 export class RuleFactory<
     TTarget extends UnknownTarget,
     TPrevEnv extends BaseEnv<TTarget, BasePos>,

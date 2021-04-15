@@ -6,15 +6,10 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    registerCurrentLocation: () => { /**/ },
+    options: {},
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
-
-// const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
-// const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
-//     [dummyStringArraySymbol]: "dummy",
-//     offsetToPos: arrayLikeOffsetToPos,
-// });
-// type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
 
 describe("Test ZeroOrOneRule", () => {
 

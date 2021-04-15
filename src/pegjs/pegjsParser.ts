@@ -3,7 +3,7 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { BaseEnv, Location, ValueRule, stringOffsetToPos, StringPos } from "../core";
+import { Location, ValueRule, stringOffsetToPos, StringPos } from "../core";
 import peg from "../pegjs/pegjsTypings/pegjs";
 import pegjs from "../pegjs/optionalPegjs";
 import { RuleFactory } from "src/rules/factory";
@@ -12,20 +12,13 @@ export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Gram
     const result = Grammar.match(
         0,
         text,
-        {
-            ...rootEnv,
-            ...initializer(options ?? defaultOptions),
-        },
+        initializer(options ?? defaultOptions),
     );
     if (result.ok) return result.value;
     throw new Error(`Expected ${result.expected} ${JSON.stringify(result)}`);
 };
 
-const rootEnv: BaseEnv<string, StringPos> = {
-    offsetToPos: stringOffsetToPos,
-};
-
-type Env = typeof rootEnv & ReturnType<typeof initializer>;
+type Env = ReturnType<typeof initializer>;
 
 export const defaultOptions: peg.parser.IOptions = {
     reservedWords: [
@@ -87,6 +80,25 @@ export const defaultOptions: peg.parser.IOptions = {
 const initializer = (options: peg.parser.IOptions) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
 
+    let currentLocation: Location<StringPos> = {
+        start: {
+            offset: 0,
+            line: 1,
+            column: 1,
+        },
+        end: {
+            offset: 0,
+            line: 1,
+            column: 1,
+        },
+    };
+    const registerCurrentLocation = (location: Location<StringPos>) => {
+        currentLocation = location;
+    };
+    const location = () => currentLocation;
+
+    const offsetToPos = stringOffsetToPos;
+
     // * |{
     // * |
     // * |    // Used as a shorthand property name for `LabeledExpression`
@@ -115,7 +127,7 @@ const initializer = (options: peg.parser.IOptions) => {
     // * |    // Helper to construct a new AST Node
     // * |    function createNode( type, details ) {
     // * |
-    // * |        const node = new ast.Node( type, location() );
+    // * |        const node = new ast.Node( type );
     // * |        if ( details === null ) return node;
     // * |
     // * |        util.extend( node, details );
@@ -123,9 +135,9 @@ const initializer = (options: peg.parser.IOptions) => {
     // * |
     // * |    }
 
-    const createNode = ( type: string, details: Record<string, unknown> = {}, location: Location<StringPos> ) => {
+    const createNode = ( type: string, details: Record<string, unknown> = {} ) => {
         if (pegjs === null) throw new Error("PEG.js not installed.");
-        const node = new pegjs.ast.Node( type, location );
+        const node = new pegjs.ast.Node( type, location() );
         if ( details === null ) return node;
         pegjs.util.extend( node, details );
         return pegjs.util.enforceFastProperties( node );
@@ -134,7 +146,7 @@ const initializer = (options: peg.parser.IOptions) => {
     // * |    // Used by `addComment` to store comments for the Grammar AST
     // * |    const comments = options.extractComments ? {} : null;
 
-    const comments = options.extractComments ? {} as Record<number, {text: string, multiline: boolean, location: Location<StringPos>}> : null;
+    const comments: peg.ast.CommentMap | null = options.extractComments ? {} : null;
 
     // * |    // Helper that collects all the comments to pass to the Grammar AST
     // * |    function addComment( text, multiline ) {
@@ -155,9 +167,9 @@ const initializer = (options: peg.parser.IOptions) => {
     // * |
     // * |    }
 
-    const addComment = ( text: string, multiline: boolean, location: Location<StringPos> ) => {
+    const addComment = ( text: string, multiline: boolean ) => {
         if ( options.extractComments && comments !== null ) {
-            const loc = location;
+            const loc = location();
             comments[ loc.start.offset ] = {
                 text: text,
                 multiline: multiline,
@@ -168,6 +180,8 @@ const initializer = (options: peg.parser.IOptions) => {
     };
 
     return {
+        offsetToPos,
+        registerCurrentLocation,
         options,
         pick,
         RESERVED_WORDS,
@@ -185,7 +199,7 @@ const factory = new RuleFactory<string, Env>();
 // * |Grammar
 // * |  = __ initializer:(@Initializer __)? rules:(@Rule __)+ {
 // * |
-// * |        return new ast.Grammar( initializer, rules, comments, location() );
+// * |        return new ast.Grammar( initializer, rules, comments );
 // * |
 // * |    }
 
@@ -222,8 +236,8 @@ const Initializer = factory
     .sequence(s => s
         .and(() => CodeBlock, "code")
         .and(() => EOS)
-        .action(({ code, createNode, location }) => {
-            return createNode( "initializer", { code }, location() ) as peg.ast.Initializer;
+        .action(({ code, createNode }) => {
+            return createNode( "initializer", { code } ) as peg.ast.Initializer;
         })
     )
     .abstract();
@@ -258,12 +272,12 @@ const Rule = factory
         .and(() => __)
         .and(() => Expression, "expression")
         .and(() => EOS)
-        .action(({ name, displayName, createNode, expression, location }) => {
+        .action(({ name, displayName, createNode, expression }) => {
             const newExpression = displayName ? createNode( "named", {
                 name: displayName,
                 expression: expression,
-            }, location() ) as peg.ast.Named : expression;
-            return createNode( "rule", { name, expression: newExpression }, location() ) as peg.ast.Rule;
+            } ) as peg.ast.Named : expression;
+            return createNode( "rule", { name, expression: newExpression } ) as peg.ast.Rule;
         })
     )
     .abstract();
@@ -298,11 +312,11 @@ const ChoiceExpression = factory
                     .and(() => ActionExpression)
                 )
             ), "tail")
-        .action(({ head, tail, createNode, location }) => {
+        .action(({ head, tail, createNode }) => {
             if ( tail.length === 0 ) return head;
             return createNode( "choice", {
                 alternatives: [ head ].concat( tail ),
-            }, location() ) as peg.ast.ChoiceExpression;
+            } ) as peg.ast.ChoiceExpression;
         })
     )
     .abstract();
@@ -326,9 +340,9 @@ const ActionExpression = factory
                     .and(() => CodeBlock)
                 )
             ), "code")
-        .action(({ expression, code, createNode, location }) => {
+        .action(({ expression, code, createNode }) => {
             if ( code === null ) return expression;
-            return createNode( "action", { expression, code }, location() ) as peg.ast.ActionExpression;
+            return createNode( "action", { expression, code } ) as peg.ast.ActionExpression;
         })
     )
     .abstract();
@@ -363,14 +377,14 @@ const SequenceExpression = factory
                 )
             )
         , "tail")
-        .action(({ head, tail, createNode, location }) => {
+        .action(({ head, tail, createNode }) => {
             let elements = [ head ];
             if ( tail.length === 0 ) {
                 if ( head.type !== "labeled" || !head.pick ) return head;
             } else {
                 elements = elements.concat( tail );
             }
-            return createNode( "sequence", { elements }, location() ) as peg.ast.SequenceExpression;
+            return createNode( "sequence", { elements } ) as peg.ast.SequenceExpression;
         })
     )
     .abstract();
@@ -397,16 +411,16 @@ const LabeledExpression = factory
             "label")
             .and(() => __)
             .and(() => PrefixedExpression, "expression")
-            .action(({ pick, label, expression, createNode, location }) => {
-                return createNode( "labeled", { pick, label, expression }, location() ) as peg.ast.LabeledExpression;
+            .action(({ pick, label, expression, createNode }) => {
+                return createNode( "labeled", { pick, label, expression } ) as peg.ast.LabeledExpression;
             })
         )
         .orSequence(s => s
             .and(() => LabelIdentifier, "label")
             .and(() => __)
             .and(() => PrefixedExpression, "expression")
-            .action(({ label, expression, createNode, location }) => {
-                return createNode( "labeled", { label, expression }, location() ) as peg.ast.LabeledExpression;
+            .action(({ label, expression, createNode }) => {
+                return createNode( "labeled", { label, expression } ) as peg.ast.LabeledExpression;
             })
         )
         .or(() => PrefixedExpression)
@@ -418,7 +432,7 @@ const LabeledExpression = factory
 // * |
 // * |        if ( RESERVED_WORDS[ name ] !== true ) return name;
 // * |
-// * |        error( `Label can't be a reserved word "${ name }".`, location() );
+// * |        error( `Label can't be a reserved word "${ name }".` );
 // * |
 // * |    }
 
@@ -427,9 +441,9 @@ const LabelIdentifier = factory
         .and(() => Identifier, "name")
         .and(() => __)
         .and(r => r.seqEqual(":"))
-        .action(({ RESERVED_WORDS, name, error, location }) => {
+        .action(({ RESERVED_WORDS, name, error }) => {
             if ( RESERVED_WORDS[ name ] !== true ) return name;
-            throw error( `Label can't be a reserved word "${ name }".`, location() );
+            throw error( `Label can't be a reserved word "${ name }".` );
         })
     )
     .abstract();
@@ -448,8 +462,8 @@ const PrefixedExpression = factory
             .and(() => PrefixedOperator, "operator")
             .and(() => __)
             .and(() => SuffixedExpression, "expression")
-            .action(({ operator, expression, createNode, location }) => {
-                return createNode( operator, { expression }, location() ) as peg.ast.PrefixedExpression;
+            .action(({ operator, expression, createNode }) => {
+                return createNode( operator, { expression } ) as peg.ast.PrefixedExpression;
             })
         )
         .or(() => SuffixedExpression)
@@ -492,8 +506,8 @@ const SuffixedExpression = factory
             .and(() => PrimaryExpression, "expression")
             .and(() => __)
             .and(() => SuffixedOperator, "operator")
-            .action(({ operator, expression, createNode, location }) => {
-                return createNode( operator, { expression }, location() ) as peg.ast.SuffixedExpression;
+            .action(({ operator, expression, createNode }) => {
+                return createNode( operator, { expression } ) as peg.ast.SuffixedExpression;
             })
         )
         .or(() => PrimaryExpression)
@@ -553,9 +567,9 @@ const PrimaryExpression = factory
             .and(() => Expression, "e")
             .and(() => __)
             .and(r => r.seqEqual(")"))
-            .action(({ e, createNode, location }) => {
+            .action(({ e, createNode }) => {
                 if ( e.type !== "labeled" && e.type !== "sequence" ) return e;
-                return createNode( "group", { expression: e }, location() ) as peg.ast.GroupExpression;
+                return createNode( "group", { expression: e } ) as peg.ast.GroupExpression;
             })
         )
     )
@@ -587,8 +601,8 @@ const RuleReferenceExpression = factory
                 )
             )
         )
-        .action(({ name, createNode, location }) => {
-            return createNode( "rule_ref", { name }, location() ) as peg.ast.RuleReferenceExpression;
+        .action(({ name, createNode }) => {
+            return createNode( "rule_ref", { name } ) as peg.ast.RuleReferenceExpression;
         })
     )
     .abstract();
@@ -605,8 +619,8 @@ const SemanticPredicateExpression = factory
         .and(() => SemanticPredicateOperator, "operator")
         .and(() => __)
         .and(() => CodeBlock, "code")
-        .action(({ operator, code, createNode, location }) => {
-            return createNode( operator, { code }, location() ) as peg.ast.SemanticPredicateExpression;
+        .action(({ operator, code, createNode }) => {
+            return createNode( operator, { code } ) as peg.ast.SemanticPredicateExpression;
         })
     )
     .abstract();
@@ -719,8 +733,8 @@ const MultiLineComment = factory
                 )
             ), "comment")
         .and(r => r.seqEqual("*/"))
-        .action(({ comment, addComment, location }) => {
-            addComment( comment, true, location() );
+        .action(({ comment, addComment }) => {
+            addComment( comment, true );
         })
     )
     .abstract();
@@ -751,8 +765,8 @@ const MultiLineCommentNoLineTerminator = factory
                 )
             ), "comment")
         .and(r => r.seqEqual("*/"))
-        .action(({ comment, addComment, location }) => {
-            addComment( comment, true, location() );
+        .action(({ comment, addComment }) => {
+            addComment( comment, true );
         })
     )
     .abstract();
@@ -775,8 +789,8 @@ const SingleLineComment = factory
                 )
             )
         ), "comment")
-        .action(({ comment, addComment, location }) => {
-            addComment( comment, false, location() );
+        .action(({ comment, addComment }) => {
+            addComment( comment, false );
         })
     )
     .abstract();
@@ -896,11 +910,11 @@ const LiteralMatcher = factory
     .sequence(s => s
         .and(() => StringLiteral, "value")
         .and(r => r.zeroOrOne(r => r.seqEqual("i")), "ignoreCase")
-        .action(({ value, ignoreCase, createNode, location }) => {
+        .action(({ value, ignoreCase, createNode }) => {
             return createNode( "literal", {
                 value: value,
                 ignoreCase: ignoreCase !== null,
-            }, location() ) as peg.ast.LiteralMatcher;
+            } ) as peg.ast.LiteralMatcher;
         })
     )
     .abstract();
@@ -1013,12 +1027,12 @@ const CharacterClassMatcher = factory
         .and(r => r.zeroOrMore(() => CharacterPart), "parts")
         .and(r => r.seqEqual("]"))
         .and(r => r.zeroOrOne(r => r.seqEqual("i")), "ignoreCase")
-        .action(({ inverted, parts, ignoreCase, createNode, location }) => {
+        .action(({ inverted, parts, ignoreCase, createNode }) => {
             return createNode( "class", {
                 parts: parts.filter( part => part !== "" ),
                 inverted: inverted !== null,
                 ignoreCase: ignoreCase !== null,
-            }, location() ) as peg.ast.CharacterClassMatcher;
+            } ) as peg.ast.CharacterClassMatcher;
         })
     )
     .abstract();
@@ -1272,8 +1286,8 @@ const HexDigit = factory
 const AnyMatcher = factory
     .sequence(s => s
         .and(r => r.seqEqual("."))
-        .action(({ createNode, location }) => {
-            return createNode( "any", undefined, location() ) as peg.ast.AnyMatcher;
+        .action(({ createNode }) => {
+            return createNode( "any", undefined ) as peg.ast.AnyMatcher;
         })
     )
     .abstract();

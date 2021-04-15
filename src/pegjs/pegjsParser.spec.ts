@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { parse } from "./pegjsParser";
+import { defaultOptions, parse } from "./pegjsParser";
 import { inspect } from "util";
 import fs from "fs";
 import path from "path";
@@ -71,7 +71,7 @@ num = strNum:$([0-9]+)
         if (pegjs === null) throw new Error("PEG.js not installed.");
         const source = fs.readFileSync(path.join(__dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
 
-        const targetAst = parse(source);
+        const targetAst = parse(source, defaultOptions);
         const targetAstStr = inspect(targetAst, undefined, null);
         fs.writeFileSync(path.join(__dirname, "temp_target_ast.txt"), targetAstStr, { encoding: "utf-8" });
 

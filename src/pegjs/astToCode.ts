@@ -1,6 +1,5 @@
 import peg from "./pegjsTypings/pegjs";
 // import pegjs from "./optionalPegjs";
-import ts from "typescript";
 
 
 export const grammarToCode = (grammar: peg.Grammar, options: { header?: string } = {}): string => {
@@ -22,17 +21,26 @@ export const grammarToCode = (grammar: peg.Grammar, options: { header?: string }
 
 const getHeader = (): string => {
     return `
-import { BaseEnv, ValueRule } from "generic-parser/lib/rules/common";
-import { stringOffsetToPos, StringPos } from "generic-parser/lib/rules/string/env";
-import { StringRuleFactory } from "generic-parser/lib/rules/string/factory";
+import { BaseEnv, ValueRule, stringOffsetToPos, StringPos } from "generic-parser/lib/rules/common";
+import { RuleFactory } from "generic-parser/lib/rules/factory";
 
-const rootEnv: BaseEnv<string, StringPos> = {
-    offsetToPos: stringOffsetToPos,
+let currentLocation: Location<StringPos> = {
+    start: {
+        offset: 0,
+        line: 1,
+        column: 1,
+    },
+    end: {
+        offset: 0,
+        line: 1,
+        column: 1,
+    },
 };
 
-type Env = typeof rootEnv & { options: Record<string | number | symbol, unknown> } & ReturnType<typeof initializer>;
+const location = () => currentLocation;
+let options: Record<string | number | symbol, unknown> = {};
 
-const factory = new StringRuleFactory<Env>();
+const factory = new RuleFactory<string, BaseEnv<string, StringPos>>();
 `.trimStart();
 };
 
@@ -42,7 +50,8 @@ const rules = {
 ${ruleNames.map(name => `${INDENTUNIT}${name}: $${name},`).join("\r\n")}
 };
 
-export const parse = (text: string, options: Record<string | number | symbol, unknown>) => {
+export const parse = (text: string, _options: Record<string | number | symbol, unknown>) => {
+${INDENTUNIT}options = _options;
 ${INDENTUNIT}let rule: ValueRule<string, unknown> = $${ruleNames[0]};
 ${INDENTUNIT}if ("startRule" in options) {
 ${INDENTUNIT}    rule = rules[options.startRule as keyof typeof rules];
@@ -51,8 +60,11 @@ ${INDENTUNIT}const result = rule.match(
 ${INDENTUNIT}${INDENTUNIT}0,
 ${INDENTUNIT}${INDENTUNIT}text,
 ${INDENTUNIT}${INDENTUNIT}{
-${INDENTUNIT}${INDENTUNIT}    ...rootEnv,
-${INDENTUNIT}${INDENTUNIT}    ...initializer(options),
+${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}offsetToPos: stringOffsetToPos,
+${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}registerCurrentLocation: location => {
+${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}currentLocation = location;
+${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}},
+${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}...initializer(options),
 ${INDENTUNIT}${INDENTUNIT}},
 ${INDENTUNIT});
 ${INDENTUNIT}if (result.ok) return result.value;
@@ -73,68 +85,12 @@ const assertNever = (value: never) => {
     throw new Error(`unexpected ${JSON.stringify(value)}`);
 };
 
-function *iterateIdentifierOfBinding(element: ts.ArrayBindingElement | ts.BindingElement): IterableIterator<ts.Identifier> {
-    if ("name" in element) {
-        const name = element.name;
-        if (ts.isIdentifier(name)) {
-            yield name;
-        } else {
-            for (const element of name.elements) {
-                yield* iterateIdentifierOfBinding(element);
-            }
-        }
-    }
-}
-
 const initializerToCode = (initializer?: peg.ast.Initializer): {code: string, addEnvNames: string[]} => {
-    const addEnvNames = ["options"];
-    if (initializer?.code) {
-        const tsSource = ts.createSourceFile(
-            "initializer.ts",
-            initializer.code,
-            ts.ScriptTarget.ES2015,
-        );
-        for (const statement of tsSource.statements) {
-            if (ts.isVariableStatement(statement)) {
-                for (const decl of statement.declarationList.declarations) {
-                    if ("elements" in decl.name) {
-                        for (const element of decl.name.elements) {
-                            for (const id of iterateIdentifierOfBinding(element)) {
-                                const name = id.escapedText as string;
-                                if (name) addEnvNames.push(name);
-                            }
-                        }
-                    } else {
-                        const name = decl.name.escapedText as string;
-                        if (name) addEnvNames.push(name);
-                    }
-                }
-            } else if (ts.isFunctionDeclaration(statement)) {
-                if (statement.name) {
-                    const name = statement.name.escapedText as string;
-                    if (name) addEnvNames.push(name);
-                }
-            } else if (ts.isClassDeclaration(statement)) {
-                if (statement.name) {
-                    const name = statement.name.escapedText as string;
-                    if (name) addEnvNames.push(name);
-                }
-            } else if (ts.isEnumDeclaration(statement)) {
-                const name = statement.name.escapedText as string;
-                if (name) addEnvNames.push(name);
-            }
-        }
-    }
     return {
         code: `
-const initializer = (options: Record<string | number | symbol, unknown>) => {
 ${initializer?.code ?? ""}
-${INDENTUNIT}return {
-${[...addEnvNames].map(name => `${INDENTUNIT}${INDENTUNIT}${name},`).join("\r\n")}
-${INDENTUNIT}};
-};
 `.replace(/^\r?\n/, ""),
-        addEnvNames,
+        addEnvNames: [],
     };
 };
 
@@ -367,7 +323,7 @@ const sequenceToCode = (expression: peg.ast.SequenceExpression, envNames: string
     const newAddEnvNames: string[] = [];
     retFragments.push(`${INDENTS}.sequence(c => c`);
     for (const e of expression.elements) {
-        const { code, addEnvNames } = sequenceElementToCode(e, pickExists, envNames, indent + 1);
+        const { code, addEnvNames } = sequenceElementToCode(e, pickExists, [...envNames, ...newAddEnvNames], indent + 1);
         retFragments.push(code);
         newAddEnvNames.push(...addEnvNames);
     }
