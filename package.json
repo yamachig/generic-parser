@@ -29,7 +29,8 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   },
-  "optionalDependencies": {
-    "pegjs-dev": "github:pegjs/pegjs#b7b87ea8"
+  "peerDependencies": {
+    "pegjs-dev": "https://github.com/pegjs/pegjs/tarball/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1",
+    "typescript": "^4"
   }
 }
