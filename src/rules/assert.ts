@@ -12,7 +12,7 @@ export class AssertRule<
     public readonly classSignature = "AssertRule" as const;
 
     public constructor(
-        public func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
+        public func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => unknown,
         name: string | null = null,
     ) {
         super(name);
