@@ -268,7 +268,7 @@ const literalToCode = (expression: peg.ast.LiteralMatcher, _envNames: string[], 
     const retFragments: string[] = [];
     if (expression.ignoreCase) {
         retFragments.push(`
-${INDENTS}.regExp(/${safeChar(JSON.stringify(expression.value).slice(1, -1)).replace(/[.+*?^$()[]{}|]/g, "\\$&")}/i)
+${INDENTS}.regExp(/${safeChar(JSON.stringify(expression.value).slice(1, -1).replace("\\\"", "\"")).replace(/[.+*?^$()[]{}|]/g, "\\$&")}/i)
     `.replace(/^\r?\n/, "").trimEnd());
     } else {
         retFragments.push(`
@@ -286,7 +286,7 @@ const classToCode = (expression: peg.ast.CharacterClassMatcher, _envNames: strin
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const inverted = expression.inverted ? "^" : "";
-    const parts = safeChar(expression.parts.map(p => (typeof p === "string" ? [p] : p).map(pp => JSON.stringify(pp).slice(1, -1).replace(/[.+*?^$()[]{}|]/g, "\\$&")).join("")).join(""));
+    const parts = safeChar(expression.parts.map(p => (typeof p === "string" ? [p] : p).map(pp => JSON.stringify(pp).slice(1, -1).replace("\\\"", "\"").replace(/[.+*?^$()[]{}|]/g, "\\$&")).join("")).join(""));
     const ignoreCase = expression.ignoreCase ? "i" : "";
     retFragments.push(`
 ${INDENTS}.regExp(/[${inverted}${parts}]/${ignoreCase})
