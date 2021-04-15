@@ -43,6 +43,7 @@ const util = peg!.util;
 const ast = peg!.ast;
 `.trimStart(),
             genericParserPath,
+            useSafeChar: true,
         });
         fs.writeFileSync(path.join(__dirname, "temp_grammar.ts"), code, { encoding: "utf-8" });
     });

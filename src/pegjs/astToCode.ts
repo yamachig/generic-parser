@@ -5,14 +5,14 @@ import ts from "typescript";
 const grammarToCodeDefaultOptions = {
     header: "",
     genericParserPath: "generic-parser/lib",
+    useSafeChar: false,
 };
+
+type Options = typeof grammarToCodeDefaultOptions;
 
 export const grammarToCode = (
     grammar: peg.Grammar,
-    _options?: {
-        header?: string,
-        genericParserPath?: string,
-    },
+    _options?: Partial<Options>,
 ): string => {
     const options = { ...grammarToCodeDefaultOptions, ..._options };
     const retFragments: string[] = [];
@@ -23,7 +23,12 @@ export const grammarToCode = (
     retFragments.push(initializer.code);
     const ruleNames: string[] = [];
     for (const rule of grammar.rules) {
-        const ruleCode = ruleToCode(rule, [...initializer.addEnvNames, "error", "expected", "location", "offset", "range", "text"], 0);
+        const ruleCode = ruleToCode(
+            rule,
+            [...initializer.addEnvNames, "error", "expected", "location", "offset", "range", "text"],
+            options,
+            0,
+        );
         retFragments.push(ruleCode);
         ruleNames.push(rule.name);
     }
@@ -67,10 +72,12 @@ ${INDENTUNIT}throw new Error(\`Expected \${result.expected} \${JSON.stringify(re
 
 const INDENTUNIT = "    ";
 
-const safeChar = (str: string) => {
-    return str.replace(/[\u007F-\uFFFF]/g, c => {
-        return "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0");
-    });
+const safeChar = (str: string, options: Options) => {
+    return options.useSafeChar
+        ? str.replace(/[\u007F-\uFFFF]/g, c => {
+            return "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0");
+        })
+        : str;
 };
 
 const assertNever = (value: never) => {
@@ -159,7 +166,7 @@ ${INDENTUNIT}};
     };
 };
 
-const ruleToCode = (rule: peg.ast.Rule, envNames: string[], indent: number): string => {
+const ruleToCode = (rule: peg.ast.Rule, envNames: string[], options: Options, indent: number): string => {
     const retFragments: string[] = [];
     retFragments.push(`export const $${rule.name} = factory`);
     let expression = rule.expression;
@@ -167,7 +174,7 @@ const ruleToCode = (rule: peg.ast.Rule, envNames: string[], indent: number): str
         retFragments.push(`${INDENTUNIT.repeat(indent + 1)}.withName("${expression.name}")`);
         expression = expression.expression;
     }
-    const { code } = expressionToCode(expression, envNames, indent + 1);
+    const { code } = expressionToCode(expression, envNames, options, indent + 1);
     retFragments.push(code);
     retFragments.push(`${INDENTUNIT.repeat(indent + 1)}.abstract()`);
     retFragments.push(`${INDENTUNIT.repeat(indent + 1)};`);
@@ -175,26 +182,26 @@ const ruleToCode = (rule: peg.ast.Rule, envNames: string[], indent: number): str
     return retFragments.join("\r\n");
 };
 
-const expressionToCode = (expression: peg.ast.Expression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const expressionToCode = (expression: peg.ast.Expression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     let result: {code: string, addEnvNames: string[]};
     if (expression.type === "action") {
-        result = actionToCode(expression, envNames, indent);
+        result = actionToCode(expression, envNames, options, indent);
     } else if (expression.type === "any") {
-        result = anyToCode(expression, envNames, indent);
+        result = anyToCode(expression, envNames, options, indent);
     } else if (expression.type === "choice") {
-        result = choiceToCode(expression, envNames, indent);
+        result = choiceToCode(expression, envNames, options, indent);
     } else if (expression.type === "class") {
-        result = classToCode(expression, envNames, indent);
+        result = classToCode(expression, envNames, options, indent);
     } else if (expression.type === "group") {
-        result = groupToCode(expression, envNames, indent);
+        result = groupToCode(expression, envNames, options, indent);
     } else if (expression.type === "literal") {
-        result = literalToCode(expression, envNames, indent);
+        result = literalToCode(expression, envNames, options, indent);
     } else if (expression.type === "optional" || expression.type === "zero_or_more" || expression.type === "one_or_more") {
-        result = suffixedToCode(expression, envNames, indent);
+        result = suffixedToCode(expression, envNames, options, indent);
     } else if (expression.type === "rule_ref") {
-        result = refToCode(expression, envNames, indent);
+        result = refToCode(expression, envNames, options, indent);
     } else if (expression.type === "semantic_and" || expression.type === "semantic_not") {
-        result = predicateToCode(expression, envNames, indent);
+        result = predicateToCode(expression, envNames, options, indent);
     } else if (expression.type === "sequence" || expression.type === "labeled") {
         const e: peg.ast.SequenceExpression =
             expression.type === "labeled"
@@ -203,19 +210,19 @@ const expressionToCode = (expression: peg.ast.Expression, envNames: string[], in
                     elements: [expression],
                     location: expression.location,
                 } : expression;
-        result = sequenceToCode(e, envNames, indent);
+        result = sequenceToCode(e, envNames, options, indent);
     } else if (expression.type === "simple_and" || expression.type === "simple_not" || expression.type === "text") {
-        result = prefixedToCode(expression, envNames, indent);
+        result = prefixedToCode(expression, envNames, options, indent);
     } else {
         throw assertNever(expression.type);
     }
     return result;
 };
 
-const actionToCode = (expression: peg.ast.ActionExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const actionToCode = (expression: peg.ast.ActionExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
-    const { code, addEnvNames } = expressionToCode(expression.expression, envNames, indent + 1);
+    const { code, addEnvNames } = expressionToCode(expression.expression, envNames, options, indent + 1);
     retFragments.push(`
 ${INDENTS}.action(r => r
 ${code}
@@ -230,7 +237,7 @@ ${INDENTS})
     };
 };
 
-const anyToCode = (_expression: peg.ast.AnyMatcher, _envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const anyToCode = (_expression: peg.ast.AnyMatcher, _envNames: string[], _options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     retFragments.push(`
@@ -242,14 +249,14 @@ ${INDENTS}.anyOne()
     };
 };
 
-const choiceToCode = (expression: peg.ast.ChoiceExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const choiceToCode = (expression: peg.ast.ChoiceExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     retFragments.push(`
 ${INDENTS}.choice(c => c
 ${expression.alternatives.map(e => `
 ${INDENTS}${INDENTUNIT}.or(r => r
-${expressionToCode(e, envNames, indent + 2).code}
+${expressionToCode(e, envNames, options, indent + 2).code}
 ${INDENTS}${INDENTUNIT})
 `.replace(/^\r?\n/, "").trimEnd()).join("\r\n")}
 ${INDENTS})
@@ -260,23 +267,30 @@ ${INDENTS})
     };
 };
 
-const groupToCode = (expression: peg.ast.GroupExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const groupToCode = (expression: peg.ast.GroupExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     return {
-        ...expressionToCode(expression.expression, envNames, indent),
+        ...expressionToCode(expression.expression, envNames, options, indent),
         addEnvNames: [],
     };
 };
 
-const literalToCode = (expression: peg.ast.LiteralMatcher, _envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const literalToCode = (expression: peg.ast.LiteralMatcher, _envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     if (expression.ignoreCase) {
+        const regExpSrc = safeChar(
+            JSON.stringify(expression.value)
+                .slice(1, -1)
+                .replace("\\\"", "\""),
+            options,
+        ).replace(/[.+*?^$()[]{}|]/g, "\\$&");
         retFragments.push(`
-${INDENTS}.regExp(/${safeChar(JSON.stringify(expression.value).slice(1, -1).replace("\\\"", "\"")).replace(/[.+*?^$()[]{}|]/g, "\\$&")}/i)
+${INDENTS}.regExp(/${regExpSrc}/i)
     `.replace(/^\r?\n/, "").trimEnd());
     } else {
+        const json = JSON.stringify(expression.value);
         retFragments.push(`
-${INDENTS}.seqEqual(${safeChar(JSON.stringify(expression.value))})
+${INDENTS}.seqEqual(${safeChar(json, options)})
 `.replace(/^\r?\n/, "").trimEnd());
 
     }
@@ -286,11 +300,24 @@ ${INDENTS}.seqEqual(${safeChar(JSON.stringify(expression.value))})
     };
 };
 
-const classToCode = (expression: peg.ast.CharacterClassMatcher, _envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const classToCode = (expression: peg.ast.CharacterClassMatcher, _envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const inverted = expression.inverted ? "^" : "";
-    const parts = safeChar(expression.parts.map(p => (typeof p === "string" ? [p] : p).map(pp => JSON.stringify(pp).slice(1, -1).replace("\\\"", "\"").replace(/[.+*?^$()[]{}|]/g, "\\$&")).join("")).join(""));
+    const parts = safeChar(
+        expression.parts.map(p =>
+            (typeof p === "string"
+                ? [p]
+                : p
+            ).map(pp =>
+                JSON.stringify(pp)
+                    .slice(1, -1)
+                    .replace("\\\"", "\"")
+                    .replace(/[.+*?^$()[]{}|]/g, "\\$&")
+            ).join("")
+        ).join(""),
+        options,
+    );
     const ignoreCase = expression.ignoreCase ? "i" : "";
     retFragments.push(`
 ${INDENTS}.regExp(/[${inverted}${parts}]/${ignoreCase})
@@ -301,7 +328,7 @@ ${INDENTS}.regExp(/[${inverted}${parts}]/${ignoreCase})
     };
 };
 
-const suffixedToCode = (expression: peg.ast.SuffixedExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const suffixedToCode = (expression: peg.ast.SuffixedExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const funcName =
@@ -314,7 +341,7 @@ const suffixedToCode = (expression: peg.ast.SuffixedExpression, envNames: string
                     : assertNever(expression.type);
     retFragments.push(`
 ${INDENTS}.${funcName}(r => r
-${expressionToCode(expression.expression, envNames, indent + 1).code}
+${expressionToCode(expression.expression, envNames, options, indent + 1).code}
 ${INDENTS})
 `.replace(/^\r?\n/, "").trimEnd());
     return {
@@ -323,7 +350,7 @@ ${INDENTS})
     };
 };
 
-const refToCode = (expression: peg.ast.RuleReferenceExpression, _envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const refToCode = (expression: peg.ast.RuleReferenceExpression, _envNames: string[], _options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     retFragments.push(`
@@ -335,7 +362,7 @@ ${INDENTS}.ref(() => $${expression.name})
     };
 };
 
-const predicateToCode = (expression: peg.ast.SemanticPredicateExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const predicateToCode = (expression: peg.ast.SemanticPredicateExpression, envNames: string[], _options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const funcName =
@@ -355,7 +382,7 @@ ${INDENTS}})
     };
 };
 
-const sequenceElementToCode = (expression: peg.ast.SuffixedExpression | peg.ast.LabeledExpression | peg.ast.PrefixedExpression | peg.ast.PrimaryExpression, pickExists: boolean, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const sequenceElementToCode = (expression: peg.ast.SuffixedExpression | peg.ast.LabeledExpression | peg.ast.PrefixedExpression | peg.ast.PrimaryExpression, pickExists: boolean, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const funcName =
@@ -369,7 +396,7 @@ const sequenceElementToCode = (expression: peg.ast.SuffixedExpression | peg.ast.
     const e = expression.type === "labeled" ? expression.expression : expression;
     retFragments.push(`
 ${INDENTS}.${funcName}(r => r
-${expressionToCode(e, envNames, indent + 1).code}
+${expressionToCode(e, envNames, options, indent + 1).code}
 ${INDENTS}${label})
 `.replace(/^\r?\n/, "").trimEnd());
     return {
@@ -381,14 +408,14 @@ ${INDENTS}${label})
     };
 };
 
-const sequenceToCode = (expression: peg.ast.SequenceExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const sequenceToCode = (expression: peg.ast.SequenceExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const pickExists = expression.elements.some(e => e.type === "labeled" && e.pick);
     const retFragments: string[] = [];
     const newAddEnvNames: string[] = [];
     retFragments.push(`${INDENTS}.sequence(c => c`);
     for (const e of expression.elements) {
-        const { code, addEnvNames } = sequenceElementToCode(e, pickExists, [...envNames, ...newAddEnvNames], indent + 1);
+        const { code, addEnvNames } = sequenceElementToCode(e, pickExists, [...envNames, ...newAddEnvNames], options, indent + 1);
         retFragments.push(code);
         newAddEnvNames.push(...addEnvNames);
     }
@@ -399,7 +426,7 @@ const sequenceToCode = (expression: peg.ast.SequenceExpression, envNames: string
     };
 };
 
-const prefixedToCode = (expression: peg.ast.PrefixedExpression, envNames: string[], indent: number): {code: string, addEnvNames: string[]} => {
+const prefixedToCode = (expression: peg.ast.PrefixedExpression, envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const funcName =
@@ -412,7 +439,7 @@ const prefixedToCode = (expression: peg.ast.PrefixedExpression, envNames: string
                     : assertNever(expression.type);
     retFragments.push(`
 ${INDENTS}.${funcName}(r => r
-${expressionToCode(expression.expression, envNames, indent + 1).code}
+${expressionToCode(expression.expression, envNames, options, indent + 1).code}
 ${INDENTS})
 `.replace(/^\r?\n/, "").trimEnd());
     return {
