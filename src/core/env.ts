@@ -22,7 +22,7 @@ export interface BaseEnv<
     TPos extends BasePos,
 > {
     offsetToPos(target: TTarget, offset: number): TPos;
-    registerCurrentLocation(location: Location<TPos>): void;
+    registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
     options: Record<string | number | symbol, unknown>;
 }
 
@@ -113,7 +113,7 @@ export const makeActionEnv = <
             .slice(start, end) as SliceOf<TTarget>;
     };
 
-    env.registerCurrentLocation(location());
+    env.registerCurrentRangeTarget(start, end, target);
 
     return {
         ...env,

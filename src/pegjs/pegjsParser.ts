@@ -3,7 +3,7 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import { Location, ValueRule, stringOffsetToPos, StringPos } from "../core";
+import { ValueRule, stringOffsetToPos } from "../core";
 import peg from "../pegjs/pegjsTypings/pegjs";
 import pegjs from "../pegjs/optionalPegjs";
 import { RuleFactory } from "src/rules/factory";
@@ -80,22 +80,18 @@ export const defaultOptions: peg.parser.IOptions = {
 const initializer = (options: peg.parser.IOptions) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
 
-    let currentLocation: Location<StringPos> = {
-        start: {
-            offset: 0,
-            line: 1,
-            column: 1,
-        },
-        end: {
-            offset: 0,
-            line: 1,
-            column: 1,
-        },
+    let currentStart = 0;
+    let currentEnd = 0;
+    let currentTarget = "";
+    const registerCurrentRangeTarget = (start: number, end: number, target: string) => {
+        currentStart = start;
+        currentEnd = end;
+        currentTarget = target;
     };
-    const registerCurrentLocation = (location: Location<StringPos>) => {
-        currentLocation = location;
-    };
-    const location = () => currentLocation;
+    const location = () => ({
+        start: offsetToPos(currentTarget, currentStart),
+        end: offsetToPos(currentTarget, currentEnd),
+    });
 
     const offsetToPos = stringOffsetToPos;
 
@@ -181,7 +177,7 @@ const initializer = (options: peg.parser.IOptions) => {
 
     return {
         offsetToPos,
-        registerCurrentLocation,
+        registerCurrentRangeTarget,
         options,
         pick,
         RESERVED_WORDS,

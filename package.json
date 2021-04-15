@@ -11,6 +11,7 @@
     "build": "npx tsc",
     "prepare": "npm run build",
     "watch": "npx tsc --watch",
+    "ts-node": "node -r ts-node/register -r tsconfig-paths/register",
     "test": "npx mocha"
   },
   "devDependencies": {

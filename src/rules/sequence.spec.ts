@@ -8,7 +8,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
-    registerCurrentLocation: () => { /**/ },
+    registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
@@ -17,7 +17,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
-    registerCurrentLocation: () => { /**/ },
+    registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
 type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
