@@ -158,7 +158,7 @@ ${INDENTUNIT}return {
 ${INDENTUNIT}${INDENTUNIT}offsetToPos,
 ${INDENTUNIT}${INDENTUNIT}registerCurrentRangeTarget,
 ${INDENTUNIT}${INDENTUNIT}options,
-${[...addEnvNames].map(name => `${INDENTUNIT}${INDENTUNIT}${name},`).join("\r\n")}
+${Array.from(new Set(addEnvNames)).map(name => `${INDENTUNIT}${INDENTUNIT}${name},`).join("\r\n")}
 ${INDENTUNIT}};
 };
 `.replace(/^\r?\n/, ""),
@@ -226,7 +226,7 @@ const actionToCode = (expression: peg.ast.ActionExpression, envNames: string[], 
     retFragments.push(`
 ${INDENTS}.action(r => r
 ${code}
-${INDENTS}, (({ ${[...envNames, ...addEnvNames].join(", ")} }) => {
+${INDENTS}, (({ ${Array.from(new Set([...envNames, ...addEnvNames])).join(", ")} }) => {
 ${expression.code.trim()}
 ${INDENTS}})
 ${INDENTS})
@@ -372,7 +372,7 @@ const predicateToCode = (expression: peg.ast.SemanticPredicateExpression, envNam
                 ? "assertNot"
                 : assertNever(expression.type);
     retFragments.push(`
-${INDENTS}.${funcName}(({ ${envNames.join(", ")} }) => {
+${INDENTS}.${funcName}(({ ${Array.from(new Set(envNames)).join(", ")} }) => {
 ${expression.code.trim()}
 ${INDENTS}})
     `.replace(/^\r?\n/, "").trimEnd());
