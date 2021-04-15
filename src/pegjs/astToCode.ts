@@ -2,15 +2,19 @@ import peg from "./pegjsTypings/pegjs";
 // import pegjs from "./optionalPegjs";
 import ts from "typescript";
 
+const grammarToCodeDefaultOptions = {
+    header: "",
+    genericParserPath: "generic-parser/lib",
+};
+
 export const grammarToCode = (
     grammar: peg.Grammar,
-    options: {
+    _options: {
         header?: string,
-        genericParserPath: string,
-    } = {
-        genericParserPath: "generic-parser/lib",
+        genericParserPath?: string,
     },
 ): string => {
+    const options = { ...grammarToCodeDefaultOptions, ..._options };
     const retFragments: string[] = [];
     if (options.header) retFragments.push(options.header);
     retFragments.push(getHeader(options.genericParserPath));
