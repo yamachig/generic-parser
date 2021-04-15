@@ -6,7 +6,7 @@ https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LIC
 import { Empty, Rule, stringOffsetToPos } from "../core";
 import peg from "../pegjs/pegjsTypings/pegjs";
 import pegjs from "../pegjs/optionalPegjs";
-import { RuleFactory } from "src/rules/factory";
+import { RuleFactory } from "../rules/factory";
 
 export const parse = (text: string, options?: peg.parser.IOptions): peg.ast.Grammar => {
     const result = Grammar.match(
