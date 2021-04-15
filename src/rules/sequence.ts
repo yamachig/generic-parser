@@ -41,7 +41,6 @@ export class SequenceRule<
     TOrigPrevEnv extends BaseEnv<TTarget, BasePos>,
     TCurrentAddEnv extends Empty,
     TStatus extends SequenceRuleValueStatus,
-    TRuleFactory extends RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>,
 > extends Rule<
     TTarget,
     TValues,
@@ -52,7 +51,7 @@ export class SequenceRule<
 
     public constructor(
         public rules: UnknownRuleStruct<TTarget>[],
-        public factory: TRuleFactory,
+        public factory: RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>,
         name: string | null = null,
     ) {
         super(name);
@@ -100,10 +99,10 @@ export class SequenceRule<
     public toString(): string { return this.name ?? "<sequence of rules>"; }
 
     public and<
-        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, TRuleFactory>,
+        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>>,
         TLabel extends string | null = null,
         TOmit extends boolean = false,
-        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>,
+        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>>>,
     >(
         ruleOrFunc: TRuleOrFunc,
         label: TLabel = null as TLabel,
@@ -123,8 +122,7 @@ export class SequenceRule<
         TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
         TOmit extends true
             ? TStatus
-            : TStatus extends "Empty" ? "Single" : "Multiple",
-        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
+            : TStatus extends "Empty" ? "Single" : "Multiple"
     > {
         return new SequenceRule(
             [
@@ -138,15 +136,31 @@ export class SequenceRule<
                     omit,
                 }
             ],
-            this.factory as unknown as Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>,
+            this.factory,
             this.name,
-        );
+        ) as SequenceRule<
+            TTarget,
+            TOmit extends true
+                ? TValues
+                : TStatus extends "Empty"
+                    ? TValue
+                    : TStatus extends "Single"
+                        ? [TValues, TValue]
+                        : TValues extends unknown[]
+                            ? [...TValues, TValue]
+                            : never,
+            TOrigPrevEnv,
+            TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
+            TOmit extends true
+                ? TStatus
+                : TStatus extends "Empty" ? "Single" : "Multiple"
+        >;
     }
 
     public andOmit<
-        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, TRuleFactory>,
+        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>>,
         TLabel extends string | null = null,
-        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, TRuleFactory>>,
+        TValue = ValueOfRule<OrigRuleOf<TRuleOrFunc, RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>>>,
     >(
         ruleOrFunc: TRuleOrFunc,
         label: TLabel = null as TLabel,
@@ -155,8 +169,7 @@ export class SequenceRule<
         TValues,
         TOrigPrevEnv,
         TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
-        TStatus,
-        Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, BaseEnv<TTarget, BasePos> & TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
+        TStatus
     > {
         return this.and(
             ruleOrFunc,
@@ -167,8 +180,7 @@ export class SequenceRule<
             TValues,
             TOrigPrevEnv,
             TCurrentAddEnv & AddEnvOfName<TValue, TLabel>,
-            TStatus,
-            Omit<TRuleFactory, keyof RuleFactory<TTarget, BaseEnv<TTarget, BasePos>>> & RuleFactory<TTarget, BaseEnv<TTarget, BasePos> & TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>
+            TStatus
         >;
     }
 

@@ -6,7 +6,6 @@ export class ChoiceRule<
     TTarget extends UnknownTarget,
     TValue,
     TPrevEnv extends BaseEnv<TTarget, BasePos>,
-    TRuleFactory extends RuleFactory<TTarget, TPrevEnv>,
 > extends Rule<
     TTarget,
     TValue,
@@ -17,7 +16,7 @@ export class ChoiceRule<
 
     public constructor(
         public rules: UnknownRule<TTarget>[],
-        public factory: TRuleFactory,
+        public factory: RuleFactory<TTarget, TPrevEnv>,
         name: string | null = null,
     ) {
         super(name);
@@ -51,14 +50,13 @@ export class ChoiceRule<
     public toString(): string { return this.name ?? "<choice of rules>"; }
 
     public or<
-        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, TRuleFactory>,
+        TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, RuleFactory<TTarget, TPrevEnv>>,
     >(
         ruleOrFunc: TRuleOrFunc,
     ): ChoiceRule<
         TTarget,
-        TValue | ValueOfRule<ConvertedRuleOf<TRuleOrFunc, TRuleFactory>>,
-        TPrevEnv,
-        TRuleFactory
+        TValue | ValueOfRule<ConvertedRuleOf<TRuleOrFunc, RuleFactory<TTarget, TPrevEnv>>>,
+        TPrevEnv
     > {
         return new ChoiceRule(
             [
@@ -76,12 +74,11 @@ export class ChoiceRule<
     public orSequence<
         TRule extends UnknownRule<TTarget>,
     >(
-        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty", TRuleFactory>) => TRule,
+        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty">) => TRule,
     ): ChoiceRule<
         TTarget,
         TValue | ValueOfRule<TRule>,
-        TPrevEnv,
-        TRuleFactory
+        TPrevEnv
     >
     {
         const rule = immediateFunc(
@@ -94,8 +91,7 @@ export class ChoiceRule<
         return this.or(rule) as unknown as ChoiceRule<
             TTarget,
             TValue | ValueOfRule<TRule>,
-            TPrevEnv,
-            TRuleFactory
+            TPrevEnv
         >;
     }
 }

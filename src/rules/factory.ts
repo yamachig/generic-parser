@@ -113,7 +113,7 @@ export class RuleFactory<
     public choice<
         TRule extends Rule<TTarget, unknown, TPrevEnv, Empty>,
     >(
-        immediateFunc: (emptySequence: ChoiceRule<TTarget, never, TPrevEnv, this>) => TRule,
+        immediateFunc: (emptySequence: ChoiceRule<TTarget, never, TPrevEnv>) => TRule,
     ):
         ValueRule<
             TTarget,
@@ -249,7 +249,7 @@ export class RuleFactory<
     public sequence<
         TRule extends UnknownRule<TTarget>,
     >(
-        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty", this>) => TRule,
+        immediateFunc: (emptySequence: SequenceRule<TTarget, undefined, TPrevEnv, Empty, "Empty">) => TRule,
     ):
         Rule<
             TTarget,
