@@ -106,27 +106,27 @@ const initializerToCode = (initializer?: peg.ast.Initializer): {code: string, ad
                         for (const element of decl.name.elements) {
                             for (const id of iterateIdentifierOfBinding(element)) {
                                 const name = id.escapedText as string;
-                                if (name) addEnvNames.push(name);
+                                if (name) addEnvNames.push(name.replace(/^__/, "_"));
                             }
                         }
                     } else {
                         const name = decl.name.escapedText as string;
-                        if (name) addEnvNames.push(name);
+                        if (name) addEnvNames.push(name.replace(/^__/, "_"));
                     }
                 }
             } else if (ts.isFunctionDeclaration(statement)) {
                 if (statement.name) {
                     const name = statement.name.escapedText as string;
-                    if (name) addEnvNames.push(name);
+                    if (name) addEnvNames.push(name.replace(/^__/, "_"));
                 }
             } else if (ts.isClassDeclaration(statement)) {
                 if (statement.name) {
                     const name = statement.name.escapedText as string;
-                    if (name) addEnvNames.push(name);
+                    if (name) addEnvNames.push(name.replace(/^__/, "_"));
                 }
             } else if (ts.isEnumDeclaration(statement)) {
                 const name = statement.name.escapedText as string;
-                if (name) addEnvNames.push(name);
+                if (name) addEnvNames.push(name.replace(/^__/, "_"));
             }
         }
     }
@@ -161,7 +161,7 @@ ${INDENTUNIT}};
 
 const ruleToCode = (rule: peg.ast.Rule, envNames: string[], indent: number): string => {
     const retFragments: string[] = [];
-    retFragments.push(`const $${rule.name} = factory`);
+    retFragments.push(`export const $${rule.name} = factory`);
     let expression = rule.expression;
     if (expression.type === "named") {
         retFragments.push(`${INDENTUNIT.repeat(indent + 1)}.withName("${expression.name}")`);
