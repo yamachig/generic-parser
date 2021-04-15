@@ -38,7 +38,7 @@ export const grammarToCode = (
 
 const getHeader = (genericParserPath: string): string => {
     return `
-import { stringOffsetToPos, Rule, Empty } from "${genericParserPath}/core";
+import { stringOffsetToPos, Rule, Empty, ValueOfRule } from "${genericParserPath}/core";
 import { RuleFactory } from "${genericParserPath}/rules/factory";
 
 type Env = ReturnType<typeof initializer>;
@@ -53,8 +53,9 @@ const getParse = (ruleNames: string[]): string => {
 const rules = {
 ${ruleNames.map(name => `${INDENTUNIT}${name}: $${name},`).join("\r\n")}
 };
+type Rules = typeof rules;
 
-export const parse = (text: string, options: Record<string | number | symbol, unknown>) => {
+export const parse = <TRuleKey extends (keyof Rules) = "${ruleNames[0]}">(text: string, options: {startRule?: TRuleKey} & Record<string | number | symbol, unknown>): ValueOfRule<Rules[TRuleKey]> => {
 ${INDENTUNIT}let rule: ValueRule<unknown> = $${ruleNames[0]};
 ${INDENTUNIT}if ("startRule" in options) {
 ${INDENTUNIT}${INDENTUNIT}rule = rules[options.startRule as keyof typeof rules];
@@ -64,7 +65,7 @@ ${INDENTUNIT}${INDENTUNIT}0,
 ${INDENTUNIT}${INDENTUNIT}text,
 ${INDENTUNIT}${INDENTUNIT}initializer(options),
 ${INDENTUNIT});
-${INDENTUNIT}if (result.ok) return result.value;
+${INDENTUNIT}if (result.ok) return result.value as ValueOfRule<Rules[TRuleKey]>;
 ${INDENTUNIT}throw new Error(\`Expected \${result.expected} \${JSON.stringify(result)}\`);
 };
 `.trimStart();
