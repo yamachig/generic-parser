@@ -1,6 +1,6 @@
 import { AssertRule } from "./assert";
 import { AssertNotRule } from "./assertNot";
-import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueRule, ValueOfRule, AddEnvOfRule, PrevEnvOfRule } from "../core";
+import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueOfRule, AddEnvOfRule, PrevEnvOfRule } from "../core";
 import { NextIsRule } from "./nextIs";
 import { NextIsNotRule } from "./nextIsNot";
 import { OneOfRule } from "./oneOf";
@@ -36,9 +36,11 @@ export class RuleFactory<
         ruleOrFunc: RuleOrFunc<TRule, this>,
         func: (env: AddActionForRule<TRule>) => TValue,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            TValue
+            TValue,
+            TPrevEnv,
+            Empty
         >
     {
         return new ActionRule(
@@ -48,14 +50,21 @@ export class RuleFactory<
             ) as TRule,
             func,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            TValue,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public anyOne(
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ItemOf<TTarget>
+            ItemOf<TTarget>,
+            TPrevEnv,
+            Empty
             >
     {
         return new AnyOneRule(
@@ -66,9 +75,11 @@ export class RuleFactory<
     public assert(
         func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            undefined
+            undefined,
+            TPrevEnv,
+            Empty
         >
     {
         return new AssertRule(
@@ -80,9 +91,11 @@ export class RuleFactory<
     public assertNot(
         func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv) => boolean,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            undefined
+            undefined,
+            TPrevEnv,
+            Empty
         >
     {
         return new AssertNotRule(
@@ -97,9 +110,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            TSlice
+            TSlice,
+            TPrevEnv,
+            Empty
         >
     {
         return new AsSliceRule(
@@ -108,7 +123,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            TSlice,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public choice<
@@ -116,9 +136,11 @@ export class RuleFactory<
     >(
         immediateFunc: (emptySequence: ChoiceRule<TTarget, never, TPrevEnv>) => TRule,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ValueOfRule<TRule>
+            ValueOfRule<TRule>,
+            TPrevEnv,
+            Empty
         >
     {
         return immediateFunc(
@@ -127,9 +149,11 @@ export class RuleFactory<
                 this,
                 this.name
             ),
-        ) as ValueRule<
+        ) as Rule<
             TTarget,
-            ValueOfRule<TRule>
+            ValueOfRule<TRule>,
+            TPrevEnv,
+            Empty
         >;
     }
 
@@ -138,9 +162,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            undefined
+            undefined,
+            TPrevEnv,
+            Empty
         >
     {
         return new NextIsRule(
@@ -149,7 +175,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            undefined,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public nextIsNot<
@@ -157,9 +188,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            undefined
+            undefined,
+            TPrevEnv,
+            Empty
         >
     {
         return new NextIsNotRule(
@@ -168,7 +201,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            undefined,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public oneOf<
@@ -176,17 +214,21 @@ export class RuleFactory<
     >(
         items: WithIncludes<TItem>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            TItem
+            TItem,
+            TPrevEnv,
+            Empty
         >
     {
         return new OneOfRule(
             items,
             this.name,
-        ) as ValueRule<
+        ) as unknown as Rule<
             TTarget,
-            TItem
+            TItem,
+            TPrevEnv,
+            Empty
         >;
     }
 
@@ -195,9 +237,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ValueOfRule<TRule>[]
+            ValueOfRule<TRule>[],
+            TPrevEnv,
+            Empty
         >
     {
         return new OneOrMoreRule(
@@ -206,7 +250,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule>[],
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public ref<
@@ -214,9 +263,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ValueOfRule<TRule>
+            ValueOfRule<TRule>,
+            TPrevEnv,
+            Empty
         >
     {
         return new RefRule(
@@ -225,7 +276,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule>,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public seqEqual<
@@ -233,17 +289,21 @@ export class RuleFactory<
     >(
         sequence: TValue,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            TValue
+            TValue,
+            TPrevEnv,
+            Empty
         >
     {
         return new SeqEqualRule(
             sequence,
             this.name,
-        ) as ValueRule<
+        ) as unknown as Rule<
             TTarget,
-            TValue
+            TValue,
+            TPrevEnv,
+            Empty
         >;
     }
 
@@ -278,9 +338,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ValueOfRule<TRule>[]
+            ValueOfRule<TRule>[],
+            TPrevEnv,
+            Empty
         >
     {
         return new ZeroOrMoreRule(
@@ -289,7 +351,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule>[],
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public zeroOrOne<
@@ -297,9 +364,11 @@ export class RuleFactory<
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
     ):
-        ValueRule<
+        Rule<
             TTarget,
-            ValueOfRule<TRule> | null
+            ValueOfRule<TRule> | null,
+            TPrevEnv,
+            Empty
         >
     {
         return new ZeroOrOneRule(
@@ -308,7 +377,12 @@ export class RuleFactory<
                 this,
             ) as TRule,
             this.name,
-        );
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule> | null,
+            TPrevEnv,
+            Empty
+        >;
     }
 
     public regExp(

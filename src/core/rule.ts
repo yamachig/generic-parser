@@ -25,14 +25,12 @@ export abstract class Rule<
 
     public abstract toString(): string;
 
-    public abstract(): Rule<TTarget, TValue, BaseEnv<TTarget, BasePos>, Empty> {
-        return this as Rule<TTarget, TValue, BaseEnv<TTarget, BasePos>, Empty>;
+    public abstract(): Rule<TTarget, TValue, TPrevEnv, Empty> {
+        return this as Rule<TTarget, TValue, TPrevEnv, Empty>;
     }
 }
 
 export type UnknownRule<TTarget extends UnknownTarget> = Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>;
-
-export type ValueRule<TTarget extends UnknownTarget, TValue> = Rule<TTarget, TValue, BaseEnv<TTarget, BasePos>, Empty>;
 
 export type ItemOfRule<TRule extends UnknownRule<UnknownTarget>> =
     TRule extends Rule<infer TTarget, unknown, BaseEnv<infer TTarget, BasePos>, Empty>

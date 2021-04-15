@@ -1,11 +1,19 @@
 import peg from "./pegjsTypings/pegjs";
 // import pegjs from "./optionalPegjs";
+import ts from "typescript";
 
-
-export const grammarToCode = (grammar: peg.Grammar, options: { header?: string } = {}): string => {
+export const grammarToCode = (
+    grammar: peg.Grammar,
+    options: {
+        header?: string,
+        genericParserPath: string,
+    } = {
+        genericParserPath: "generic-parser/lib",
+    },
+): string => {
     const retFragments: string[] = [];
     if (options.header) retFragments.push(options.header);
-    retFragments.push(getHeader());
+    retFragments.push(getHeader(options.genericParserPath));
     const initializer = initializerToCode(grammar
         .initializer);
     retFragments.push(initializer.code);
@@ -19,28 +27,15 @@ export const grammarToCode = (grammar: peg.Grammar, options: { header?: string }
     return retFragments.join("\r\n");
 };
 
-const getHeader = (): string => {
+const getHeader = (genericParserPath: string): string => {
     return `
-import { BaseEnv, ValueRule, stringOffsetToPos, StringPos } from "generic-parser/lib/rules/common";
-import { RuleFactory } from "generic-parser/lib/rules/factory";
+import { stringOffsetToPos, Rule, Empty } from "${genericParserPath}/core";
+import { RuleFactory } from "${genericParserPath}/rules/factory";
 
-let currentLocation: Location<StringPos> = {
-    start: {
-        offset: 0,
-        line: 1,
-        column: 1,
-    },
-    end: {
-        offset: 0,
-        line: 1,
-        column: 1,
-    },
-};
+type Env = ReturnType<typeof initializer>;
+type ValueRule<TValue> = Rule<string, TValue, Env, Empty>
 
-const location = () => currentLocation;
-let options: Record<string | number | symbol, unknown> = {};
-
-const factory = new RuleFactory<string, BaseEnv<string, StringPos>>();
+const factory = new RuleFactory<string, Env>();
 `.trimStart();
 };
 
@@ -50,22 +45,15 @@ const rules = {
 ${ruleNames.map(name => `${INDENTUNIT}${name}: $${name},`).join("\r\n")}
 };
 
-export const parse = (text: string, _options: Record<string | number | symbol, unknown>) => {
-${INDENTUNIT}options = _options;
-${INDENTUNIT}let rule: ValueRule<string, unknown> = $${ruleNames[0]};
+export const parse = (text: string, options: Record<string | number | symbol, unknown>) => {
+${INDENTUNIT}let rule: ValueRule<unknown> = $${ruleNames[0]};
 ${INDENTUNIT}if ("startRule" in options) {
-${INDENTUNIT}    rule = rules[options.startRule as keyof typeof rules];
+${INDENTUNIT}${INDENTUNIT}rule = rules[options.startRule as keyof typeof rules];
 ${INDENTUNIT}}
 ${INDENTUNIT}const result = rule.match(
 ${INDENTUNIT}${INDENTUNIT}0,
 ${INDENTUNIT}${INDENTUNIT}text,
-${INDENTUNIT}${INDENTUNIT}{
-${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}offsetToPos: stringOffsetToPos,
-${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}registerCurrentLocation: location => {
-${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}currentLocation = location;
-${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}},
-${INDENTUNIT}${INDENTUNIT}${INDENTUNIT}...initializer(options),
-${INDENTUNIT}${INDENTUNIT}},
+${INDENTUNIT}${INDENTUNIT}initializer(options),
 ${INDENTUNIT});
 ${INDENTUNIT}if (result.ok) return result.value;
 ${INDENTUNIT}throw new Error(\`Expected \${result.expected} \${JSON.stringify(result)}\`);
@@ -85,12 +73,85 @@ const assertNever = (value: never) => {
     throw new Error(`unexpected ${JSON.stringify(value)}`);
 };
 
+
+function *iterateIdentifierOfBinding(element: ts.ArrayBindingElement | ts.BindingElement): IterableIterator<ts.Identifier> {
+    if ("name" in element) {
+        const name = element.name;
+        if (ts.isIdentifier(name)) {
+            yield name;
+        } else {
+            for (const element of name.elements) {
+                yield* iterateIdentifierOfBinding(element);
+            }
+        }
+    }
+}
+
 const initializerToCode = (initializer?: peg.ast.Initializer): {code: string, addEnvNames: string[]} => {
+    const addEnvNames: string[] = [];
+    if (initializer?.code) {
+        const tsSource = ts.createSourceFile(
+            "initializer.ts",
+            initializer.code,
+            ts.ScriptTarget.ES2015,
+        );
+        for (const statement of tsSource.statements) {
+            if (ts.isVariableStatement(statement)) {
+                for (const decl of statement.declarationList.declarations) {
+                    if ("elements" in decl.name) {
+                        for (const element of decl.name.elements) {
+                            for (const id of iterateIdentifierOfBinding(element)) {
+                                const name = id.escapedText as string;
+                                if (name) addEnvNames.push(name);
+                            }
+                        }
+                    } else {
+                        const name = decl.name.escapedText as string;
+                        if (name) addEnvNames.push(name);
+                    }
+                }
+            } else if (ts.isFunctionDeclaration(statement)) {
+                if (statement.name) {
+                    const name = statement.name.escapedText as string;
+                    if (name) addEnvNames.push(name);
+                }
+            } else if (ts.isClassDeclaration(statement)) {
+                if (statement.name) {
+                    const name = statement.name.escapedText as string;
+                    if (name) addEnvNames.push(name);
+                }
+            } else if (ts.isEnumDeclaration(statement)) {
+                const name = statement.name.escapedText as string;
+                if (name) addEnvNames.push(name);
+            }
+        }
+    }
     return {
         code: `
+const initializer = (options: Record<string | number | symbol, unknown>) => {
+${INDENTUNIT}let currentStart = 0;
+${INDENTUNIT}let currentEnd = 0;
+${INDENTUNIT}let currentTarget = "";
+${INDENTUNIT}const registerCurrentRangeTarget = (start: number, end: number, target: string) => {
+${INDENTUNIT}${INDENTUNIT}currentStart = start;
+${INDENTUNIT}${INDENTUNIT}currentEnd = end;
+${INDENTUNIT}${INDENTUNIT}currentTarget = target;
+${INDENTUNIT}};
+${INDENTUNIT}const location = () => ({
+${INDENTUNIT}${INDENTUNIT}start: offsetToPos(currentTarget, currentStart),
+${INDENTUNIT}${INDENTUNIT}end: offsetToPos(currentTarget, currentEnd),
+${INDENTUNIT}});
+${INDENTUNIT}const offsetToPos = stringOffsetToPos;
 ${initializer?.code ?? ""}
+${INDENTUNIT}return {
+${INDENTUNIT}${INDENTUNIT}offsetToPos,
+${INDENTUNIT}${INDENTUNIT}registerCurrentRangeTarget,
+${INDENTUNIT}${INDENTUNIT}options,
+${[...addEnvNames].map(name => `${INDENTUNIT}${INDENTUNIT}${name},`).join("\r\n")}
+${INDENTUNIT}};
+};
 `.replace(/^\r?\n/, ""),
-        addEnvNames: [],
+        addEnvNames,
     };
 };
 
