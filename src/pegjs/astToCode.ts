@@ -9,7 +9,7 @@ const grammarToCodeDefaultOptions = {
 
 export const grammarToCode = (
     grammar: peg.Grammar,
-    _options: {
+    _options?: {
         header?: string,
         genericParserPath?: string,
     },
