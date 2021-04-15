@@ -168,7 +168,7 @@ ${INDENTUNIT}};
 
 const ruleToCode = (rule: peg.ast.Rule, envNames: string[], options: Options, indent: number): string => {
     const retFragments: string[] = [];
-    retFragments.push(`export const $${rule.name} = factory`);
+    retFragments.push(`const $${rule.name} = factory`);
     let expression = rule.expression;
     if (expression.type === "named") {
         retFragments.push(`${INDENTUNIT.repeat(indent + 1)}.withName("${expression.name}")`);
@@ -176,7 +176,6 @@ const ruleToCode = (rule: peg.ast.Rule, envNames: string[], options: Options, in
     }
     const { code } = expressionToCode(expression, envNames, options, indent + 1);
     retFragments.push(code);
-    retFragments.push(`${INDENTUNIT.repeat(indent + 1)}.abstract()`);
     retFragments.push(`${INDENTUNIT.repeat(indent + 1)};`);
     retFragments.push("");
     return retFragments.join("\r\n");
