@@ -46,7 +46,7 @@ const ast = peg!.ast;
             genericParserPath,
             useSafeChar: true,
         });
-        fs.writeFileSync(path.join(__dirname, "temp_grammar.ts"), code, { encoding: "utf-8" });
+        fs.writeFileSync(path.join(__dirname, "temp_grammar.ts.txt"), code, { encoding: "utf-8" });
     });
 
 });

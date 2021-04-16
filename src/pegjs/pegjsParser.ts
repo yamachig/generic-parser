@@ -2113,3 +2113,60 @@ export const parse = <TRuleKey extends (keyof Rules) = "Grammar">(text: string, 
     if (result.ok) return result.value as ValueOfRule<Rules[TRuleKey]>;
     throw new Error(`Expected ${result.expected} ${JSON.stringify(result)}`);
 };
+
+export const defaultOptions = {
+    reservedWords: [
+
+        // Keyword
+        "break",
+        "case",
+        "catch",
+        "continue",
+        "debugger",
+        "default",
+        "delete",
+        "do",
+        "else",
+        "finally",
+        "for",
+        "function",
+        "if",
+        "in",
+        "instanceof",
+        "new",
+        "return",
+        "switch",
+        "this",
+        "throw",
+        "try",
+        "typeof",
+        "var",
+        "void",
+        "while",
+        "with",
+
+        // FutureReservedWord
+        "class",
+        "const",
+        "enum",
+        "export",
+        "extends",
+        "implements",
+        "import",
+        "interface",
+        "let",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "static",
+        "super",
+        "yield",
+
+        // Literal
+        "false",
+        "null",
+        "true",
+    ],
+    extractComments: true,
+};
