@@ -279,14 +279,12 @@ const literalToCode = (expression: peg.ast.LiteralMatcher, _envNames: string[], 
     const retFragments: string[] = [];
     if (expression.ignoreCase) {
         const regExpSrc = safeChar(
-            JSON.stringify(expression.value)
-                .slice(1, -1)
-                .replace("\\\"", "\""),
+            toRegExpLiteral(expression.value),
             options,
-        ).replace(/[.+*?^$()[]{}|]/g, "\\$&");
+        );
         retFragments.push(`
-${INDENTS}.regExp(/${regExpSrc}/i)
-    `.replace(/^\r?\n/, "").trimEnd());
+${INDENTS}.regExp(/^${regExpSrc}/i)
+`.replace(/^\r?\n/, "").trimEnd());
     } else {
         const json = JSON.stringify(expression.value);
         retFragments.push(`
@@ -300,27 +298,30 @@ ${INDENTS}.seqEqual(${safeChar(json, options)})
     };
 };
 
+const toRegExpLiteral = (rawString: string) => {
+    return JSON.stringify(rawString)
+        .slice(1, -1)
+        .replace("\\\"", "\"")
+        .replace(/[.+*?^$()[]{}|]/g, "\\$&");
+};
+
 const classToCode = (expression: peg.ast.CharacterClassMatcher, _envNames: string[], options: Options, indent: number): {code: string, addEnvNames: string[]} => {
     const INDENTS = INDENTUNIT.repeat(indent);
     const retFragments: string[] = [];
     const inverted = expression.inverted ? "^" : "";
     const parts = safeChar(
-        expression.parts.map(p =>
-            (typeof p === "string"
-                ? [p]
-                : p
-            ).map(pp =>
-                JSON.stringify(pp)
-                    .slice(1, -1)
-                    .replace("\\\"", "\"")
-                    .replace(/[.+*?^$()[]{}|]/g, "\\$&")
-            ).join("")
-        ).join(""),
+        expression.parts.map(part => {
+            if (typeof part === "string") {
+                return toRegExpLiteral(part);
+            } else {
+                return part.map(toRegExpLiteral).join("-");
+            }
+        }).join(""),
         options,
     );
     const ignoreCase = expression.ignoreCase ? "i" : "";
     retFragments.push(`
-${INDENTS}.regExp(/[${inverted}${parts}]/${ignoreCase})
+${INDENTS}.regExp(/^[${inverted}${parts}]/${ignoreCase})
     `.replace(/^\r?\n/, "").trimEnd());
     return {
         code: retFragments.join("\r\n"),

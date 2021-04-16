@@ -24,7 +24,7 @@ describe("Test astToCode", () => {
         if (pegjs === null) throw new Error("PEG.js not installed.");
         const source = fs.readFileSync(path.join(__dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
 
-        const grammar = parse(source);
+        const grammar = parse(source, { extractComments: true });
         // const targetAstStr = inspect(targetAst, undefined, null);
         // fs.writeFileSync(path.join(__dirname, "temp_target_ast.txt"), targetAstStr, { encoding: "utf-8" });
 
@@ -36,6 +36,7 @@ describe("Test astToCode", () => {
 
         const code = grammarToCode(grammar, {
             header: `
+import pegType from "${genericParserPath}/pegjs/pegjsTypings/pegjs";
 import peg from "${genericParserPath}/pegjs/optionalPegjs";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const util = peg!.util;

@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { defaultOptions, parse } from "./pegjsParser";
+import { parse } from "./pegjsParser";
 import { inspect } from "util";
 import fs from "fs";
 import path from "path";
@@ -8,12 +8,69 @@ import pegjs from "./optionalPegjs";
 
 const parsePegjs = (source: string) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
-    const ast = parse(source);
+    const ast = parse(source, { extractComments: true });
     const passes = pegjs.util.convertPasses( pegjs.compiler.passes as unknown as peg.IStageMap );
     const session = new pegjs.compiler.Session( { passes } );
     const parser = pegjs.compiler.compile(ast, session, { output: "parser" });
     if (typeof parser === "string") throw new Error();
     return { ast, parser };
+};
+
+export const defaultOptions: peg.parser.IOptions = {
+    reservedWords: [
+
+        // Keyword
+        "break",
+        "case",
+        "catch",
+        "continue",
+        "debugger",
+        "default",
+        "delete",
+        "do",
+        "else",
+        "finally",
+        "for",
+        "function",
+        "if",
+        "in",
+        "instanceof",
+        "new",
+        "return",
+        "switch",
+        "this",
+        "throw",
+        "try",
+        "typeof",
+        "var",
+        "void",
+        "while",
+        "with",
+
+        // FutureReservedWord
+        "class",
+        "const",
+        "enum",
+        "export",
+        "extends",
+        "implements",
+        "import",
+        "interface",
+        "let",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "static",
+        "super",
+        "yield",
+
+        // Literal
+        "false",
+        "null",
+        "true",
+    ],
+    extractComments: true,
 };
 
 describe("Test pegjsParser", () => {
@@ -71,7 +128,7 @@ num = strNum:$([0-9]+)
         if (pegjs === null) throw new Error("PEG.js not installed.");
         const source = fs.readFileSync(path.join(__dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
 
-        const targetAst = parse(source, defaultOptions);
+        const targetAst = parse(source, { extractComments: true });
         const targetAstStr = inspect(targetAst, undefined, null);
         fs.writeFileSync(path.join(__dirname, "temp_target_ast.txt"), targetAstStr, { encoding: "utf-8" });
 
