@@ -53,6 +53,66 @@ describe("Test ActionRule", () => {
     });
 
     it("Success case", () => {
+        const pos = 0;
+        const text = "abcabcabc";
+        const env = getDummyStringEnv();
+        const expected = {
+            ok: true,
+            nextPos: 9,
+            value: 15,
+        } as const;
+
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .action(r => {
+                const ret = r
+                    .sequence(s => s
+                        .and(r => r.seqEqual("abc"), "a")
+                        .and(r => r.seqEqual("abc"))
+                        .and(r => r.seqEqual("abc"), "b")
+                    );
+                return ret;
+            }, (
+                ({ a, b, text }) => {
+                    return a.length + b.length + text().length;
+                }
+            ));
+
+        const result = rule.match(pos, text, env);
+
+        assert.deepInclude(result, expected);
+    });
+
+    it("Success case", () => {
+        const pos = 0;
+        const text = "abcabcabc";
+        const env = getDummyStringEnv();
+        const expected = {
+            ok: true,
+            nextPos: 9,
+            value: 6,
+        } as const;
+
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .action(r => {
+                const ret = r
+                    .sequence(s => s
+                        .and(r => r.seqEqual("abc"), "a")
+                        .and(r => r.seqEqual("abc"))
+                        .and(r => r.seqEqual("abc"), "text")
+                    );
+                return ret;
+            }, (
+                ({ a, text }) => {
+                    return a.length + text.length;
+                }
+            ));
+
+        const result = rule.match(pos, text, env);
+
+        assert.deepInclude(result, expected);
+    });
+
+    it("Success case", () => {
         const pos = 5;
         const text = "xyz\r\nabcdefghi";
         const env = getDummyStringEnv();

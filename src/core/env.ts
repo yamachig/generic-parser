@@ -116,12 +116,12 @@ export const makeActionEnv = <
     env.registerCurrentRangeTarget(start, end, target);
 
     return {
-        ...env,
         error,
         expected,
         location,
         offset,
         range,
         text,
+        ...env,
     };
 };

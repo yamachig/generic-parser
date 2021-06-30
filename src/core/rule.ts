@@ -4,7 +4,7 @@ import { ItemOf, UnknownTarget } from "./target";
 
 
 export type AddActionForRule<TRule extends UnknownRule<UnknownTarget>> =
-    ActionEnv<TargetOfRule<TRule>, PosOf<NewEnvOfRule<TRule>>> & NewEnvOfRule<TRule>;
+    Omit<ActionEnv<TargetOfRule<TRule>, PosOf<NewEnvOfRule<TRule>>>, keyof NewEnvOfRule<TRule>> & NewEnvOfRule<TRule>;
 
 
 export abstract class Rule<
