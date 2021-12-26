@@ -20,24 +20,24 @@ export class OneOfRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
         TItem,
         TPrevEnv
     > {
-        if (pos < target.length && this.items.includes(target[pos])) {
+        if (offset < target.length && this.items.includes(target[offset])) {
             return {
                 ok: true,
-                nextPos: pos + 1,
-                value: target[pos],
+                nextOffset: offset + 1,
+                value: target[offset],
                 env,
             };
         } else {
             return {
                 ok: false,
-                pos,
+                offset,
                 expected: this.toString(),
             };
         }

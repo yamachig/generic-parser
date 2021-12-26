@@ -18,25 +18,25 @@ export class RegExpRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: string,
         env: TPrevEnv,
     ): MatchResult<
         string,
         TPrevEnv
     > {
-        const m = this.regExp.exec(target.slice(pos));
+        const m = this.regExp.exec(target.slice(offset));
         if (m) {
             return {
                 ok: true,
-                nextPos: pos + m[0].length,
+                nextOffset: offset + m[0].length,
                 value: m[0],
                 env,
             };
         } else {
             return {
                 ok: false,
-                pos,
+                offset,
                 expected: this.toString(),
             };
         }

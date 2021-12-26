@@ -15,7 +15,7 @@ export class SeqEqualRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
@@ -23,19 +23,19 @@ export class SeqEqualRule<
         TPrevEnv
     > {
 
-        if (target.length >= pos + this.sequence.length) {
-            for (let offset = 0; offset < this.sequence.length; offset++) {
-                if (target[pos + offset] !== this.sequence[offset]) {
+        if (target.length >= offset + this.sequence.length) {
+            for (let i = 0; i < this.sequence.length; i++) {
+                if (target[offset + i] !== this.sequence[i]) {
                     return {
                         ok: false,
-                        pos,
+                        offset,
                         expected: this.toString(),
                     };
                 }
             }
             return {
                 ok: true,
-                nextPos: pos + this.sequence.length,
+                nextOffset: offset + this.sequence.length,
                 value: this.sequence,
                 env,
             };
@@ -43,7 +43,7 @@ export class SeqEqualRule<
 
         return {
             ok: false,
-            pos,
+            offset,
             expected: this.toString(),
         };
     }

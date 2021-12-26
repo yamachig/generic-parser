@@ -25,11 +25,11 @@ type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
 describe("Test SequenceRule", () => {
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcabc";
         const expected = {
             ok: true,
-            nextPos: 9,
+            nextOffset: 9,
             value: ["abc", "abc", "abc"],
         } as const;
         const expectedEnv = {
@@ -74,19 +74,19 @@ describe("Test SequenceRule", () => {
                 a: string;
                 b: string;
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 12,
+            nextOffset: 12,
             value: ["abc", "def", "ghi"] as [string, string, string],
             env,
         } as const;
@@ -102,17 +102,17 @@ describe("Test SequenceRule", () => {
                 .or(r => r.seqEqual("def"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabcabc";
         const expected = {
             ok: true,
-            nextPos: 12,
+            nextOffset: 12,
             value: ["abc", "abc", "abc"],
         } as const;
         const expectedEnv = {
@@ -133,18 +133,18 @@ describe("Test SequenceRule", () => {
                 a: string;
                 b: string;
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabcabc";
         const expected = {
             ok: true,
-            nextPos: 12,
+            nextOffset: 12,
             value: ["abc", "abc", "abc"],
         } as const;
         const expectedEnv = {
@@ -165,18 +165,18 @@ describe("Test SequenceRule", () => {
                 a: string;
                 b: string;
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghijklmno";
         const expected = {
             ok: true,
-            nextPos: 15,
+            nextOffset: 15,
             value: "mno",
         } as const;
         const expectedEnv = {
@@ -201,18 +201,18 @@ describe("Test SequenceRule", () => {
                 item2: string,
                 item3: string,
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghijklmno";
         const expected = {
             ok: true,
-            nextPos: 15,
+            nextOffset: 15,
             value: "mno",
         } as const;
         const expectedEnv = {
@@ -237,18 +237,18 @@ describe("Test SequenceRule", () => {
                 item2: string,
                 item3: string,
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghijklmno";
         const expected = {
             ok: true,
-            nextPos: 15,
+            nextOffset: 15,
             value: undefined,
         } as const;
         const expectedEnv = {
@@ -273,18 +273,18 @@ describe("Test SequenceRule", () => {
                 item2: string,
                 item3: string,
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghijklmno";
         const expected = {
             ok: true,
-            nextPos: 15,
+            nextOffset: 15,
             value: [
                 "abc",
                 ["d", "e", "f"] as string[],
@@ -313,18 +313,18 @@ describe("Test SequenceRule", () => {
                 item2: string,
                 item3: string,
             }
-        > = rule.match(pos, text, getDummyStringEnv());
+        > = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = ["x", "y", "z", "a", "b", "c", "a", "b", "c", "a", "b", "c"];
         const expected = {
             ok: true,
-            nextPos: 12,
+            nextOffset: 12,
             value: [
                 ["a", "b", "c"] as string[],
                 "abc",
@@ -348,18 +348,18 @@ describe("Test SequenceRule", () => {
                 a: string[];
                 b: string;
             }
-        > = rule.match(pos, text, getDummyStringArrayEnv());
+        > = rule.match(offset, text, getDummyStringArrayEnv());
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Fail case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabc";
         const expected = {
             ok: false,
-            pos: 9,
+            offset: 9,
             expected: "\"abc\"",
         } as const;
 
@@ -369,17 +369,17 @@ describe("Test SequenceRule", () => {
                 .and(r => r.seqEqual("abc"))
                 .and(r => r.seqEqual("abc"), "b")
             );
-        const result = rule.match(pos, text, getDummyStringEnv());
+        const result = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabc";
         const expected = {
             ok: false,
-            pos: 9,
+            offset: 9,
             expected: "<3 abc rule>",
         } as const;
 
@@ -389,7 +389,7 @@ describe("Test SequenceRule", () => {
                 .and(r => r.seqEqual("abc"))
                 .and(r => r.seqEqual("abc"), "b")
             );
-        const result = rule.match(pos, text, getDummyStringEnv());
+        const result = rule.match(offset, text, getDummyStringEnv());
 
         assert.deepEqual(result, expected);
     });

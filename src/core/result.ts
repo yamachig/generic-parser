@@ -6,14 +6,14 @@ export interface MatchSuccess<
     TEnv extends BaseEnv<UnknownTarget, BasePos>,
 > {
     ok: true,
-    nextPos: number,
+    nextOffset: number,
     value: TValue,
     env: TEnv,
 }
 
 export interface MatchFail {
     ok: false,
-    pos: number,
+    offset: number,
     expected: string,
 }
 

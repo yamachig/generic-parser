@@ -18,7 +18,7 @@ export abstract class Rule<
     ){}
 
     public abstract match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<TValue, TPrevEnv & TAddEnv>;

@@ -22,28 +22,28 @@ export class ActionRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
         TValue,
         NewEnvOfRule<TRule>
     > {
-        const result = this.rule.match(pos, target, env);
+        const result = this.rule.match(offset, target, env);
 
         if (result.ok) {
             const newEnv = result.env;
             const value = this.func(
                 makeActionEnv(
-                    pos,
-                    result.nextPos,
+                    offset,
+                    result.nextOffset,
                     target,
                     newEnv,
                 ) as unknown as AddActionForRule<TRule>
             );
             return {
                 ok: true,
-                nextPos: result.nextPos,
+                nextOffset: result.nextOffset,
                 value,
                 env: newEnv as NewEnvOfRule<TRule>,
             };

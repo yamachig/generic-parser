@@ -14,19 +14,19 @@ type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
 describe("Test ZeroOrOneRule", () => {
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrOne(r => r.seqEqual("abc"));
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -34,71 +34,71 @@ describe("Test ZeroOrOneRule", () => {
     it("Success case", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrOne(r => r.seqEqual("abc"));
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrOne(r => r.seqEqual("abc"));
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcdefg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 6,
+            nextOffset: 6,
             value: "abc",
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrOne(r => r.seqEqual("abc"));
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "xyz";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 0,
+            nextOffset: 0,
             value: null,
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .zeroOrOne(r => r.seqEqual("abc"));
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

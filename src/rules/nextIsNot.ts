@@ -18,7 +18,7 @@ export class NextIsNotRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
@@ -26,17 +26,17 @@ export class NextIsNotRule<
         PrevEnvOfRule<TRule>
     > {
 
-        const result = this.rule.match(pos, target, env);
+        const result = this.rule.match(offset, target, env);
         if (result.ok) {
             return {
                 ok: false,
-                pos,
+                offset,
                 expected: this.toString(),
             };
         } else {
             return {
                 ok: true,
-                nextPos: pos,
+                nextOffset: offset,
                 value: undefined,
                 env,
             };

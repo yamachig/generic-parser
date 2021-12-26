@@ -18,14 +18,14 @@ export class RefRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
         ValueOfRule<TRule>,
         NewEnvOfRule<TRule>
     > {
-        const result = this.rule.match(pos, target, env);
+        const result = this.rule.match(offset, target, env);
         if (result.ok) {
             return result as MatchSuccess<ValueOfRule<TRule>, NewEnvOfRule<TRule>>;
         } else {
@@ -33,7 +33,7 @@ export class RefRule<
                 ? result
                 : {
                     ok: false,
-                    pos,
+                    offset,
                     expected: this.toString(),
                 };
         }

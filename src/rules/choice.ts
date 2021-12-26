@@ -23,7 +23,7 @@ export class ChoiceRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
@@ -31,10 +31,10 @@ export class ChoiceRule<
         TPrevEnv
     > {
         for (const rule of this.rules) {
-            const result = rule.match(pos, target, env);
+            const result = rule.match(offset, target, env);
             if (result.ok) return {
                 ok: true,
-                nextPos: result.nextPos,
+                nextOffset: result.nextOffset,
                 value: result.value as TValue,
                 env,
             };
@@ -42,7 +42,7 @@ export class ChoiceRule<
 
         return {
             ok: false,
-            pos,
+            offset,
             expected: this.toString(),
         };
     }

@@ -64,12 +64,12 @@ describe("Test ChoiceRule", () => {
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
@@ -81,18 +81,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
@@ -104,18 +104,18 @@ describe("Test ChoiceRule", () => {
                 .or(() => new SeqEqualRule("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: "abc",
             env,
         } as const;
@@ -127,18 +127,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             ));
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 6;
+        const offset = 6;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 9,
+            nextOffset: 9,
             value: "ghi",
             env,
         } as const;
@@ -150,18 +150,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
         const env = getDummyStringArrayEnv();
         const expected = {
             ok: true,
-            nextPos: 3,
+            nextOffset: 3,
             value: ["a", "b", "c"] as string[],
             env,
         } as const;
@@ -173,18 +173,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual(["g", "h", "i"]))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 1;
+        const offset = 1;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 1,
+            offset: 1,
             expected: "<def or abc or ghi>",
         } as const;
 
@@ -195,18 +195,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 1;
+        const offset = 1;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 1,
+            offset: 1,
             expected: "<choice of rules>",
         } as const;
 
@@ -217,18 +217,18 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 1;
+        const offset = 1;
         const text = "abcdefghi";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 1,
+            offset: 1,
             expected: "<def or abc or ghi>",
         } as const;
 
@@ -239,7 +239,7 @@ describe("Test ChoiceRule", () => {
                 .or(r => r.seqEqual("ghi"))
             );
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });

@@ -58,7 +58,7 @@ export class SequenceRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TOrigPrevEnv,
     ): MatchResult<
@@ -68,13 +68,13 @@ export class SequenceRule<
 
         const value: unknown[] = [];
 
-        let nextPos = pos;
+        let nextOffset = offset;
         let nextEnv = env as BaseEnv<UnknownTarget, BasePos> & Record<string, unknown>;
 
         for (const { label, rule, omit } of this.rules) {
-            const result = rule.match(nextPos, target, nextEnv);
+            const result = rule.match(nextOffset, target, nextEnv);
             if (!result.ok) return result;
-            nextPos = result.nextPos;
+            nextOffset = result.nextOffset;
             nextEnv = { ...result.env };
             if (typeof label === "string") {
                 nextEnv[label] = result.value;
@@ -84,7 +84,7 @@ export class SequenceRule<
 
         return {
             ok: true as const,
-            nextPos,
+            nextOffset: nextOffset,
             value: (
                 value.length === 0
                     ? undefined

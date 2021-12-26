@@ -23,12 +23,12 @@ type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
 describe("Test AssertNotRule", () => {
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcabc";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 0,
+            nextOffset: 0,
             value: undefined,
         } as const;
         const expectedEnv = {
@@ -45,19 +45,19 @@ describe("Test AssertNotRule", () => {
             DummyStringEnv & {
                 a: undefined;
             }
-        > = rule.match(pos, text, env);
+        > = rule.match(offset, text, env);
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = ["a", "b", "c", "a", "b", "c", "a", "b", "c"];
         const env = getDummyStringArrayEnv();
         const expected = {
             ok: true,
-            nextPos: 9,
+            nextOffset: 9,
             value: [
                 ["a", "b", "c"] as string[],
                 ["a", "b", "c"] as string[],
@@ -84,19 +84,19 @@ describe("Test AssertNotRule", () => {
                 a: string[];
                 b: string[];
             }
-        > = rule.match(pos, text, env);
+        > = rule.match(offset, text, env);
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Success case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabcabc";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 12,
+            nextOffset: 12,
             value: [
                 "abc",
                 "abc",
@@ -124,19 +124,19 @@ describe("Test AssertNotRule", () => {
                 b: string;
                 c: undefined;
             }
-        > = rule.match(pos, text, env);
+        > = rule.match(offset, text, env);
 
         assert.deepInclude(result, expected);
         if (result.ok) assert.deepInclude(result.env, expectedEnv);
     });
 
     it("Fail case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabc";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 9,
+            offset: 9,
             expected: "!{assert}",
         } as const;
 
@@ -154,18 +154,18 @@ describe("Test AssertNotRule", () => {
                 a: string;
                 b: string;
             }
-        > = rule.match(pos, text, env);
+        > = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcabc";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 9,
+            offset: 9,
             expected: "<not xyzabcabc rule>",
         } as const;
 
@@ -183,7 +183,7 @@ describe("Test AssertNotRule", () => {
                 a: string;
                 b: string;
             }
-        > = rule.match(pos, text, env);
+        > = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

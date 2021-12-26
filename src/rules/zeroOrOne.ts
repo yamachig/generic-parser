@@ -18,7 +18,7 @@ export class ZeroOrOneRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
@@ -26,12 +26,12 @@ export class ZeroOrOneRule<
         PrevEnvOfRule<TRule>
     > {
 
-        if (pos < target.length) {
-            const result = this.rule.match(pos, target, env);
+        if (offset < target.length) {
+            const result = this.rule.match(offset, target, env);
             if (result.ok) {
                 return {
                     ok: true,
-                    nextPos: result.nextPos,
+                    nextOffset: result.nextOffset,
                     value: result.value as ValueOfRule<TRule>,
                     env,
                 };
@@ -39,7 +39,7 @@ export class ZeroOrOneRule<
         }
         return {
             ok: true,
-            nextPos: pos,
+            nextOffset: offset,
             value: null,
             env,
         };

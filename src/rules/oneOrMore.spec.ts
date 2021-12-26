@@ -18,17 +18,17 @@ describe("Test OneOrMoreRule", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOrMore(() => insideRule);
         const insideRule = new SeqEqualRule<string, string, DummyStringEnv>("abc");
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 6,
+            nextOffset: 6,
             value: ["abc", "abc"] as string[],
             env,
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -36,17 +36,17 @@ describe("Test OneOrMoreRule", () => {
     it("Success case", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOrMore(r => r.seqEqual("abc"));
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 6,
+            nextOffset: 6,
             value: ["abc", "abc"] as string[],
             env,
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -54,17 +54,17 @@ describe("Test OneOrMoreRule", () => {
     it("Success case", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOrMore(r => r.seqEqual("abc"));
-        const pos = 0;
+        const offset = 0;
         const text = "abcabcg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 6,
+            nextOffset: 6,
             value: ["abc", "abc"] as string[],
             env,
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -72,17 +72,17 @@ describe("Test OneOrMoreRule", () => {
     it("Success case", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOrMore(r => r.seqEqual("abc"));
-        const pos = 3;
+        const offset = 3;
         const text = "xyzabcdefg";
         const env = getDummyStringEnv();
         const expected = {
             ok: true,
-            nextPos: 6,
+            nextOffset: 6,
             value: ["abc"] as string[],
             env,
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -90,33 +90,33 @@ describe("Test OneOrMoreRule", () => {
     it("Fail case", () => {
         const rule = new RuleFactory<string, DummyStringEnv>()
             .oneOrMore(r => r.seqEqual("abc"));
-        const pos = 0;
+        const offset = 0;
         const text = "xyz";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 0,
+            offset: 0,
             expected: "\"abc\"",
         } as const;
 
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
-        const pos = 0;
+        const offset = 0;
         const text = "xyz";
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            pos: 0,
+            offset: 0,
             expected: "<abc+ rule>",
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc+ rule>")
             .oneOrMore(r => r.seqEqual("abc"));
-        const result = rule.match(pos, text, env);
+        const result = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });

@@ -18,7 +18,7 @@ export class OneOrMoreRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
@@ -28,39 +28,39 @@ export class OneOrMoreRule<
 
         const value: unknown[] = [];
 
-        let nextPos = pos;
+        let nextOffset = offset;
 
-        if (nextPos >= target.length) {
+        if (nextOffset >= target.length) {
             return {
                 ok: false,
-                pos: nextPos,
+                offset: nextOffset,
                 expected: this.toString(),
             };
         }
 
-        const result = this.rule.match(nextPos, target, env);
+        const result = this.rule.match(nextOffset, target, env);
         if (!result.ok) {
             return this.name === null
                 ? result
                 : {
                     ok: false,
-                    pos: nextPos,
+                    offset: nextOffset,
                     expected: this.toString(),
                 };
         }
-        nextPos = result.nextPos;
+        nextOffset = result.nextOffset;
         value.push(result.value);
 
-        while (nextPos < target.length) {
-            const result = this.rule.match(nextPos, target, env);
+        while (nextOffset < target.length) {
+            const result = this.rule.match(nextOffset, target, env);
             if (!result.ok) break;
-            nextPos = result.nextPos;
+            nextOffset = result.nextOffset;
             value.push(result.value);
         }
 
         return {
             ok: true,
-            nextPos,
+            nextOffset,
             value: value as ValueOfRule<TRule>[],
             env,
         };

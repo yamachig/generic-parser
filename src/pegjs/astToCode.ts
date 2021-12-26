@@ -38,7 +38,7 @@ export const grammarToCode = (
 
 const getHeader = (genericParserPath: string): string => {
     return `
-import { stringOffsetToPos, Rule, Empty, ValueOfRule } from "${genericParserPath}/core";
+import { stringOffsetToPos, Rule, Empty, ValueOfRule, StringPos, ParseError as _ParseError } from "${genericParserPath}/core";
 import { RuleFactory } from "${genericParserPath}/rules/factory";
 
 type Env = ReturnType<typeof initializer>;
@@ -68,6 +68,8 @@ ${INDENTUNIT});
 ${INDENTUNIT}if (result.ok) return result.value as ValueOfRule<Rules[TRuleKey]>;
 ${INDENTUNIT}throw new Error(\`Expected \${result.expected} \${JSON.stringify(result)}\`);
 };
+
+export type ParseError = _ParseError<StringPos>;
 `.trimStart();
 };
 

@@ -19,7 +19,7 @@ export class AssertRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
@@ -27,22 +27,22 @@ export class AssertRule<
         TPrevEnv
     > {
         const value = this.func(makeActionEnv(
-            pos,
-            pos,
+            offset,
+            offset,
             target,
             env as unknown as BaseEnv<UnknownTarget, PosOf<TPrevEnv>>,
         ) as unknown as ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv);
         if (value) {
             return {
                 ok: true,
-                nextPos: pos,
+                nextOffset: offset,
                 value: undefined,
                 env,
             };
         } else {
             return {
                 ok: false,
-                pos,
+                offset,
                 expected: this.toString(),
             };
         }

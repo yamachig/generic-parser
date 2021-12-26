@@ -18,24 +18,24 @@ export class AnyOneRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TTarget,
         env: TPrevEnv,
     ): MatchResult<
         ItemOf<TTarget>,
         TPrevEnv
     > {
-        if (pos < target.length) {
+        if (offset < target.length) {
             return {
                 ok: true,
-                nextPos: pos + 1,
-                value: target[pos] as ItemOf<TTarget>,
+                nextOffset: offset + 1,
+                value: target[offset] as ItemOf<TTarget>,
                 env,
             };
         } else {
             return {
                 ok: false,
-                pos,
+                offset,
                 expected: this.toString(),
             };
         }

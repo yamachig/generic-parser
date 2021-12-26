@@ -17,17 +17,17 @@ describe("Test RegExpRule", () => {
         const regExp = /^a.c.e/;
         const text = "abcdefg";
         const env = getDummyStringEnv();
-        const pos = 0;
+        const offset = 0;
         const expected = {
             ok: true,
-            nextPos: 5,
+            nextOffset: 5,
             value: "abcde",
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .regExp(regExp);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -36,16 +36,16 @@ describe("Test RegExpRule", () => {
         const regExp = /a.c.e/;
         const text = "xyzabcdefg";
         const env = getDummyStringEnv();
-        const pos = 3;
+        const offset = 3;
         const expected = {
             ok: true,
-            nextPos: 8,
+            nextOffset: 8,
             value: "abcde",
             env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>().regExp(regExp);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
         assert.deepStrictEqual(result, expected);
     });
@@ -54,15 +54,15 @@ describe("Test RegExpRule", () => {
         const regExp = /^a.c.e/;
         const text = "xyzabcdefg";
         const env = getDummyStringEnv();
-        const pos = 0;
+        const offset = 0;
         const expected = {
             ok: false,
-            pos,
+            offset,
             expected: "/^a.c.e/",
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>().regExp(regExp);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });
@@ -71,17 +71,17 @@ describe("Test RegExpRule", () => {
         const regExp = /^a.c.e/;
         const text = "xyzabcdefg";
         const env = getDummyStringEnv();
-        const pos = 0;
+        const offset = 0;
         const expected = {
             ok: false,
-            pos,
+            offset,
             expected: "<a.c.e rule>",
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .withName("<a.c.e rule>")
             .regExp(regExp);
-        const result: MatchResult<string, DummyStringEnv> = rule.match(pos, text, env);
+        const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
         assert.deepEqual(result, expected);
     });

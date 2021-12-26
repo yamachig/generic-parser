@@ -18,7 +18,7 @@ export class ZeroOrMoreRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
@@ -28,19 +28,19 @@ export class ZeroOrMoreRule<
 
         const value: unknown[] = [];
 
-        let nextPos = pos;
-        if (pos < target.length) {
-            while (nextPos < target.length) {
-                const result = this.rule.match(nextPos, target, env);
+        let nextOffset = offset;
+        if (offset < target.length) {
+            while (nextOffset < target.length) {
+                const result = this.rule.match(nextOffset, target, env);
                 if (!result.ok) break;
-                nextPos = result.nextPos;
+                nextOffset = result.nextOffset;
                 value.push(result.value);
             }
         }
 
         return {
             ok: true,
-            nextPos,
+            nextOffset,
             value: value as ValueOfRule<TRule>[],
             env,
         };

@@ -19,7 +19,7 @@ export class AsSliceRule<
     }
 
     public match(
-        pos: number,
+        offset: number,
         target: TargetOfRule<TRule> & Sliceable<TSlice>,
         env: PrevEnvOfRule<TRule>,
     ): MatchResult<
@@ -27,13 +27,13 @@ export class AsSliceRule<
         PrevEnvOfRule<TRule>
     > {
 
-        const result = this.rule.match(pos, target, env);
+        const result = this.rule.match(offset, target, env);
 
         if (result.ok) {
             return {
                 ok: true,
-                nextPos: result.nextPos,
-                value: target.slice(pos, result.nextPos) as TSlice,
+                nextOffset: result.nextOffset,
+                value: target.slice(offset, result.nextOffset) as TSlice,
                 env,
             };
         } else {
