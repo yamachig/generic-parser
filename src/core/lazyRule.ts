@@ -74,11 +74,11 @@ export class LazyRule<
         >;
     }
 
-    public toString(): string {
+    public toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth?: number): string {
         if (this.name !== null) return this.name;
         if (this._rule === null) {
             this._rule = this.func(this.factory);
         }
-        return this._rule.toString();
+        return this._rule.toString(options, currentDepth);
     }
 }

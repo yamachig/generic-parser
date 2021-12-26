@@ -7,6 +7,7 @@ const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]:
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
     getStack: () => "<stack>",
+    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -17,6 +18,7 @@ const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArr
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
     getStack: () => "<stack>",
+    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -138,8 +140,8 @@ describe("Test AssertRule", () => {
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            offset: 9,
-            expected: "<sequence of rules>",
+            offset: 3,
+            expected: "\"abc\" \"abc\" ${assert} \"abc\"",
             stack: "<stack>",
             prevFail: {
                 ok: false,
@@ -175,7 +177,7 @@ describe("Test AssertRule", () => {
         const env = getDummyStringEnv();
         const expected = {
             ok: false,
-            offset: 9,
+            offset: 3,
             expected: "<xyzabcabc rule>",
             stack: "<stack>",
             prevFail: {

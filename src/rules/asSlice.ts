@@ -38,8 +38,9 @@ export class AsSliceRule<
             };
         } else {
             return {
-                ...result,
-                expected: this.toString(),
+                ok: false,
+                offset,
+                expected: this.toString(env.toStringOptions),
                 prevFail: result,
                 stack: env.getStack(),
             };
@@ -47,5 +48,8 @@ export class AsSliceRule<
 
     }
 
-    public toString(): string { return this.name ?? `$(${this.rule.toString()})`; }
+    public toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth = 0): string {
+        if (options?.maxToStringDepth !== undefined && options?.maxToStringDepth < currentDepth) return "...";
+        return this.name ?? `$(${this.rule.toString(options, currentDepth + 1)})`;
+    }
 }

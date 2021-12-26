@@ -23,6 +23,7 @@ export interface BaseEnv<
 > {
     offsetToPos(target: TTarget, offset: number): TPos;
     getStack(): string;
+    toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number};
     registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
     options: Record<string | number | symbol, unknown>;
 }

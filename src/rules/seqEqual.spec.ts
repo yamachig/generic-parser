@@ -7,6 +7,7 @@ const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]:
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
     getStack: () => "<stack>",
+    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -17,6 +18,7 @@ const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArr
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
     getStack: () => "<stack>",
+    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });

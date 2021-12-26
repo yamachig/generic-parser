@@ -74,8 +74,9 @@ export class SequenceRule<
         for (const { label, rule, omit } of this.rules) {
             const result = rule.match(nextOffset, target, nextEnv);
             if (!result.ok) return {
-                ...result,
-                expected: this.toString(),
+                ok: false,
+                offset,
+                expected: this.toString(env.toStringOptions),
                 prevFail: result,
                 stack: env.getStack(),
             };
@@ -101,7 +102,10 @@ export class SequenceRule<
         };
     }
 
-    public toString(): string { return this.name ?? "<sequence of rules>"; }
+    public toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth = 0): string {
+        if (options?.maxToStringDepth !== undefined && options?.maxToStringDepth < currentDepth) return "...";
+        return this.name ?? (options?.fullToString ? `${this.rules.map(rs => rs.rule.toString()).join(" ")}` : "<sequence of rules>");
+    }
 
     public and<
         TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv>>,

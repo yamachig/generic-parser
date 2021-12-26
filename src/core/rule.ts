@@ -23,7 +23,7 @@ export abstract class Rule<
         env: TPrevEnv,
     ): MatchResult<TValue, TPrevEnv & TAddEnv>;
 
-    public abstract toString(): string;
+    public abstract toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth?: number): string;
 
     public abstract(): Rule<TTarget, TValue, TPrevEnv, Empty> {
         return this as Rule<TTarget, TValue, TPrevEnv, Empty>;

@@ -48,13 +48,16 @@ export class ChoiceRule<
         return {
             ok: false,
             offset,
-            expected: this.toString(),
+            expected: this.toString(env.toStringOptions),
             prevFail,
             stack: env.getStack(),
         };
     }
 
-    public toString(): string { return this.name ?? "<choice of rules>"; }
+    public toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth = 0): string {
+        if (options?.maxToStringDepth !== undefined && options?.maxToStringDepth < currentDepth) return "...";
+        return this.name ?? (options?.fullToString ? `${this.rules.map(rule => rule.toString(options, currentDepth + 1)).join(" / ")}` : "<choice of rules>");
+    }
 
     public or<
         TRuleOrFunc extends RuleOrFunc<Rule<TTarget, unknown, BaseEnv<TTarget, BasePos>, Empty>, RuleFactory<TTarget, TPrevEnv>>,
