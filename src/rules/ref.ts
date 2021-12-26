@@ -29,13 +29,12 @@ export class RefRule<
         if (result.ok) {
             return result as MatchSuccess<ValueOfRule<TRule>, NewEnvOfRule<TRule>>;
         } else {
-            return this.name === null
-                ? result
-                : {
-                    ok: false,
-                    offset,
-                    expected: this.toString(),
-                };
+            return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
         }
     }
 

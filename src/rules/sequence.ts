@@ -73,7 +73,12 @@ export class SequenceRule<
 
         for (const { label, rule, omit } of this.rules) {
             const result = rule.match(nextOffset, target, nextEnv);
-            if (!result.ok) return result;
+            if (!result.ok) return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
             nextOffset = result.nextOffset;
             nextEnv = { ...result.env };
             if (typeof label === "string") {

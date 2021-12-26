@@ -124,6 +124,7 @@ const initializer = (options: Record<string | number | symbol, unknown>) => {
 
     return {
         offsetToPos,
+        getStack: () => "",
         registerCurrentRangeTarget,
         options,
         pick,

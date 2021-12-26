@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, stringOffsetToPos, StringPos } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchFail, stringOffsetToPos, StringPos } from "../core";
 import { SeqEqualRule } from "./seqEqual";
 import { RuleFactory } from "./factory";
 import { ChoiceRule } from "./choice";
@@ -8,6 +8,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -17,6 +18,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -186,6 +188,30 @@ describe("Test ChoiceRule", () => {
             ok: false,
             offset: 1,
             expected: "<def or abc or ghi>",
+            stack: "<stack>",
+            prevFail: [
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"def\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"abc\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"ghi\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+            ] as MatchFail[],
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<def or abc or ghi>")
@@ -197,7 +223,7 @@ describe("Test ChoiceRule", () => {
 
         const result = rule.match(offset, text, env);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
@@ -208,6 +234,30 @@ describe("Test ChoiceRule", () => {
             ok: false,
             offset: 1,
             expected: "<choice of rules>",
+            stack: "<stack>",
+            prevFail: [
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"def\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"abc\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"ghi\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+            ] as MatchFail[],
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -219,7 +269,7 @@ describe("Test ChoiceRule", () => {
 
         const result = rule.match(offset, text, env);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
@@ -230,6 +280,30 @@ describe("Test ChoiceRule", () => {
             ok: false,
             offset: 1,
             expected: "<def or abc or ghi>",
+            stack: "<stack>",
+            prevFail: [
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"def\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"abc\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+                {
+                    ok: false,
+                    offset: 1,
+                    expected: "\"ghi\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+            ] as MatchFail[],
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<def or abc or ghi>")
@@ -241,7 +315,7 @@ describe("Test ChoiceRule", () => {
 
         const result = rule.match(offset, text, env);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
 });

@@ -6,6 +6,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -15,6 +16,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -137,7 +139,15 @@ describe("Test AssertRule", () => {
         const expected = {
             ok: false,
             offset: 9,
-            expected: "${assert}",
+            expected: "<sequence of rules>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "${assert}",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -167,6 +177,14 @@ describe("Test AssertRule", () => {
             ok: false,
             offset: 9,
             expected: "<xyzabcabc rule>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "${assert}",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<xyzabcabc rule>")

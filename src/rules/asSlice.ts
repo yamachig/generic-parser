@@ -37,7 +37,12 @@ export class AsSliceRule<
                 env,
             };
         } else {
-            return result;
+            return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
         }
 
     }

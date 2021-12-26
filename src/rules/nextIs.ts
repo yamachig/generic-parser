@@ -35,13 +35,12 @@ export class NextIsRule<
                 env,
             };
         } else {
-            return this.name === null
-                ? result
-                : {
-                    ok: false,
-                    offset,
-                    expected: this.toString(),
-                };
+            return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
         }
 
     }

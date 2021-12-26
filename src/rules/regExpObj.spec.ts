@@ -6,6 +6,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -62,13 +63,15 @@ describe("Test RegExpObjRule", () => {
             ok: false,
             offset,
             expected: "/^a.c.e/",
+            stack: "<stack>",
+            prevFail: null,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(offset, text, env);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
@@ -80,6 +83,8 @@ describe("Test RegExpObjRule", () => {
             ok: false,
             offset,
             expected: "<a.c.e rule>",
+            stack: "<stack>",
+            prevFail: null,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -87,7 +92,7 @@ describe("Test RegExpObjRule", () => {
             .regExpObj(regExp);
         const result: MatchResult<RegExpExecArray, DummyStringEnv> = rule.match(offset, text, env);
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
 });

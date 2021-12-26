@@ -48,10 +48,15 @@ export class ActionRule<
                 env: newEnv as NewEnvOfRule<TRule>,
             };
         } else {
-            return result;
+            return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
         }
 
     }
 
-    public toString(): string { return this.name ?? "<action>"; }
+    public toString(): string { return this.name ?? `(${this.rule.toString()}){<action>}`; }
 }

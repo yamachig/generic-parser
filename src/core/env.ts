@@ -22,6 +22,7 @@ export interface BaseEnv<
     TPos extends BasePos,
 > {
     offsetToPos(target: TTarget, offset: number): TPos;
+    getStack(): string;
     registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
     options: Record<string | number | symbol, unknown>;
 }

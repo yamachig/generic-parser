@@ -35,18 +35,19 @@ export class OneOrMoreRule<
                 ok: false,
                 offset: nextOffset,
                 expected: this.toString(),
+                prevFail: null,
+                stack: env.getStack(),
             };
         }
 
         const result = this.rule.match(nextOffset, target, env);
         if (!result.ok) {
-            return this.name === null
-                ? result
-                : {
-                    ok: false,
-                    offset: nextOffset,
-                    expected: this.toString(),
-                };
+            return {
+                ...result,
+                expected: this.toString(),
+                prevFail: result,
+                stack: env.getStack(),
+            };
         }
         nextOffset = result.nextOffset;
         value.push(result.value);

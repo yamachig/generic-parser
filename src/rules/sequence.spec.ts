@@ -8,6 +8,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -17,6 +18,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -360,7 +362,15 @@ describe("Test SequenceRule", () => {
         const expected = {
             ok: false,
             offset: 9,
-            expected: "\"abc\"",
+            expected: "<sequence of rules>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "\"abc\"",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -371,7 +381,7 @@ describe("Test SequenceRule", () => {
             );
         const result = rule.match(offset, text, getDummyStringEnv());
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
@@ -381,6 +391,14 @@ describe("Test SequenceRule", () => {
             ok: false,
             offset: 9,
             expected: "<3 abc rule>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "\"abc\"",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<3 abc rule>")
@@ -391,7 +409,7 @@ describe("Test SequenceRule", () => {
             );
         const result = rule.match(offset, text, getDummyStringEnv());
 
-        assert.deepEqual(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
 });

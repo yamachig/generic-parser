@@ -30,6 +30,8 @@ export class SeqEqualRule<
                         ok: false,
                         offset,
                         expected: this.toString(),
+                        prevFail: null,
+                        stack: env.getStack(),
                     };
                 }
             }
@@ -45,6 +47,8 @@ export class SeqEqualRule<
             ok: false,
             offset,
             expected: this.toString(),
+            prevFail: null,
+            stack: env.getStack(),
         };
     }
 

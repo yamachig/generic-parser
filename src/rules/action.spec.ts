@@ -6,6 +6,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -15,6 +16,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -355,7 +357,21 @@ describe("Test ActionRule", () => {
         const expected = {
             ok: false,
             offset: 9,
-            expected: "\"abc\"",
+            expected: "(<sequence of rules>){<action>}",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "<sequence of rules>",
+                stack: "<stack>",
+                prevFail: {
+                    ok: false,
+                    offset: 9,
+                    expected: "\"abc\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -372,7 +388,7 @@ describe("Test ActionRule", () => {
 
         const result = rule.match(offset, text, env);
 
-        assert.deepInclude(result, expected);
+        assert.deepStrictEqual(result, expected);
     });
 
     it("Fail case", () => {
@@ -383,6 +399,20 @@ describe("Test ActionRule", () => {
             ok: false,
             offset: 9,
             expected: "<abc rule>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "<sequence of rules>",
+                stack: "<stack>",
+                prevFail: {
+                    ok: false,
+                    offset: 9,
+                    expected: "\"abc\"",
+                    stack: "<stack>",
+                    prevFail: null,
+                },
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()

@@ -6,6 +6,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -15,6 +16,7 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -165,6 +167,8 @@ describe("Test SeqEqualRule", () => {
             ok: false,
             offset,
             expected: "\"abc\"",
+            stack: "<stack>",
+            prevFail: null,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -183,6 +187,8 @@ describe("Test SeqEqualRule", () => {
             ok: false,
             offset,
             expected: "\"abc\"",
+            stack: "<stack>",
+            prevFail: null,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
@@ -201,6 +207,8 @@ describe("Test SeqEqualRule", () => {
             ok: false,
             offset,
             expected: "<abc rule>",
+            stack: "<stack>",
+            prevFail: null,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc rule>")

@@ -46,7 +46,7 @@ export class RuleFactory<
         return new ActionRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             func,
             this.name,
@@ -120,7 +120,7 @@ export class RuleFactory<
         return new AsSliceRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -146,7 +146,7 @@ export class RuleFactory<
         return immediateFunc(
             new ChoiceRule(
                 [],
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
                 this.name
             ),
         ) as Rule<
@@ -172,7 +172,7 @@ export class RuleFactory<
         return new NextIsRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -198,7 +198,7 @@ export class RuleFactory<
         return new NextIsNotRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -247,7 +247,7 @@ export class RuleFactory<
         return new OneOrMoreRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -273,7 +273,7 @@ export class RuleFactory<
         return new RefRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -322,7 +322,7 @@ export class RuleFactory<
         return immediateFunc(
             new SequenceRule(
                 [],
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
                 this.name,
             ),
         ) as unknown as Rule<
@@ -348,7 +348,7 @@ export class RuleFactory<
         return new ZeroOrMoreRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<
@@ -374,7 +374,7 @@ export class RuleFactory<
         return new ZeroOrOneRule(
             convertRuleOrFunc(
                 ruleOrFunc,
-                this,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
             ) as TRule,
             this.name,
         ) as unknown as Rule<

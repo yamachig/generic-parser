@@ -1,4 +1,4 @@
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc } from "../core";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc, MatchFail } from "../core";
 import { RuleFactory } from "./factory";
 import { SequenceRule } from "./sequence";
 
@@ -30,20 +30,27 @@ export class ChoiceRule<
         TValue,
         TPrevEnv
     > {
+        const prevFail: MatchFail[] = [];
         for (const rule of this.rules) {
             const result = rule.match(offset, target, env);
-            if (result.ok) return {
-                ok: true,
-                nextOffset: result.nextOffset,
-                value: result.value as TValue,
-                env,
-            };
+            if (result.ok) {
+                return {
+                    ok: true,
+                    nextOffset: result.nextOffset,
+                    value: result.value as TValue,
+                    env,
+                };
+            } else {
+                prevFail.push(result);
+            }
         }
 
         return {
             ok: false,
             offset,
             expected: this.toString(),
+            prevFail,
+            stack: env.getStack(),
         };
     }
 

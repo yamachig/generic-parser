@@ -44,6 +44,8 @@ export class AssertRule<
                 ok: false,
                 offset,
                 expected: this.toString(),
+                prevFail: null,
+                stack: env.getStack(),
             };
         }
     }

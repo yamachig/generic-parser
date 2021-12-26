@@ -15,7 +15,17 @@ export interface MatchFail {
     ok: false,
     offset: number,
     expected: string,
+    prevFail: MatchFail | MatchFail[] | null,
+    stack: string,
 }
+
+export const getStackByThrow = (): string => {
+    try {
+        throw new Error();
+    } catch (e) {
+        return (e as Error).stack ?? "";
+    }
+};
 
 export type MatchResult<
     TValue,

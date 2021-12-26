@@ -7,6 +7,7 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
+    getStack: () => "<stack>",
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
 });
@@ -96,7 +97,15 @@ describe("Test OneOrMoreRule", () => {
         const expected = {
             ok: false,
             offset: 0,
-            expected: "\"abc\"",
+            expected: "(\"abc\")+",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 0,
+                expected: "\"abc\"",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const result = rule.match(offset, text, env);
@@ -112,6 +121,14 @@ describe("Test OneOrMoreRule", () => {
             ok: false,
             offset: 0,
             expected: "<abc+ rule>",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 0,
+                expected: "\"abc\"",
+                stack: "<stack>",
+                prevFail: null,
+            },
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>("<abc+ rule>")
