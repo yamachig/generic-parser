@@ -61,6 +61,7 @@ export interface ActionEnv<
     offset(): number;
     range(): [start: number, end: number];
     text(): SliceOf<TTarget>;
+    target(): TTarget;
 }
 
 export const makeActionEnv = <
@@ -115,6 +116,10 @@ export const makeActionEnv = <
             .slice(start, end) as SliceOf<TTarget>;
     };
 
+    const _target = (): TTarget => {
+        return target;
+    };
+
     env.registerCurrentRangeTarget(start, end, target);
 
     return {
@@ -124,6 +129,7 @@ export const makeActionEnv = <
         offset,
         range,
         text,
+        target: _target,
         ...env,
     };
 };

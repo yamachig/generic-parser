@@ -1,6 +1,6 @@
 import { AssertRule } from "./assert";
 import { AssertNotRule } from "./assertNot";
-import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueOfRule, AddEnvOfRule, PrevEnvOfRule } from "../core";
+import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueOfRule, AddEnvOfRule, PrevEnvOfRule, MatchFail, MatchResult, NewEnvOfRule } from "../core";
 import { NextIsRule } from "./nextIs";
 import { NextIsNotRule } from "./nextIsNot";
 import { OneOfRule } from "./oneOf";
@@ -34,7 +34,53 @@ export class RuleFactory<
         TRule extends UnknownRule<TTarget>,
     >(
         ruleOrFunc: RuleOrFunc<TRule, this>,
-        func: (env: AddActionForRule<TRule>) => TValue,
+        thenFunc: (env: AddActionForRule<TRule>) => TValue,
+    ):
+    Rule<
+        TTarget,
+        TValue,
+        TPrevEnv,
+        Empty
+    >
+    public action<
+        TValue,
+        TRule extends UnknownRule<TTarget>,
+    >(
+        ruleOrFunc: RuleOrFunc<TRule, this>,
+        thenFunc: (env: AddActionForRule<TRule>) => TValue,
+        catchFunc: (
+            env: AddActionForRule<TRule> & {
+                result: MatchFail,
+                prevEnv: PrevEnvOfRule<TRule>,
+                factory: RuleFactory<TTarget, PrevEnvOfRule<TRule>>,
+            }
+        ) => MatchResult<
+            TValue,
+            NewEnvOfRule<TRule>
+        >,
+    ):
+    Rule<
+        TTarget,
+        TValue,
+        TPrevEnv,
+        Empty
+    >
+    public action<
+        TValue,
+        TRule extends UnknownRule<TTarget>,
+    >(
+        ruleOrFunc: RuleOrFunc<TRule, this>,
+        thenFunc: (env: AddActionForRule<TRule>) => TValue,
+        catchFunc: ((
+            env: AddActionForRule<TRule> & {
+                result: MatchFail,
+                prevEnv: PrevEnvOfRule<TRule>,
+                factory: RuleFactory<TTarget, PrevEnvOfRule<TRule>>,
+            }
+        ) => MatchResult<
+            TValue,
+            NewEnvOfRule<TRule>
+        >) | null = null,
     ):
         Rule<
             TTarget,
@@ -43,19 +89,36 @@ export class RuleFactory<
             Empty
         >
     {
-        return new ActionRule(
-            convertRuleOrFunc(
-                ruleOrFunc,
-                new RuleFactory<TTarget, TPrevEnv>() as this,
-            ) as TRule,
-            func,
-            this.name,
-        ) as unknown as Rule<
-            TTarget,
-            TValue,
-            TPrevEnv,
-            Empty
-        >;
+        if (catchFunc) {
+            return new ActionRule(
+                convertRuleOrFunc(
+                    ruleOrFunc,
+                    new RuleFactory<TTarget, TPrevEnv>() as this,
+                ) as TRule,
+                thenFunc,
+                catchFunc,
+                this.name,
+            ) as unknown as Rule<
+                TTarget,
+                TValue,
+                TPrevEnv,
+                Empty
+            >;
+        } else {
+            return new ActionRule(
+                convertRuleOrFunc(
+                    ruleOrFunc,
+                    new RuleFactory<TTarget, TPrevEnv>() as this,
+                ) as TRule,
+                thenFunc,
+                this.name,
+            ) as unknown as Rule<
+                TTarget,
+                TValue,
+                TPrevEnv,
+                Empty
+            >;
+        }
     }
 
     public anyOne(

@@ -1,5 +1,5 @@
 import { RuleFactory } from "./factory";
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc } from "../core";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc, MatchFail, PrevEnvOfRule, NewEnvOfRule, TargetOfRule } from "../core";
 import { ActionRule } from "./action";
 
 export interface RuleStruct<
@@ -35,6 +35,11 @@ type AddEnvOfName<
 
 type SequenceRuleValueStatus = "Empty" | "Single" | "Multiple";
 
+type CatchFuncEnv<TRule extends UnknownRule<UnknownTarget>> = AddActionForRule<TRule> & {
+    result: MatchFail,
+    prevEnv: PrevEnvOfRule<TRule>,
+    factory: RuleFactory<TargetOfRule<TRule>, PrevEnvOfRule<TRule>>,
+}
 export class SequenceRule<
     TTarget extends UnknownTarget,
     TValues extends unknown,
@@ -196,16 +201,54 @@ export class SequenceRule<
     public action<
         TValue,
     >(
-        func: (env: AddActionForRule<this>) => TValue,
+        thenFunc: (env: AddActionForRule<this>) => TValue,
+    ):
+        ActionRule<
+            this,
+            TValue
+        >
+    public action<
+        TValue,
+    >(
+        thenFunc: (env: AddActionForRule<this>) => TValue,
+        catchFunc: (
+            env: CatchFuncEnv<this>
+        ) => MatchResult<
+            TValue,
+            NewEnvOfRule<this>
+        >,
+    ):
+        ActionRule<
+            this,
+            TValue
+        >
+    public action<
+        TValue,
+    >(
+        thenFunc: (env: AddActionForRule<this>) => TValue,
+        catchFunc: ((
+            env: CatchFuncEnv<this>
+        ) => MatchResult<
+            TValue,
+            NewEnvOfRule<this>
+        >) | null = null,
     ):
         ActionRule<
             this,
             TValue
         >
     {
-        return new ActionRule(
-            this,
-            func,
-        );
+        if (catchFunc) {
+            return new ActionRule(
+                this,
+                thenFunc,
+                catchFunc,
+            );
+        } else {
+            return new ActionRule(
+                this,
+                thenFunc,
+            );
+        }
     }
 }

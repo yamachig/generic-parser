@@ -435,4 +435,63 @@ describe("Test ActionRule", () => {
         assert.deepStrictEqual(result, expected);
     });
 
+    it("Catched success case", () => {
+        const offset = 3;
+        const text = "xyzabcabc";
+        const env = getDummyStringEnv();
+        const expectedFail = {
+            ok: false,
+            offset: 3,
+            expected: "\"abc\" \"abc\" \"abc\"",
+            stack: "<stack>",
+            prevFail: {
+                ok: false,
+                offset: 9,
+                expected: "\"abc\"",
+                stack: "<stack>",
+                prevFail: null,
+            },
+        } as const;
+        const expected = {
+            ok: true,
+            nextOffset: 9,
+            value: ["f", "a", "i", "l"],
+            env: {
+                ...env,
+                a: "failed_a",
+                b: "failed_b",
+            }
+        } as const;
+
+        const rule = new RuleFactory<string, DummyStringEnv>()
+            .sequence(s => s
+                .and(s => s.seqEqual("abc"), "a")
+                .and(s => s.seqEqual("abc"))
+                .and(s => s.seqEqual("abc"), "b")
+                .action(
+                    ({ a, b }) => {
+                        return [...a.split(""), ...b.split("")] as const;
+                    },
+                    ({ result, prevEnv, range }) => {
+                        assert.deepStrictEqual(result, expectedFail);
+                        const [, end] = range();
+                        return {
+                            ok: true,
+                            nextOffset: end,
+                            value: ["f", "a", "i", "l"],
+                            env: {
+                                ...prevEnv,
+                                a: "failed_a",
+                                b: "failed_b",
+                            },
+                        };
+                    }
+                )
+            );
+
+        const result = rule.match(offset, text, env);
+
+        assert.deepStrictEqual(result, expected);
+    });
+
 });
