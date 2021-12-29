@@ -17,7 +17,7 @@ export class RegExpRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: string,
         env: TPrevEnv,
@@ -39,7 +39,6 @@ export class RegExpRule<
                 offset,
                 expected: this.toString(),
                 prevFail: null,
-                stack: env.getStack(),
             };
         }
     }

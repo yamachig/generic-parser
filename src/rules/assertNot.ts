@@ -18,10 +18,11 @@ export class AssertNotRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
+        // context: MatchContext,
     ): MatchResult<
         undefined,
         TPrevEnv
@@ -38,7 +39,6 @@ export class AssertNotRule<
                 offset,
                 expected: this.toString(),
                 prevFail: null,
-                stack: env.getStack(),
             };
         } else {
             return {

@@ -19,7 +19,7 @@ export class OneOfRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
@@ -40,7 +40,6 @@ export class OneOfRule<
                 offset,
                 expected: this.toString(),
                 prevFail: null,
-                stack: env.getStack(),
             };
         }
     }

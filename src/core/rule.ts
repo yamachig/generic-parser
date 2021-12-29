@@ -6,6 +6,11 @@ import { ItemOf, UnknownTarget } from "./target";
 export type AddActionForRule<TRule extends UnknownRule<UnknownTarget>> =
     Omit<ActionEnv<TargetOfRule<TRule>, PosOf<NewEnvOfRule<TRule>>>, keyof NewEnvOfRule<TRule>> & NewEnvOfRule<TRule>;
 
+export interface MatchContext {
+    ruleToString: () => string;
+    offset: number,
+    prevContext: MatchContext | null,
+}
 
 export abstract class Rule<
     TTarget extends UnknownTarget,
@@ -17,10 +22,34 @@ export abstract class Rule<
         public name: string | null,
     ){}
 
-    public abstract match(
+    public match(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
+        prevContext: MatchContext | null = null,
+    ): MatchResult<TValue, TPrevEnv & TAddEnv> {
+        const context = {
+            ruleToString: () => this.toString(),
+            offset,
+            prevContext,
+        };
+        const result = this.__match__(
+            offset,
+            target,
+            env,
+            context,
+        );
+        if (!result.ok && env.onMatchFail) {
+            env.onMatchFail(result, context);
+        }
+        return result;
+    }
+
+    protected abstract __match__(
+        offset: number,
+        target: TTarget,
+        env: TPrevEnv,
+        context: MatchContext,
     ): MatchResult<TValue, TPrevEnv & TAddEnv>;
 
     public abstract toString(options?: {fullToString?: boolean, maxToStringDepth?: number}, currentDepth?: number): string;

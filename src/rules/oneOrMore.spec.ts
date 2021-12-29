@@ -7,7 +7,6 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -99,12 +98,10 @@ describe("Test OneOrMoreRule", () => {
             ok: false,
             offset: 0,
             expected: "(\"abc\")+",
-            stack: "<stack>",
             prevFail: {
                 ok: false,
                 offset: 0,
                 expected: "\"abc\"",
-                stack: "<stack>",
                 prevFail: null,
             },
         } as const;
@@ -122,12 +119,10 @@ describe("Test OneOrMoreRule", () => {
             ok: false,
             offset: 0,
             expected: "<abc+ rule>",
-            stack: "<stack>",
             prevFail: {
                 ok: false,
                 offset: 0,
                 expected: "\"abc\"",
-                stack: "<stack>",
                 prevFail: null,
             },
         } as const;

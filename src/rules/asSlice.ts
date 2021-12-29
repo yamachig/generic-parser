@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, Rule, Sliceable, TargetOfRule, UnknownRule, UnknownTarget } from "../core";
+import { Empty, MatchResult, PrevEnvOfRule, Rule, Sliceable, TargetOfRule, UnknownRule, UnknownTarget, MatchContext, MatchFail } from "../core";
 
 export class AsSliceRule<
     TSlice,
@@ -18,16 +18,17 @@ export class AsSliceRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule> & Sliceable<TSlice>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         TSlice,
         PrevEnvOfRule<TRule>
     > {
 
-        const result = this.rule.match(offset, target, env);
+        const result = this.rule.match(offset, target, env, context);
 
         if (result.ok) {
             return {
@@ -41,8 +42,7 @@ export class AsSliceRule<
                 ok: false,
                 offset,
                 expected: this.toString(env.toStringOptions),
-                prevFail: result,
-                stack: env.getStack(),
+                prevFail: result as MatchFail,
             };
         }
 

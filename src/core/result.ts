@@ -1,9 +1,8 @@
-import { BaseEnv, BasePos, Location } from "./env";
-import { UnknownTarget } from "./target";
+import { BasePos, Location } from "./env";
 
 export interface MatchSuccess<
     TValue,
-    TEnv extends BaseEnv<UnknownTarget, BasePos>,
+    TEnv,
 > {
     ok: true,
     nextOffset: number,
@@ -16,7 +15,6 @@ export interface MatchFail {
     offset: number,
     expected: string,
     prevFail: MatchFail | MatchFail[] | null,
-    stack: string,
 }
 
 export const getStackByThrow = (): string => {
@@ -29,7 +27,7 @@ export const getStackByThrow = (): string => {
 
 export type MatchResult<
     TValue,
-    TEnv extends BaseEnv<UnknownTarget, BasePos>,
+    TEnv,
 > = MatchSuccess<TValue, TEnv> | MatchFail;
 
 

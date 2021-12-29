@@ -6,7 +6,6 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -17,7 +16,6 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -150,17 +148,14 @@ describe("Test AsSliceRule", () => {
             ok: false,
             offset: 3,
             expected: "$(\"abc\" \"abc\" \"abc\")",
-            stack: "<stack>",
             prevFail: {
                 ok: false,
                 offset: 3,
                 expected: "\"abc\" \"abc\" \"abc\"",
-                stack: "<stack>",
                 prevFail: {
                     ok: false,
                     offset: 9,
                     expected: "\"abc\"",
-                    stack: "<stack>",
                     prevFail: null,
                 },
             },
@@ -189,17 +184,14 @@ describe("Test AsSliceRule", () => {
             ok: false,
             offset: 3,
             expected: "<xyzabcabc rule>",
-            stack: "<stack>",
             prevFail: {
                 ok: false,
                 offset: 3,
                 expected: "\"abc\" \"abc\" \"abc\"",
-                stack: "<stack>",
                 prevFail: {
                     ok: false,
                     offset: 9,
                     expected: "\"abc\"",
-                    stack: "<stack>",
                     prevFail: null,
                 },
             },

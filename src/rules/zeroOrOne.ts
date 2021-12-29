@@ -1,4 +1,4 @@
-import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, Empty, UnknownTarget } from "../core";
+import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, Empty, UnknownTarget, MatchContext } from "../core";
 
 export class ZeroOrOneRule<
     TRule extends UnknownRule<UnknownTarget>,
@@ -17,17 +17,18 @@ export class ZeroOrOneRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         ValueOfRule<TRule> | null,
         PrevEnvOfRule<TRule>
     > {
 
         if (offset < target.length) {
-            const result = this.rule.match(offset, target, env);
+            const result = this.rule.match(offset, target, env, context);
             if (result.ok) {
                 return {
                     ok: true,

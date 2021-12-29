@@ -1,4 +1,4 @@
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc, MatchFail } from "../core";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc, MatchFail, MatchContext } from "../core";
 import { RuleFactory } from "./factory";
 import { SequenceRule } from "./sequence";
 
@@ -22,17 +22,18 @@ export class ChoiceRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
+        context: MatchContext,
     ): MatchResult<
         TValue,
         TPrevEnv
     > {
         const prevFail: MatchFail[] = [];
         for (const rule of this.rules) {
-            const result = rule.match(offset, target, env);
+            const result = rule.match(offset, target, env, context);
             if (result.ok) {
                 return {
                     ok: true,
@@ -50,7 +51,6 @@ export class ChoiceRule<
             offset,
             expected: this.toString(env.toStringOptions),
             prevFail,
-            stack: env.getStack(),
         };
     }
 

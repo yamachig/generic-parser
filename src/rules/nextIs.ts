@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget } from "../core";
+import { Empty, MatchResult, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, MatchContext } from "../core";
 
 export class NextIsRule<
     TRule extends UnknownRule<UnknownTarget>,
@@ -17,16 +17,17 @@ export class NextIsRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         undefined,
         PrevEnvOfRule<TRule>
     > {
 
-        const result = this.rule.match(offset, target, env);
+        const result = this.rule.match(offset, target, env, context);
         if (result.ok) {
             return {
                 ok: true,
@@ -40,7 +41,6 @@ export class NextIsRule<
                 offset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: result,
-                stack: env.getStack(),
             };
         }
 

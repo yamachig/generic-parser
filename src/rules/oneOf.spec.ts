@@ -6,7 +6,6 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -17,7 +16,6 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -149,7 +147,6 @@ describe("Test OneOfRule", () => {
             ok: false,
             offset: 0,
             expected: "[abc]",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
@@ -169,7 +166,6 @@ describe("Test OneOfRule", () => {
             ok: false,
             offset: 3,
             expected: "[]",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
@@ -189,7 +185,6 @@ describe("Test OneOfRule", () => {
             ok: false,
             offset: 0,
             expected: "[abc]",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
@@ -209,7 +204,6 @@ describe("Test OneOfRule", () => {
             ok: false,
             offset: 0,
             expected: "<one of [\"a\",\"b\",\"c\"]>",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
@@ -229,7 +223,6 @@ describe("Test OneOfRule", () => {
             ok: false,
             offset: 0,
             expected: "<one of abc rule>",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 

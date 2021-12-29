@@ -14,7 +14,7 @@ export class SeqEqualRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
@@ -31,7 +31,6 @@ export class SeqEqualRule<
                         offset,
                         expected: this.toString(),
                         prevFail: null,
-                        stack: env.getStack(),
                     };
                 }
             }
@@ -48,7 +47,6 @@ export class SeqEqualRule<
             offset,
             expected: this.toString(),
             prevFail: null,
-            stack: env.getStack(),
         };
     }
 

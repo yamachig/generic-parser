@@ -1,5 +1,5 @@
 import { RuleFactory } from "./factory";
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc, MatchFail, PrevEnvOfRule, NewEnvOfRule, TargetOfRule } from "../core";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc, MatchFail, PrevEnvOfRule, NewEnvOfRule, TargetOfRule, MatchContext } from "../core";
 import { ActionRule } from "./action";
 
 export interface RuleStruct<
@@ -62,10 +62,11 @@ export class SequenceRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TOrigPrevEnv,
+        context: MatchContext,
     ): MatchResult<
         TValues,
         TOrigPrevEnv & TCurrentAddEnv
@@ -77,13 +78,12 @@ export class SequenceRule<
         let nextEnv = env as BaseEnv<UnknownTarget, BasePos> & Record<string, unknown>;
 
         for (const { label, rule, omit } of this.rules) {
-            const result = rule.match(nextOffset, target, nextEnv);
+            const result = rule.match(nextOffset, target, nextEnv, context);
             if (!result.ok) return {
                 ok: false,
                 offset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: result,
-                stack: env.getStack(),
             };
             nextOffset = result.nextOffset;
             nextEnv = { ...result.env };

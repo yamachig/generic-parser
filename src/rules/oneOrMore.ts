@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget } from "../core";
+import { Empty, MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, MatchContext } from "../core";
 
 export class OneOrMoreRule<
     TRule extends UnknownRule<UnknownTarget>,
@@ -17,10 +17,11 @@ export class OneOrMoreRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         ValueOfRule<TRule>[],
         PrevEnvOfRule<TRule>
@@ -36,25 +37,23 @@ export class OneOrMoreRule<
                 offset: nextOffset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: null,
-                stack: env.getStack(),
             };
         }
 
-        const result = this.rule.match(nextOffset, target, env);
+        const result = this.rule.match(nextOffset, target, env, context);
         if (!result.ok) {
             return {
                 ok: false,
                 offset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: result,
-                stack: env.getStack(),
             };
         }
         nextOffset = result.nextOffset;
         value.push(result.value);
 
         while (nextOffset < target.length) {
-            const result = this.rule.match(nextOffset, target, env);
+            const result = this.rule.match(nextOffset, target, env, context);
             if (!result.ok) break;
             nextOffset = result.nextOffset;
             value.push(result.value);

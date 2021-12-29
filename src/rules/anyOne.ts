@@ -17,10 +17,11 @@ export class AnyOneRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TTarget,
         env: TPrevEnv,
+        // context: MatchContext,
     ): MatchResult<
         ItemOf<TTarget>,
         TPrevEnv
@@ -38,7 +39,6 @@ export class AnyOneRule<
                 offset,
                 expected: this.toString(),
                 prevFail: null,
-                stack: env.getStack(),
             };
         }
     }

@@ -1,3 +1,4 @@
+import { MatchContext, MatchFail } from ".";
 import { ParseError } from "./result";
 import { Sliceable, SliceOf, UnknownTarget } from "./target";
 
@@ -21,11 +22,16 @@ export interface BaseEnv<
     TTarget extends UnknownTarget,
     TPos extends BasePos,
 > {
-    offsetToPos(target: TTarget, offset: number): TPos;
-    getStack(): string;
-    toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number};
-    registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
+
     options: Record<string | number | symbol, unknown>;
+
+    registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
+    offsetToPos(target: TTarget, offset: number): TPos;
+
+    toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number};
+
+    onMatchFail?: (matchFail: MatchFail, matchContext: MatchContext) => void;
+
 }
 
 export const arrayLikeOffsetToPos =
@@ -45,6 +51,11 @@ export const stringOffsetToPos =
             column: lines[lines.length - 1].length + 1,
         };
     };
+
+export type TargetOf<T> =
+    T extends BaseEnv<infer TTarget, BasePos>
+        ? TTarget
+        : never;
 
 export type PosOf<T> =
     T extends BaseEnv<UnknownTarget, infer TPos>

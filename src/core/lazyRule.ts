@@ -1,3 +1,4 @@
+import { MatchContext } from ".";
 import { MatchResult } from "./result";
 import { AddEnvOfRule, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, ValueOfRule } from "./rule";
 import { RuleFunc, RuleOrFunc } from "./ruleFunc";
@@ -57,10 +58,11 @@ export class LazyRule<
         }
     }
 
-    public match(
+    protected __match__(
         pos: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         ValueOfRule<TRule>,
         NewEnvOfRule<TRule>
@@ -68,7 +70,7 @@ export class LazyRule<
         if (this._rule === null) {
             this._rule = this.func(this.factory);
         }
-        return this._rule.match(pos, target, env) as MatchResult<
+        return this._rule.match(pos, target, env, context) as MatchResult<
             ValueOfRule<TRule>,
             NewEnvOfRule<TRule>
         >;

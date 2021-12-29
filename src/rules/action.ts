@@ -1,4 +1,4 @@
-import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule, BaseEnv, BasePos, MatchFail } from "../core";
+import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule, BaseEnv, BasePos, MatchFail, MatchContext } from "../core";
 import { RuleFactory } from "./factory";
 
 const getMaxOffset = (result: MatchFail) => {
@@ -91,15 +91,16 @@ export class ActionRule<
         | null
     ) = null;
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         TValue,
         NewEnvOfRule<TRule>
     > {
-        const result = this.rule.match(offset, target, env);
+        const result = this.rule.match(offset, target, env, context);
 
         if (result.ok) {
             const newEnv = result.env;
@@ -142,7 +143,6 @@ export class ActionRule<
                 offset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: result,
-                stack: env.getStack(),
             };
         }
 

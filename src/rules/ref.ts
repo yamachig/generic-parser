@@ -1,4 +1,4 @@
-import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddEnvOfRule, NewEnvOfRule, MatchSuccess } from "../core";
+import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddEnvOfRule, NewEnvOfRule, MatchSuccess, MatchContext } from "../core";
 
 export class RefRule<
     TRule extends UnknownRule<UnknownTarget>,
@@ -17,15 +17,16 @@ export class RefRule<
         super(name);
     }
 
-    public match(
+    protected __match__(
         offset: number,
         target: TargetOfRule<TRule>,
         env: PrevEnvOfRule<TRule>,
+        context: MatchContext,
     ): MatchResult<
         ValueOfRule<TRule>,
         NewEnvOfRule<TRule>
     > {
-        const result = this.rule.match(offset, target, env);
+        const result = this.rule.match(offset, target, env, context);
         if (result.ok) {
             return result as MatchSuccess<ValueOfRule<TRule>, NewEnvOfRule<TRule>>;
         } else {
@@ -34,7 +35,6 @@ export class RefRule<
                 offset,
                 expected: this.toString(env.toStringOptions),
                 prevFail: result,
-                stack: env.getStack(),
             };
         }
     }

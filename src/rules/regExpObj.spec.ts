@@ -6,7 +6,6 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: stringOffsetToPos,
-    getStack: () => "<stack>",
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
@@ -64,7 +63,6 @@ describe("Test RegExpObjRule", () => {
             ok: false,
             offset,
             expected: "/^a.c.e/",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
@@ -84,7 +82,6 @@ describe("Test RegExpObjRule", () => {
             ok: false,
             offset,
             expected: "<a.c.e rule>",
-            stack: "<stack>",
             prevFail: null,
         } as const;
 
