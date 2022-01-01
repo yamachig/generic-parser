@@ -240,14 +240,16 @@ export class SequenceRule<
     {
         if (catchFunc) {
             return new ActionRule(
-                this,
+                new SequenceRule(this.rules, this.factory) as this,
                 thenFunc,
                 catchFunc,
+                this.name,
             );
         } else {
             return new ActionRule(
-                this,
+                new SequenceRule(this.rules, this.factory) as this,
                 thenFunc,
+                this.name,
             );
         }
     }
