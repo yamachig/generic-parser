@@ -16,6 +16,7 @@ import { AsSliceRule } from "./asSlice";
 import { ChoiceRule } from "./choice";
 import { RegExpRule } from "./regExp";
 import { RegExpObjRule } from "./regExpObj";
+import { OneMatchRule } from "./oneMatch";
 
 export class RuleFactory<
     TTarget extends UnknownTarget,
@@ -267,6 +268,30 @@ export class RuleFactory<
         ) as unknown as Rule<
             TTarget,
             undefined,
+            TPrevEnv,
+            Empty
+        >;
+    }
+
+    public oneMatch<
+        TItem extends ItemOf<TTarget>,
+        TValue extends NonNullable<unknown>,
+    >(
+        func: (env: ActionEnv<TTarget, PosOf<TPrevEnv>> & TPrevEnv & { item: TItem }) => TValue | null | undefined,
+    ):
+        Rule<
+            TTarget,
+            TValue,
+            TPrevEnv,
+            Empty
+        >
+    {
+        return new OneMatchRule(
+            func as unknown as ((env: ActionEnv<ArrayLike<TItem>, BasePos> & BaseEnv<ArrayLike<TItem>, BasePos> & { item: TItem; }) => TValue | null | undefined),
+            this.name,
+        ) as unknown as Rule<
+            TTarget,
+            TValue,
             TPrevEnv,
             Empty
         >;

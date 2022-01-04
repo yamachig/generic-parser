@@ -38,4 +38,9 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
   },
+  "exclude": [
+      "**/* copy.*",
+      "./node_modules",
+      "./lib",
+  ]
 }
