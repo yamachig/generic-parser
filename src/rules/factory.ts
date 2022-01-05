@@ -17,6 +17,7 @@ import { ChoiceRule } from "./choice";
 import { RegExpRule } from "./regExp";
 import { RegExpObjRule } from "./regExpObj";
 import { OneMatchRule } from "./oneMatch";
+import { NoConsumeRefRule } from "./noConsumeRef";
 
 export class RuleFactory<
     TTarget extends UnknownTarget,
@@ -268,6 +269,32 @@ export class RuleFactory<
         ) as unknown as Rule<
             TTarget,
             undefined,
+            TPrevEnv,
+            Empty
+        >;
+    }
+
+    public noConsumeRef<
+        TRule extends UnknownRule<TTarget>,
+    >(
+        ruleOrFunc: RuleOrFunc<TRule, this>,
+    ):
+        Rule<
+            TTarget,
+            ValueOfRule<TRule>,
+            TPrevEnv,
+            Empty
+        >
+    {
+        return new NoConsumeRefRule(
+            convertRuleOrFunc(
+                ruleOrFunc,
+                new RuleFactory<TTarget, TPrevEnv>() as this,
+            ) as TRule,
+            this.name,
+        ) as unknown as Rule<
+            TTarget,
+            ValueOfRule<TRule>,
             TPrevEnv,
             Empty
         >;
