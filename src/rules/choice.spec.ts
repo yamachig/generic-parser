@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchFail, stringOffsetToPos, StringPos } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, MatchFail, getMemorizedStringOffsetToPos, StringPos } from "../core";
 import { SeqEqualRule } from "./seqEqual";
 import { RuleFactory } from "./factory";
 import { ChoiceRule } from "./choice";
@@ -7,7 +7,7 @@ import { ChoiceRule } from "./choice";
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
-    offsetToPos: stringOffsetToPos,
+    offsetToPos: getMemorizedStringOffsetToPos(),
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},

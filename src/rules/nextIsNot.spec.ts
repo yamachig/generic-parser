@@ -1,12 +1,12 @@
 import { assert } from "chai";
 import { SeqEqualRule } from "./seqEqual";
-import { BaseEnv, stringOffsetToPos, StringPos } from "../core";
+import { BaseEnv, getMemorizedStringOffsetToPos, StringPos } from "../core";
 import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
-    offsetToPos: stringOffsetToPos,
+    offsetToPos: getMemorizedStringOffsetToPos(),
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},

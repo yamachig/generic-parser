@@ -10,7 +10,7 @@ const util = peg!.util;
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const ast = peg!.ast;
 
-import { stringOffsetToPos, Rule, Empty, ValueOfRule } from "../core";
+import { getMemorizedStringOffsetToPos, Rule, Empty, ValueOfRule } from "../core";
 import { RuleFactory } from "../rules/factory";
 
 type Env = ReturnType<typeof initializer>;
@@ -31,7 +31,7 @@ const initializer = (options: Record<string | number | symbol, unknown>) => {
         start: offsetToPos(currentTarget, currentStart),
         end: offsetToPos(currentTarget, currentEnd),
     });
-    const offsetToPos = stringOffsetToPos;
+    const offsetToPos = getMemorizedStringOffsetToPos();
 
     // * |    // Used as a shorthand property name for `LabeledExpression`
     // * |    const pick = true;

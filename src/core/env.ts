@@ -41,16 +41,53 @@ export const arrayLikeOffsetToPos =
         };
     };
 
-export const stringOffsetToPos =
-    (target: string, offset: number): StringPos => {
-        const beforeStr = target.slice(0, offset);
-        const lines = beforeStr.split(/\r?\n/g);
+export const getLineOffsets = (target: string): number[] => {
+    const lineOffsets: number[] = [0];
+    for (const m of target.matchAll(/\r\n|\r|\n/g)) {
+        lineOffsets.push((m.index ?? 0) + m[0].length);
+    }
+    return lineOffsets;
+};
+
+export const getMemorizedStringOffsetToPos = () => {
+    // return (target: string, offset: number): StringPos => {
+    //     const beforeStr = target.slice(0, offset);
+    //     const lines = beforeStr.split(/\r?\n/g);
+    //     return {
+    //         offset,
+    //         line: lines.length,
+    //         column: lines[lines.length - 1].length + 1,
+    //     };
+    // };
+    const lineOffsetsMemo = new Map<string, number[]>();
+    return (target: string, offset: number): StringPos => {
+        const lineOffsets = lineOffsetsMemo.get(target) ?? getLineOffsets(target);
+        if (!lineOffsetsMemo.has(target)) {
+            lineOffsetsMemo.set(target, lineOffsets);
+        }
+        let low = 0;
+        let high = lineOffsets.length - 1;
+        while (low < high) {
+            const mid = Math.floor((low + high) / 2);
+            const [currentOffset, nextOffset] = [
+                lineOffsets[mid],
+                (mid + 1 < lineOffsets.length) ? lineOffsets[mid + 1] : Infinity,
+            ];
+            if (currentOffset <= offset && offset < nextOffset) {
+                low = high = mid;
+            } else if (offset < currentOffset) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
         return {
             offset,
-            line: lines.length,
-            column: lines[lines.length - 1].length + 1,
+            line: low + 1,
+            column: offset - lineOffsets[low] + 1,
         };
     };
+};
 
 export type TargetOf<T> =
     T extends BaseEnv<infer TTarget, BasePos>
