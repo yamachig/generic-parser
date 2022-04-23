@@ -11,6 +11,7 @@ const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]:
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
+    baseOffset: 0,
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
 
@@ -21,6 +22,7 @@ const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArr
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
+    baseOffset: 0,
 });
 type DummyStringArrayEnv = ReturnType<typeof getDummyStringArrayEnv>;
 

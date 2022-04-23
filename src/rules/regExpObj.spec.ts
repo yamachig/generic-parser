@@ -9,6 +9,7 @@ const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]:
     toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
+    baseOffset: 0,
 });
 type DummyStringEnv = ReturnType<typeof getDummyStringEnv>;
 

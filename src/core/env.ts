@@ -25,12 +25,14 @@ export interface BaseEnv<
 
     options: Record<string | number | symbol, unknown>;
 
-    registerCurrentRangeTarget(start: number, end: number, target: TTarget): void;
-    offsetToPos(target: TTarget, offset: number): TPos;
+    registerCurrentRangeTarget(rawStart: number, rawEnd: number, target: TTarget): void;
+    offsetToPos(target: TTarget, rawOffset: number): TPos;
 
     toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number};
 
     onMatchFail?: (matchFail: MatchFail, matchContext: MatchContext) => void;
+
+    baseOffset: number;
 
 }
 
@@ -117,8 +119,8 @@ export const makeActionEnv = <
     TEnv extends BaseEnv<TTarget, TPos>,
     TPos extends BasePos = PosOf<TEnv>
 > (
-        start: number,
-        end: number,
+        rawStart: number,
+        rawEnd: number,
         target: TTarget,
         env: TEnv,
     ):
@@ -143,32 +145,32 @@ export const makeActionEnv = <
 
     const location = (): Location<TPos> => {
         return {
-            start: env.offsetToPos(target, start),
-            end: env.offsetToPos(target, end),
+            start: env.offsetToPos(target, rawStart),
+            end: env.offsetToPos(target, rawEnd),
         };
     };
 
     const offset = (): number => {
-        return start;
+        return rawStart + env.baseOffset;
     };
 
     const range = (): [start: number, end: number] => {
         return [
-            start,
-            end,
+            rawStart + env.baseOffset,
+            rawEnd + env.baseOffset,
         ];
     };
 
     const text = (): SliceOf<TTarget> => {
         return (target as unknown as Sliceable<unknown>)
-            .slice(start, end) as SliceOf<TTarget>;
+            .slice(rawStart, rawEnd) as SliceOf<TTarget>;
     };
 
     const _target = (): TTarget => {
         return target;
     };
 
-    env.registerCurrentRangeTarget(start, end, target);
+    env.registerCurrentRangeTarget(rawStart, rawEnd, target);
 
     return {
         error,

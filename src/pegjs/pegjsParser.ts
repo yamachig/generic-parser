@@ -133,6 +133,7 @@ const initializer = (options: Record<string | number | symbol, unknown>) => {
         createNode,
         comments,
         addComment,
+        baseOffset: 0,
     };
 };
 
