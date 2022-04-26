@@ -35,7 +35,7 @@ export class OneOrMoreRule<
             return {
                 ok: false,
                 offset: nextOffset,
-                expected: this.toString(env.toStringOptions),
+                expected: this,
                 prevFail: null,
             };
         }
@@ -45,7 +45,7 @@ export class OneOrMoreRule<
             return {
                 ok: false,
                 offset,
-                expected: this.toString(env.toStringOptions),
+                expected: this,
                 prevFail: result,
             };
         }

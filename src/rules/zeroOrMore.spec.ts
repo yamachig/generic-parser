@@ -6,7 +6,6 @@ const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: getMemorizedStringOffsetToPos(),
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,

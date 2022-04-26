@@ -1,13 +1,12 @@
 import { assert } from "chai";
 import { SeqEqualRule } from "./seqEqual";
-import { BaseEnv, getMemorizedStringOffsetToPos, StringPos } from "../core";
+import { BaseEnv, getMemorizedStringOffsetToPos, matchResultToJson, StringPos } from "../core";
 import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: getMemorizedStringOffsetToPos(),
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,
@@ -109,7 +108,7 @@ describe("Test NextIsRule", () => {
             .nextIs(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -132,7 +131,7 @@ describe("Test NextIsRule", () => {
             nextIs(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
 });

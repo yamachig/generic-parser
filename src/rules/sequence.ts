@@ -42,7 +42,7 @@ type CatchFuncEnv<TRule extends UnknownRule<UnknownTarget>> = AddActionForRule<T
 }
 export class SequenceRule<
     TTarget extends UnknownTarget,
-    TValues extends unknown,
+    TValues,
     TOrigPrevEnv extends BaseEnv<TTarget, BasePos>,
     TCurrentAddEnv extends Empty,
     TStatus extends SequenceRuleValueStatus,
@@ -82,7 +82,7 @@ export class SequenceRule<
             if (!result.ok) return {
                 ok: false,
                 offset,
-                expected: this.toString(env.toStringOptions),
+                expected: this,
                 prevFail: result,
             };
             nextOffset = result.nextOffset;
@@ -189,7 +189,7 @@ export class SequenceRule<
             ruleOrFunc,
             label,
             true,
-        ) as SequenceRule<
+        ) as unknown as SequenceRule<
             TTarget,
             TValues,
             TOrigPrevEnv,

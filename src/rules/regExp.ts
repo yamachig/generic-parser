@@ -37,7 +37,7 @@ export class RegExpRule<
             return {
                 ok: false,
                 offset,
-                expected: this.toString(),
+                expected: this,
                 prevFail: null,
             };
         }

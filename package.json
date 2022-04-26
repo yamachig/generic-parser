@@ -1,6 +1,6 @@
 {
   "name": "generic-parser",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Statically typed generic sequence parser",
   "author": "yamachi",
   "license": "MIT",

@@ -1,4 +1,6 @@
 import { BasePos, Location } from "./env";
+import { UnknownRule } from "./rule";
+import { UnknownTarget } from "./target";
 
 export interface MatchSuccess<
     TValue,
@@ -10,12 +12,53 @@ export interface MatchSuccess<
     env: TEnv,
 }
 
+export interface MatchSuccessJson {
+    ok: true,
+    nextOffset: number,
+    value: unknown,
+}
+
 export interface MatchFail {
     ok: false,
     offset: number,
-    expected: string,
+    expected: UnknownRule<UnknownTarget>,
     prevFail: MatchFail | MatchFail[] | null,
 }
+
+export interface MatchFailJson {
+    ok: false,
+    offset: number,
+    expected: string,
+    prevFail: MatchFailJson | MatchFailJson[] | null,
+}
+
+export const matchResultToJson = <TValue, TEnv>(
+    matchResult: MatchResult<TValue, TEnv>,
+    toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number}
+): MatchSuccessJson | MatchFailJson => {
+    if (matchResult.ok) {
+        return {
+            ok: true,
+            nextOffset: matchResult.nextOffset,
+            value: matchResult.value,
+        };
+    } else {
+        const { offset, expected, prevFail } = matchResult;
+        return {
+            ok: false,
+            offset,
+            expected: expected.toString(toStringOptions),
+            prevFail: (
+                (Array.isArray(prevFail)
+                    ? prevFail.map(f => matchResultToJson(f, toStringOptions)) as MatchFailJson[]
+                    : prevFail
+                        ? matchResultToJson(prevFail, toStringOptions) as MatchFailJson
+                        : null
+                )
+            ),
+        };
+    }
+};
 
 export const getStackByThrow = (): string => {
     try {

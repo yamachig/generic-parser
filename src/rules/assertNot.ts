@@ -37,7 +37,7 @@ export class AssertNotRule<
             return {
                 ok: false,
                 offset,
-                expected: this.toString(),
+                expected: this,
                 prevFail: null,
             };
         } else {

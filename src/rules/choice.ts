@@ -49,7 +49,7 @@ export class ChoiceRule<
         return {
             ok: false,
             offset,
-            expected: this.toString(env.toStringOptions),
+            expected: this,
             prevFail,
         };
     }

@@ -7,7 +7,7 @@ export type AddActionForRule<TRule extends UnknownRule<UnknownTarget>> =
     Omit<ActionEnv<TargetOfRule<TRule>, PosOf<NewEnvOfRule<TRule>>>, keyof NewEnvOfRule<TRule>> & NewEnvOfRule<TRule>;
 
 export interface MatchContext {
-    ruleToString: () => string;
+    prevRule: UnknownRule<UnknownTarget>;
     offset: number,
     prevContext: MatchContext | null,
 }
@@ -29,7 +29,7 @@ export abstract class Rule<
         prevContext: MatchContext | null = null,
     ): MatchResult<TValue, TPrevEnv & TAddEnv> {
         const context = {
-            ruleToString: () => this.toString(),
+            prevRule: this,
             offset,
             prevContext,
         };

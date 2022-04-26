@@ -28,8 +28,6 @@ export interface BaseEnv<
     registerCurrentRangeTarget(rawStart: number, rawEnd: number, target: TTarget): void;
     offsetToPos(target: TTarget, rawOffset: number): TPos;
 
-    toStringOptions?: {fullToString?: boolean, maxToStringDepth?: number};
-
     onMatchFail?: (matchFail: MatchFail, matchContext: MatchContext) => void;
 
     baseOffset: number;

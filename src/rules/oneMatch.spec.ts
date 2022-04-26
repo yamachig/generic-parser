@@ -1,12 +1,11 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, getMemorizedStringOffsetToPos, StringPos } from "../core";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, getMemorizedStringOffsetToPos, matchResultToJson, StringPos } from "../core";
 import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: getMemorizedStringOffsetToPos(),
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,
@@ -17,7 +16,6 @@ const dummyStringArraySymbol = Symbol("dummyStringArraySymbol");
 const getDummyStringArrayEnv = (): BaseEnv<string[], BasePos> & {[dummyStringArraySymbol]: "dummy"} => ({
     [dummyStringArraySymbol]: "dummy",
     offsetToPos: arrayLikeOffsetToPos,
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,
@@ -156,7 +154,7 @@ describe("Test OneMatchRule", () => {
             .oneMatch(({ item }) => items.includes(item) ? item : null);
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -175,7 +173,7 @@ describe("Test OneMatchRule", () => {
             .oneMatch(({ item }) => items.includes(item) ? item : null);
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -194,7 +192,7 @@ describe("Test OneMatchRule", () => {
             .oneMatch(({ item }) => items.includes(item) ? item : null);
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -213,7 +211,7 @@ describe("Test OneMatchRule", () => {
             .oneMatch(({ item }) => items.includes(item) ? item : null);
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -232,7 +230,7 @@ describe("Test OneMatchRule", () => {
             .oneMatch(({ item }) => items.includes(item) ? item : null);
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
 });

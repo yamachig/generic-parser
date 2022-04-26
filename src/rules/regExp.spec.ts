@@ -1,12 +1,11 @@
 import { assert } from "chai";
-import { BaseEnv, MatchResult, getMemorizedStringOffsetToPos, StringPos } from "../core";
+import { BaseEnv, MatchResult, getMemorizedStringOffsetToPos, StringPos, matchResultToJson } from "../core";
 import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: getMemorizedStringOffsetToPos(),
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,
@@ -67,7 +66,7 @@ describe("Test RegExpRule", () => {
         const rule = new RuleFactory<string, DummyStringEnv>().regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -87,7 +86,7 @@ describe("Test RegExpRule", () => {
             .regExp(regExp);
         const result: MatchResult<string, DummyStringEnv> = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
 });

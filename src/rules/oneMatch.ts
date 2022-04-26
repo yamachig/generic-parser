@@ -49,7 +49,7 @@ export class OneMatchRule<
                 return {
                     ok: false,
                     offset,
-                    expected: this.toString(),
+                    expected: this,
                     prevFail: null,
                 };
             }
@@ -57,7 +57,7 @@ export class OneMatchRule<
             return {
                 ok: false,
                 offset,
-                expected: this.toString(),
+                expected: this,
                 prevFail: null,
             };
         }

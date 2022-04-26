@@ -1,12 +1,11 @@
 import { assert } from "chai";
-import { BaseEnv, getMemorizedStringOffsetToPos, StringPos } from "../core";
+import { BaseEnv, getMemorizedStringOffsetToPos, matchResultToJson, StringPos } from "../core";
 import { RuleFactory } from "./factory";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({
     [dummyStringSymbol]: "dummy",
     offsetToPos: getMemorizedStringOffsetToPos(),
-    toStringOptions: { fullToString: true },
     registerCurrentRangeTarget: () => { /**/ },
     options: {},
     baseOffset: 0,
@@ -23,14 +22,13 @@ describe("Test NoConsumeRefRule", () => {
             ok: true,
             nextOffset: 0,
             value: "abc",
-            env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .noConsumeRef(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Success case", () => {
@@ -43,12 +41,11 @@ describe("Test NoConsumeRefRule", () => {
             ok: true,
             nextOffset: 0,
             value: "abc",
-            env,
         } as const;
 
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Success case", () => {
@@ -59,14 +56,13 @@ describe("Test NoConsumeRefRule", () => {
             ok: true,
             nextOffset: 0,
             value: "abc",
-            env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .noConsumeRef(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Success case", () => {
@@ -77,14 +73,13 @@ describe("Test NoConsumeRefRule", () => {
             ok: true,
             nextOffset: 3,
             value: "abc",
-            env,
         } as const;
 
         const rule = new RuleFactory<string, DummyStringEnv>()
             .noConsumeRef(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -107,7 +102,7 @@ describe("Test NoConsumeRefRule", () => {
             .noConsumeRef(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
     it("Fail case", () => {
@@ -130,7 +125,7 @@ describe("Test NoConsumeRefRule", () => {
             .noConsumeRef(r => r.seqEqual("abc"));
         const result = rule.match(offset, text, env);
 
-        assert.deepStrictEqual(result, expected);
+        assert.deepStrictEqual(matchResultToJson(result, { fullToString: true }), expected);
     });
 
 });
