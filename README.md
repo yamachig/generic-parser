@@ -212,7 +212,7 @@ const result = rule.match(0, "abcdef", makeEnv());
 
 #### `.regExp(re)` <br/> `.regExpObj(re)`
 
-Generates a rule that matches an `RegExp` pattern `re`. `.regExp(re)` returns a matched `string` as the value, while `.regExpObj(re)` returns the object that `RegExp.exec()` returned.
+*For a `string` target only.* Generates a rule that matches an `RegExp` pattern `re`. `.regExp(re)` returns a matched `string` as the value, while `.regExpObj(re)` returns the object that `RegExp.exec()` returned.
 
 - `re: RegExp` - a sequence that should exactly match at the current offset.
 
