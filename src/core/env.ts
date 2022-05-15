@@ -34,33 +34,38 @@ export interface BaseEnv<
 
 }
 
+type Diff<T, U> = T extends U ? never : T;
+
 export const makeEnv = <
     TTarget extends UnknownTarget,
-    TPos extends BasePos = BasePos,
-    TAdd
-        extends Partial<BaseEnv<TTarget, TPos>> & Record<string, unknown>
-        = Partial<BaseEnv<TTarget, TPos>>
->(envOptions?: TAdd): BaseEnv<TTarget, TPos> & TAdd => {
-    const {
-        options = {},
-        baseOffset = 0,
-        registerCurrentRangeTarget = () => { /**/ },
-        offsetToPos = (_: TTarget, offset: number) => ({ offset }),
-    } = envOptions ?? {};
+>() => {
+    const _makeEnv = <
+        TOffsetPos extends (target: TTarget, rawOffset: number) => BasePos,
+        TPos extends BasePos = ReturnType<TOffsetPos>,
+        TAdd extends Diff<Partial<BaseEnv<TTarget, TPos>>, "offsetToPos"> & object
+            = Diff<Partial<BaseEnv<TTarget, TPos>>, "offsetToPos"> & object
+    >(envOptions?: {offsetToPos?: TOffsetPos} & TAdd): BaseEnv<TTarget, TPos> & TAdd => {
+        const {
+            options = {},
+            baseOffset = 0,
+            registerCurrentRangeTarget = () => { /**/ },
+            offsetToPos = (_: TTarget, offset: number) => ({ offset }),
+        } = envOptions ?? {};
 
-    return {
-        ...envOptions,
-        options,
-        baseOffset,
-        registerCurrentRangeTarget,
-        offsetToPos,
-    } as unknown as BaseEnv<TTarget, TPos> & TAdd;
+        return {
+            ...envOptions,
+            options,
+            baseOffset,
+            registerCurrentRangeTarget,
+            offsetToPos,
+        } as unknown as BaseEnv<TTarget, TPos> & TAdd;
+    };
+    return _makeEnv;
 };
 
 export const makeStringEnv = <
     TAdd
-        extends Partial<BaseEnv<string, StringPos> & Record<string, unknown>>
-        = Record<string, never>
+        extends Partial<BaseEnv<string, StringPos>> & object
 >(envOptions?: TAdd): BaseEnv<string, StringPos> & TAdd => {
     const {
         options = {},

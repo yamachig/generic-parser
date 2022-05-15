@@ -8,13 +8,15 @@
 ```typescript
 // Assuming `factory` and `env` were initialized.
 
+
+
 const rule = factory
     .choice(c => c
         .orSequence(s => s
             .and(r => r.seqEqual("abc"), "part1")
             .and(r => r.seqEqual("def"))
             .action(({ part1 }) => {
-                return part1.toUpper();
+                return part1.toUpperCase();
                 // Type-aware! `part1` is recognized as a `string`.
             })
         )
@@ -25,6 +27,10 @@ const rule = factory
 const result1 = rule.match(0, "abcdef", env); // ✓ Match result: "ABC"
 const result2 = rule.match(0, "abc", env);    // ✗ Not match
 const result3 = rule.match(0, "xyz", env);    // ✓ Match result: "xyz"
+
+
+
+
 ```
 
 ### Example with `Array<number>`:
@@ -97,7 +103,8 @@ import * as gp from "generic-parser";
 //     You can add environment variables as
 //     `gp.makeEnv<...>({ var1: ..., var2: ..., })`.
 //     The environment variables can be accessed in action functions.
-const makeEnv = () => gp.makeEnv<number[]>();
+const makeEnv = () => gp.makeEnv<number[]>()();
+// ^ Note that due to typing issues, you need two `()`s.
 const factory = new gp.RuleFactory<number[], ReturnType<typeof makeEnv>>();
 
 // 3. Define a rule
@@ -123,14 +130,16 @@ const result = rule.match(0, [0xAB, 0xCD, 0xEF], makeEnv());
 
 - Note: This part is still under construction.
 
-### `makeEnv<(typeof target)>([options])` <br/> `makeStringEnv([options])`
+### `makeEnv<(typeof target)>()([options])` <br/> `makeStringEnv([options])`
 
-Initializes a rule environment that will be passed through rules. You can pass options like `makeEnv<...>({ var1: ... })` so that the variables can be accessed within action functions. `makeStringEnv()` is a special version of `makeEnv()` for a `string` target.
+Initializes a rule environment that will be passed through rules. You can pass options like `makeEnv<...>()({ var1: ... })` so that the variables can be accessed within action functions. `makeStringEnv()` is a special version of `makeEnv()()` for a `string` target.
 
 ```typescript
 const makeEnv = () => gp.makeStringEnv();
-// For number[]: const makeEnv = () => gp.makeEnv<number[]>();
+// For number[]: const makeEnv = () => gp.makeEnv<number[]>()();
 ```
+
+Note that you need two `()`s for `makeEnv`. This is due to the typing issue of TypeScript (as of version `4.6.3`) that you cannot bind the type arguments partially (c.f. [TypeScript PR #26349](https://github.com/microsoft/TypeScript/pull/26349)). The first `<...>()` binds the type of target sequence, and the second `()` infers the rest of the type parameters that include the type of rule environment.
 
 ### `Rule.match(offset, target, env)`
 
@@ -323,7 +332,7 @@ const rule = factory
         .and(r => r.seqEqual("abc"), "part1")
         .and(r => r.seqEqual("def"))
         .action(({ part1 }) => {
-            return part1.toUpper();
+            return part1.toUpperCase();
         })
     )
     ;
