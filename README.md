@@ -8,8 +8,6 @@
 ```typescript
 // Assuming `factory` and `env` were initialized.
 
-
-
 const rule = factory
     .choice(c => c
         .orSequence(s => s
@@ -27,9 +25,6 @@ const rule = factory
 const result1 = rule.match(0, "abcdef", env); // ✓ Match result: "ABC"
 const result2 = rule.match(0, "abc", env);    // ✗ Not match
 const result3 = rule.match(0, "xyz", env);    // ✓ Match result: "xyz"
-
-
-
 
 ```
 

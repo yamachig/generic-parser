@@ -7,6 +7,33 @@ describe("Test main", () => {
 
         const makeEnv = () => gp.makeStringEnv({ additional: "add" });
         const factory = new gp.RuleFactory<string, ReturnType<typeof makeEnv>>();
+        const env = makeEnv();
+
+        const rule = factory
+            .choice(c => c
+                .orSequence(s => s
+                    .and(r => r.seqEqual("abc"), "part1")
+                    .and(r => r.seqEqual("def"))
+                    .action(({ part1 }) => {
+                        return part1.toUpperCase(); // Type-aware!
+                    })
+                )
+                .or(r => r.seqEqual("xyz"))
+            )
+            ;
+
+        const result1 = rule.match(0, "abcdef", env); // ✓ Match result: "ABC"
+        const result2 = rule.match(0, "abc", env);    // ✗ Not match
+        const result3 = rule.match(0, "xyz", env);    // ✓ Match result: "xyz"
+
+
+        void [result1, result2, result3];
+    });
+
+    it("Success case", () => {
+
+        const makeEnv = () => gp.makeStringEnv({ additional: "add" });
+        const factory = new gp.RuleFactory<string, ReturnType<typeof makeEnv>>();
         const rule = factory
             .choice(c => c
                 .orSequence(s => s
