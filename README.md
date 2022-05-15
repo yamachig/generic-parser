@@ -96,7 +96,7 @@ import * as gp from "generic-parser";
 
 // 2. Prepare a rule factory.
 //     You can add environment variables as
-//     `gp.makeEnv<...>({ var1: ..., var2: ..., })`.
+//     `gp.makeEnv<...>()({ var1: ..., var2: ..., })`.
 //     The environment variables can be accessed in action functions.
 const makeEnv = () => gp.makeEnv<number[]>()();
 // ^ Note that due to typing issues, you need two `()`s.
