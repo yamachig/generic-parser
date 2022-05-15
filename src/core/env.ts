@@ -34,6 +34,50 @@ export interface BaseEnv<
 
 }
 
+export const makeEnv = <
+    TTarget extends UnknownTarget,
+    TPos extends BasePos = BasePos,
+    TAdd
+        extends Partial<BaseEnv<TTarget, TPos>> & Record<string, unknown>
+        = Partial<BaseEnv<TTarget, TPos>>
+>(envOptions?: TAdd): BaseEnv<TTarget, TPos> & TAdd => {
+    const {
+        options = {},
+        baseOffset = 0,
+        registerCurrentRangeTarget = () => { /**/ },
+        offsetToPos = (_: TTarget, offset: number) => ({ offset }),
+    } = envOptions ?? {};
+
+    return {
+        ...envOptions,
+        options,
+        baseOffset,
+        registerCurrentRangeTarget,
+        offsetToPos,
+    } as unknown as BaseEnv<TTarget, TPos> & TAdd;
+};
+
+export const makeStringEnv = <
+    TAdd
+        extends Partial<BaseEnv<string, StringPos> & Record<string, unknown>>
+        = Record<string, never>
+>(envOptions?: TAdd): BaseEnv<string, StringPos> & TAdd => {
+    const {
+        options = {},
+        baseOffset = 0,
+        offsetToPos = getMemorizedStringOffsetToPos(),
+        registerCurrentRangeTarget = () => { /**/ },
+    } = envOptions ?? {};
+
+    return {
+        ...envOptions,
+        options,
+        baseOffset,
+        offsetToPos,
+        registerCurrentRangeTarget,
+    } as unknown as BaseEnv<string, StringPos> & TAdd;
+};
+
 export const arrayLikeOffsetToPos =
     (_target: UnknownTarget, offset: number): BasePos => {
         return {
