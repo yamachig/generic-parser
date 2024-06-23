@@ -4,10 +4,12 @@ import tseslint from "typescript-eslint";
 import tsdoc from "eslint-plugin-tsdoc";
 
 export default tseslint.config(
+    {
+        ignores: ["data/**/*", "lib/**/*"],
+    },
     eslint.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        ignores: ["dist/*", "data/*", "lib/*"],
         languageOptions: {
             globals: {
                 ...globals.commonjs,
