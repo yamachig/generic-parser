@@ -150,7 +150,7 @@ export class SequenceRule<
                     omit,
                 }
             ],
-            this.factory,
+            this.factory as RuleFactory<TTarget, TOrigPrevEnv & TCurrentAddEnv & AddEnvOfName<TValue, TLabel>>,
             this.name,
         ) as SequenceRule<
             TTarget,
