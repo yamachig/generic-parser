@@ -1,9 +1,11 @@
 import globals from "globals";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 import tsdoc from "eslint-plugin-tsdoc";
+import stylistic from "@stylistic/eslint-plugin";
 
-export default tseslint.config(
+export default defineConfig(
     {
         ignores: ["data/**/*", "lib/**/*"],
     },
@@ -26,6 +28,7 @@ export default tseslint.config(
 
         plugins: {
             tsdoc,
+            "@stylistic": stylistic,
         },
 
         rules: {
@@ -114,7 +117,7 @@ export default tseslint.config(
             "no-unused-vars": "off",
             "@typescript-eslint/no-unused-vars": ["error"],
 
-            "@typescript-eslint/type-annotation-spacing": "error",
+            "@stylistic/type-annotation-spacing": "error",
             "tsdoc/syntax": "warn",
         },
     },

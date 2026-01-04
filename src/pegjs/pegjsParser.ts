@@ -5,16 +5,14 @@ https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LIC
 
 import pegType from "../pegjs/pegjsTypings/pegjs";
 import peg from "../pegjs/optionalPegjs";
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const util = peg!.util;
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const ast = peg!.ast;
 
 import { getMemorizedStringOffsetToPos, Rule, Empty, ValueOfRule } from "../core";
 import { RuleFactory } from "../rules/factory";
 
 type Env = ReturnType<typeof initializer>;
-type ValueRule<TValue> = Rule<string, TValue, Env, Empty>
+type ValueRule<TValue> = Rule<string, TValue, Env, Empty>;
 
 const factory = new RuleFactory<string, Env>();
 

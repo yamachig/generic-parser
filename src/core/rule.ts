@@ -83,7 +83,6 @@ export type PrevEnvOfRule<TRule extends UnknownRule<UnknownTarget>> =
         : never
 
 export type AddEnvOfRule<TRule extends UnknownRule<UnknownTarget>> =
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     TRule extends Rule<UnknownTarget, unknown, BaseEnv<UnknownTarget, BasePos>, infer TAddEnv>
         ? Omit<TAddEnv, keyof PrevEnvOfRule<TRule>>
         : never
