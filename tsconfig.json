@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
       "module": "commonjs",
-      "target": "es5",
-      "downlevelIteration": true,
-      "moduleResolution": "node",
+      "target": "es2020",
       "resolveJsonModule": true,
       "esModuleInterop": true,
       "sourceMap": true,
-      "lib": ["es2017", "scripthost", "dom"],
+      "types": ["node", "mocha"],
       
       "composite": true,
       "declaration": true,
 
-      "baseUrl": "./",
       "outDir": "./lib",
       "rootDir": "./src",
 
