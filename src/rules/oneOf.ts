@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, MatchResult, Rule, WithIncludes } from "../core";
+import { BaseEnv, BasePos, Empty, MatchResult, Rule, WithIncludes } from "../core/index.ts";
 
 export class OneOfRule<
     TItem,

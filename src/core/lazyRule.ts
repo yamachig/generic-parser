@@ -1,8 +1,8 @@
-import { MatchContext } from ".";
-import { MatchResult } from "./result";
-import { AddEnvOfRule, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, ValueOfRule } from "./rule";
-import { RuleFunc, RuleOrFunc } from "./ruleFunc";
-import { UnknownTarget } from "./target";
+import { MatchContext } from "./index.ts";
+import { MatchResult } from "./result.ts";
+import { AddEnvOfRule, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, ValueOfRule } from "./rule.ts";
+import { RuleFunc, RuleOrFunc } from "./ruleFunc.ts";
+import { UnknownTarget } from "./target.ts";
 
 export type ConvertedRuleOf<
     TRuleOrFunc extends RuleOrFunc<UnknownRule<UnknownTarget>, TFactory>,

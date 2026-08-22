@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, MatchContext } from "../core";
+import { Empty, MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, MatchContext } from "../core/index.ts";
 
 export class ZeroOrMoreRule<
     TRule extends UnknownRule<UnknownTarget>,

@@ -5,6 +5,7 @@
   "author": "yamachi",
   "license": "MIT",
   "homepage": "https://github.com/yamachig/generic-parser",
+  "type": "module",
   "main": "./lib/main.js",
   "types": "./lib/main.d.ts",
   "scripts": {

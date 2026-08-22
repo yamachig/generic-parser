@@ -1,6 +1,6 @@
-import { ActionEnv, BaseEnv, BasePos, Empty, PosOf } from "./env";
-import { MatchResult } from "./result";
-import { ItemOf, UnknownTarget } from "./target";
+import { ActionEnv, BaseEnv, BasePos, Empty, PosOf } from "./env.ts";
+import { MatchResult } from "./result.ts";
+import { ItemOf, UnknownTarget } from "./target.ts";
 
 
 export type AddActionForRule<TRule extends UnknownRule<UnknownTarget>> =

@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, ItemOf, MatchResult, Rule, UnknownTarget } from "../core";
+import { BaseEnv, BasePos, Empty, ItemOf, MatchResult, Rule, UnknownTarget } from "../core/index.ts";
 
 export class AnyOneRule<
     TTarget extends UnknownTarget = never,

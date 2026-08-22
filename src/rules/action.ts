@@ -1,5 +1,5 @@
-import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule, BaseEnv, BasePos, MatchFail, MatchContext } from "../core";
-import { RuleFactory } from "./factory";
+import { AddEnvOfRule, makeActionEnv, MatchResult, NewEnvOfRule, PrevEnvOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddActionForRule, BaseEnv, BasePos, MatchFail, MatchContext } from "../core/index.ts";
+import { RuleFactory } from "./factory.ts";
 
 const getMaxOffset = (result: MatchFail) => {
     if (Array.isArray(result.prevFail)) {

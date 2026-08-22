@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, MatchResult, Rule, UnknownTarget } from "../core";
+import { BaseEnv, BasePos, Empty, MatchResult, Rule, UnknownTarget } from "../core/index.ts";
 
 export class RegExpRule<
     TPrevEnv extends BaseEnv<UnknownTarget, BasePos>

@@ -3,13 +3,13 @@ Based on the PEG.js Grammar released under the MIT license
 https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LICENSE
 */
 
-import pegType from "../pegjs/pegjsTypings/pegjs";
-import peg from "../pegjs/optionalPegjs";
+import pegType from "../pegjs/pegjsTypings/pegjs.ts";
+import peg from "../pegjs/optionalPegjs.ts";
 const util = peg!.util;
 const ast = peg!.ast;
 
-import { getMemorizedStringOffsetToPos, Rule, Empty, ValueOfRule } from "../core";
-import { RuleFactory } from "../rules/factory";
+import { getMemorizedStringOffsetToPos, Rule, Empty, ValueOfRule } from "../core/index.ts";
+import { RuleFactory } from "../rules/factory.ts";
 
 type Env = ReturnType<typeof initializer>;
 type ValueRule<TValue> = Rule<string, TValue, Env, Empty>;

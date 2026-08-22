@@ -1,4 +1,4 @@
-import { Empty, MatchResult, PrevEnvOfRule, Rule, Sliceable, TargetOfRule, UnknownRule, UnknownTarget, MatchContext, MatchFail } from "../core";
+import { Empty, MatchResult, PrevEnvOfRule, Rule, Sliceable, TargetOfRule, UnknownRule, UnknownTarget, MatchContext, MatchFail } from "../core/index.ts";
 
 export class AsSliceRule<
     TSlice,

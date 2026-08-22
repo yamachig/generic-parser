@@ -1,5 +1,5 @@
-import peg from "./pegjsTypings/pegjs";
-// import pegjs from "./optionalPegjs";
+import peg from "./pegjsTypings/pegjs.ts";
+// import pegjs from "./optionalPegjs.ts";
 import ts from "typescript";
 
 const grammarToCodeDefaultOptions = {

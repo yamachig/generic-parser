@@ -1,4 +1,4 @@
-import * as gp from "./main";
+import * as gp from "./main.ts";
 import { assert } from "chai";
 
 describe("Test main", () => {

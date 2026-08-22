@@ -1,8 +1,8 @@
 import { assert } from "chai";
-import { arrayLikeOffsetToPos, BaseEnv, BasePos, getMemorizedStringOffsetToPos, StringPos, MatchFailJson, matchResultToJson } from "../core";
-import { SeqEqualRule } from "./seqEqual";
-import { RuleFactory } from "./factory";
-import { ChoiceRule } from "./choice";
+import { arrayLikeOffsetToPos, BaseEnv, BasePos, getMemorizedStringOffsetToPos, StringPos, MatchFailJson, matchResultToJson } from "../core/index.ts";
+import { SeqEqualRule } from "./seqEqual.ts";
+import { RuleFactory } from "./factory.ts";
+import { ChoiceRule } from "./choice.ts";
 
 const dummyStringSymbol = Symbol("dummyStringSymbol");
 const getDummyStringEnv = (): BaseEnv<string, StringPos> & {[dummyStringSymbol]: "dummy"} => ({

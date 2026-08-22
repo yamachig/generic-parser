@@ -1,6 +1,6 @@
-import { RuleFactory } from "./factory";
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc, MatchFail, PrevEnvOfRule, NewEnvOfRule, TargetOfRule, MatchContext } from "../core";
-import { ActionRule } from "./action";
+import { RuleFactory } from "./factory.ts";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, ValueOfRule, UnknownTarget, BasePos, AddActionForRule, OrigRuleOf, RuleOrFunc, convertRuleOrFunc, MatchFail, PrevEnvOfRule, NewEnvOfRule, TargetOfRule, MatchContext } from "../core/index.ts";
+import { ActionRule } from "./action.ts";
 
 export interface RuleStruct<
     TRule extends UnknownRule<UnknownTarget>,

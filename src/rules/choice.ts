@@ -1,6 +1,6 @@
-import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc, MatchFail, MatchContext } from "../core";
-import { RuleFactory } from "./factory";
-import { SequenceRule } from "./sequence";
+import { BaseEnv, MatchResult, Rule, Empty, UnknownRule, UnknownTarget, ValueOfRule, BasePos, ConvertedRuleOf, convertRuleOrFunc, RuleOrFunc, MatchFail, MatchContext } from "../core/index.ts";
+import { RuleFactory } from "./factory.ts";
+import { SequenceRule } from "./sequence.ts";
 
 export class ChoiceRule<
     TTarget extends UnknownTarget,

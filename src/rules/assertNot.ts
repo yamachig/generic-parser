@@ -1,4 +1,4 @@
-import { ActionEnv, BaseEnv, BasePos, Empty, makeActionEnv, MatchResult, PosOf, Rule, UnknownTarget } from "../core";
+import { ActionEnv, BaseEnv, BasePos, Empty, makeActionEnv, MatchResult, PosOf, Rule, UnknownTarget } from "../core/index.ts";
 
 export class AssertNotRule<
     TTarget extends UnknownTarget,

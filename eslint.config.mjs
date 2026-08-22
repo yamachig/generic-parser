@@ -19,7 +19,7 @@ export default defineConfig(
             },
             parser: tseslint.parser,
             ecmaVersion: 12,
-            sourceType: "script",
+            sourceType: "module",
 
             parserOptions: {
                 project: "./tsconfig.json",
@@ -116,6 +116,35 @@ export default defineConfig(
 
             "no-unused-vars": "off",
             "@typescript-eslint/no-unused-vars": ["error"],
+
+            "no-restricted-imports": [
+                "error", {
+                    paths: [
+                        { name: "assert" },
+                        { name: "buffer" },
+                        { name: "child_process" },
+                        { name: "crypto" },
+                        { name: "events" },
+                        { name: "fs" },
+                        { name: "module" },
+                        { name: "os" },
+                        { name: "path" },
+                        { name: "process" },
+                        { name: "stream" },
+                        { name: "url" },
+                        { name: "util" },
+                    ],
+                }
+            ],
+
+            "no-restricted-globals": [
+                "error",
+                { name: "__dirname" },
+                { name: "__filename" },
+                { name: "require" },
+                { name: "module" },
+                { name: "exports" },
+            ],
 
             "@stylistic/type-annotation-spacing": "error",
             "tsdoc/syntax": "warn",

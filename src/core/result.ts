@@ -1,6 +1,6 @@
-import { BasePos, Location } from "./env";
-import { UnknownRule } from "./rule";
-import { UnknownTarget } from "./target";
+import { BasePos, Location } from "./env.ts";
+import { UnknownRule } from "./rule.ts";
+import { UnknownTarget } from "./target.ts";
 
 export interface MatchSuccess<
     TValue,

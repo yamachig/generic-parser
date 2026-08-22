@@ -1,4 +1,4 @@
-import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddEnvOfRule, NewEnvOfRule, MatchSuccess, MatchContext } from "../core";
+import { MatchResult, PrevEnvOfRule, ValueOfRule, Rule, TargetOfRule, UnknownRule, UnknownTarget, AddEnvOfRule, NewEnvOfRule, MatchSuccess, MatchContext } from "../core/index.ts";
 
 export class NoConsumeRefRule<
     TRule extends UnknownRule<UnknownTarget>,

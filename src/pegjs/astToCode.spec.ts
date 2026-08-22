@@ -1,8 +1,8 @@
-import { parse } from "./pegjsParser";
-import fs from "fs";
-import path from "path";
-import pegjs from "./optionalPegjs";
-import { grammarToCode } from "./astToCode";
+import { parse } from "./pegjsParser.ts";
+import fs from "node:fs";
+import path from "node:path";
+import pegjs from "./optionalPegjs.ts";
+import { grammarToCode } from "./astToCode.ts";
 
 // const parsePegjs = (source: string) => {
 //     if (pegjs === null) throw new Error("PEG.js not installed.");
@@ -22,7 +22,7 @@ describe("Test astToCode", () => {
 
     it("Success case", () => {
         if (pegjs === null) throw new Error("PEG.js not installed.");
-        const source = fs.readFileSync(path.join(__dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
+        const source = fs.readFileSync(path.join(import.meta.dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
 
         const grammar = parse(source, { extractComments: true });
         // const targetAstStr = inspect(targetAst, undefined, null);
@@ -46,7 +46,7 @@ const ast = peg!.ast;
             genericParserPath,
             useSafeChar: true,
         });
-        fs.writeFileSync(path.join(__dirname, "temp_grammar.ts.txt"), code, { encoding: "utf-8" });
+        fs.writeFileSync(path.join(import.meta.dirname, "temp_grammar.ts.txt"), code, { encoding: "utf-8" });
     });
 
 });

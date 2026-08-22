@@ -1,6 +1,6 @@
-import { MatchContext, MatchFail } from ".";
-import { ParseError } from "./result";
-import { Sliceable, SliceOf, UnknownTarget } from "./target";
+import { MatchContext, MatchFail } from "./index.ts";
+import { ParseError } from "./result.ts";
+import { Sliceable, SliceOf, UnknownTarget } from "./target.ts";
 
 export type Empty = Record<never, never>;
 

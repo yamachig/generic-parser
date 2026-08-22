@@ -1,23 +1,23 @@
-import { AssertRule } from "./assert";
-import { AssertNotRule } from "./assertNot";
-import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueOfRule, AddEnvOfRule, PrevEnvOfRule, MatchFail, MatchResult, NewEnvOfRule } from "../core";
-import { NextIsRule } from "./nextIs";
-import { NextIsNotRule } from "./nextIsNot";
-import { OneOfRule } from "./oneOf";
-import { OneOrMoreRule } from "./oneOrMore";
-import { ActionRule } from "./action";
-import { SeqEqualRule } from "./seqEqual";
-import { SequenceRule } from "./sequence";
-import { ZeroOrMoreRule } from "./zeroOrMore";
-import { ZeroOrOneRule } from "./zeroOrOne";
-import { RefRule } from "./ref";
-import { AnyOneRule } from "./anyOne";
-import { AsSliceRule } from "./asSlice";
-import { ChoiceRule } from "./choice";
-import { RegExpRule } from "./regExp";
-import { RegExpObjRule } from "./regExpObj";
-import { OneMatchRule } from "./oneMatch";
-import { NoConsumeRefRule } from "./noConsumeRef";
+import { AssertRule } from "./assert.ts";
+import { AssertNotRule } from "./assertNot.ts";
+import { BaseEnv, UnknownRule, UnknownTarget, ItemOf, WithIncludes, SliceOf, Empty, Rule, BasePos, AddActionForRule, ActionEnv, PosOf, RuleOrFunc, convertRuleOrFunc, ValueOfRule, AddEnvOfRule, PrevEnvOfRule, MatchFail, MatchResult, NewEnvOfRule } from "../core/index.ts";
+import { NextIsRule } from "./nextIs.ts";
+import { NextIsNotRule } from "./nextIsNot.ts";
+import { OneOfRule } from "./oneOf.ts";
+import { OneOrMoreRule } from "./oneOrMore.ts";
+import { ActionRule } from "./action.ts";
+import { SeqEqualRule } from "./seqEqual.ts";
+import { SequenceRule } from "./sequence.ts";
+import { ZeroOrMoreRule } from "./zeroOrMore.ts";
+import { ZeroOrOneRule } from "./zeroOrOne.ts";
+import { RefRule } from "./ref.ts";
+import { AnyOneRule } from "./anyOne.ts";
+import { AsSliceRule } from "./asSlice.ts";
+import { ChoiceRule } from "./choice.ts";
+import { RegExpRule } from "./regExp.ts";
+import { RegExpObjRule } from "./regExpObj.ts";
+import { OneMatchRule } from "./oneMatch.ts";
+import { NoConsumeRefRule } from "./noConsumeRef.ts";
 
 export class RuleFactory<
     TTarget extends UnknownTarget,

@@ -5,7 +5,7 @@ https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LIC
 
 /* eslint-disable @typescript-eslint/no-namespace */
 
-export = generatedparser;
+export default generatedparser;
 
 declare namespace generatedparser {
 

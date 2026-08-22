@@ -1,4 +1,4 @@
-import { BaseEnv, BasePos, Empty, ItemOf, MatchResult, Rule } from "../core";
+import { BaseEnv, BasePos, Empty, ItemOf, MatchResult, Rule } from "../core/index.ts";
 
 export class SeqEqualRule<
     TTarget extends ArrayLike<ItemOf<TValue>>,

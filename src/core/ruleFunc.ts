@@ -1,5 +1,5 @@
-import { UnknownRule } from "./rule";
-import { UnknownTarget } from "./target";
+import { UnknownRule } from "./rule.ts";
+import { UnknownTarget } from "./target.ts";
 
 export type RuleFunc<
     TRule extends UnknownRule<UnknownTarget>,

@@ -1,10 +1,10 @@
 import { assert } from "chai";
-import { defaultOptions, parse } from "./pegjsParser";
-import { inspect } from "util";
-import fs from "fs";
-import path from "path";
-import peg from "./pegjsTypings/pegjs";
-import pegjs from "./optionalPegjs";
+import { defaultOptions, parse } from "./pegjsParser.ts";
+import { inspect } from "node:util";
+import fs from "node:fs";
+import path from "node:path";
+import peg from "./pegjsTypings/pegjs.ts";
+import pegjs from "./optionalPegjs.ts";
 
 const parsePegjs = (source: string) => {
     if (pegjs === null) throw new Error("PEG.js not installed.");
@@ -69,15 +69,15 @@ num = strNum:$([0-9]+)
 
     it("Success case", () => {
         if (pegjs === null) throw new Error("PEG.js not installed.");
-        const source = fs.readFileSync(path.join(__dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
+        const source = fs.readFileSync(path.join(import.meta.dirname, "../../node_modules/pegjs-dev/src/parser.pegjs"), { encoding: "utf-8" });
 
         const targetAst = parse(source, { ...defaultOptions, extractComments: true });
         const targetAstStr = inspect(targetAst, undefined, null);
-        fs.writeFileSync(path.join(__dirname, "temp_target_ast.txt"), targetAstStr, { encoding: "utf-8" });
+        fs.writeFileSync(path.join(import.meta.dirname, "temp_target_ast.txt"), targetAstStr, { encoding: "utf-8" });
 
         const origAst = pegjs.parser.parse(source, { extractComments: true });
         const origAstStr = inspect(origAst, undefined, null);
-        fs.writeFileSync(path.join(__dirname, "temp_orig_ast.txt"), origAstStr, { encoding: "utf-8" });
+        fs.writeFileSync(path.join(import.meta.dirname, "temp_orig_ast.txt"), origAstStr, { encoding: "utf-8" });
 
         assert.strictEqual(targetAstStr, origAstStr);
     });

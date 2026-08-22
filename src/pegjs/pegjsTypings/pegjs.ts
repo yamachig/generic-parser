@@ -5,9 +5,9 @@ https://github.com/pegjs/pegjs/blob/b7b87ea8aeeaa1caf096e2da99fd95a971890ca1/LIC
 
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import gp from "./generated-parser";
+import gp from "./generated-parser.ts";
 
-export = peg;
+export default peg;
 // export as namespace peg;
 
 declare namespace peg {
